@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Giris_Window</class>
+ <widget class="QMainWindow" name="Giris_Window">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>350</width>
+    <height>264</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: rgb(26, 26, 26);</string>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <widget class="QPushButton" name="Giris_pushButton">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>170</y>
+      <width>271</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+      <weight>75</weight>
+      <bold>true</bold>
+     </font>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QPushButton {
+	border-radius:15px;
+
+	
+	background-color: rgb(30, 200, 200);
+
+	color: rgb(255, 255, 255)
+}
+
+QPushButton:hover {
+	
+	background-color: rgb(30, 150, 150);
+}
+</string>
+    </property>
+    <property name="text">
+     <string>Giriş</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="Kullaniciadi_lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>50</y>
+      <width>271</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{
+	border: 5px solid rgb(38, 38, 48);
+	border-radius: 20px;
+	color: #FFF;
+	padding-left: 15px;
+	background-color: rgb(32, 32, 32);
+
+}
+QLineEdit:hover{
+	border: 2px solid rgb(48, 50, 62)
+}
+QLineEdit:focus{
+	border: 2px solid rgb(35, 218, 233);
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="placeholderText">
+     <string>   Kullanıcı Adı</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="Sifre_lineEdit">
+    <property name="geometry">
+     <rect>
+      <x>40</x>
+      <y>110</y>
+      <width>271</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QLineEdit{
+	border: 5px solid rgb(38, 38, 48);
+	border-radius: 20px;
+	color: #FFF;
+	padding-left: 15px;
+	background-color: rgb(32, 32, 32);
+
+}
+QLineEdit:hover{
+	border: 2px solid rgb(48, 50, 62)
+}
+QLineEdit:focus{
+	border: 2px solid rgb(35, 218, 233);
+}</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+    <property name="placeholderText">
+     <string>   Şifre</string>
+    </property>
+   </widget>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>350</width>
+     <height>26</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="QStatusBar" name="statusbar"/>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
