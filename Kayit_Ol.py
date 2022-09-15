@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'admin_page.ui'
+# Form implementation generated from reading ui file 'Kayit_Ol.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -8,13 +8,13 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_MainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(1165, 710)
-        MainWindow.setMinimumSize(QtCore.QSize(1165, 710))
-        MainWindow.setMaximumSize(QtCore.QSize(1165, 710))
-        MainWindow.setStyleSheet("/* ---------------------------------------------------------------------------\n"
+class Ui_Kayt_Ol(object):
+    def setupUi(self, Kayt_Ol):
+        Kayt_Ol.setObjectName("Kayt_Ol")
+        Kayt_Ol.resize(500, 800)
+        Kayt_Ol.setMinimumSize(QtCore.QSize(400, 700))
+        Kayt_Ol.setMaximumSize(QtCore.QSize(500, 900))
+        Kayt_Ol.setStyleSheet("/* ---------------------------------------------------------------------------\n"
 "\n"
 "    WARNING! File created programmatically. All changes made in this file will be lost!\n"
 "\n"
@@ -133,7 +133,31 @@ class Ui_MainWindow(object):
 "https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qstatusbar\n"
 "\n"
 "--------------------------------------------------------------------------- */\n"
+"QStatusBar {\n"
+"  border: 1px solid #455364;\n"
+"  /* Fixes Spyder #9120, #9121 */\n"
+"  background: #455364;\n"
+"  /* Fixes #205, white vertical borders separating items */\n"
+"}\n"
 "\n"
+"QStatusBar::item {\n"
+"  border: none;\n"
+"}\n"
+"\n"
+"QStatusBar QToolTip {\n"
+"  background-color: #1A72BB;\n"
+"  border: 1px solid #19232D;\n"
+"  color: #19232D;\n"
+"  /* Remove padding, for fix combo box tooltip */\n"
+"  padding: 0px;\n"
+"  /* Reducing transparency to read better */\n"
+"  opacity: 230;\n"
+"}\n"
+"\n"
+"QStatusBar QLabel {\n"
+"  /* Fixes Spyder #9120, #9121 */\n"
+"  background: transparent;\n"
+"}\n"
 "\n"
 "/* QCheckBox --------------------------------------------------------------\n"
 "\n"
@@ -808,8 +832,6 @@ class Ui_MainWindow(object):
 "  margin: 0px;\n"
 "  color: #E0E1E3;\n"
 "  font-size: 20px;\n"
-"  border: 2px solid #455364;\n"
-"  border-radius: 4px;\n"
 "}\n"
 "\n"
 "QLabel:disabled {\n"
@@ -1349,7 +1371,6 @@ class Ui_MainWindow(object):
 "  border: 1px solid #455364;\n"
 "  border-radius: 4px;\n"
 "  color: #E0E1E3;\n"
-"  \n"
 "}\n"
 "\n"
 "QLineEdit:disabled {\n"
@@ -2139,223 +2160,133 @@ class Ui_MainWindow(object):
 "  /* Fix cut labels in plots #134 */\n"
 "  padding: 0px;\n"
 "}")
-        self.centralwidget = QtWidgets.QWidget(MainWindow)
+        self.centralwidget = QtWidgets.QWidget(Kayt_Ol)
         self.centralwidget.setObjectName("centralwidget")
-        self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox.setGeometry(QtCore.QRect(20, 30, 541, 601))
-        self.groupBox.setObjectName("groupBox")
-        self.pushButton_Aktar_Kamera = QtWidgets.QPushButton(self.groupBox)
-        self.pushButton_Aktar_Kamera.setGeometry(QtCore.QRect(20, 540, 110, 40))
-        self.pushButton_Aktar_Kamera.setObjectName("pushButton_Aktar_Kamera")
-        self.lineEdit_Camera_Height = QtWidgets.QLineEdit(self.groupBox)
-        self.lineEdit_Camera_Height.setGeometry(QtCore.QRect(290, 251, 200, 40))
-        self.lineEdit_Camera_Height.setObjectName("lineEdit_Camera_Height")
-        self.label = QtWidgets.QLabel(self.groupBox)
-        self.label.setGeometry(QtCore.QRect(19, 250, 221, 40))
-        self.label.setObjectName("label")
-        self.label_2 = QtWidgets.QLabel(self.groupBox)
-        self.label_2.setGeometry(QtCore.QRect(19, 310, 221, 40))
+        self.Kullanici_adi_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.Kullanici_adi_lineEdit.setGeometry(QtCore.QRect(100, 230, 300, 50))
+        self.Kullanici_adi_lineEdit.setStyleSheet("QLineEdit{\n"
+"    border: 5px solid rgb(38, 38, 48);\n"
+"    border-radius: 20px;\n"
+"    color: #FFF;\n"
+"    padding-left: 15px;\n"
+"    background-color: #19232D;\n"
+"\n"
+"}\n"
+"QLineEdit:hover{\n"
+"    border: 2px solid rgb(48, 50, 62)\n"
+"}\n"
+"QLineEdit:focus{\n"
+"    border: 2px solid rgb(35, 218, 233);\n"
+"}")
+        self.Kullanici_adi_lineEdit.setObjectName("Kullanici_adi_lineEdit")
+        self.Giris_pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.Giris_pushButton.setGeometry(QtCore.QRect(100, 640, 301, 50))
+        self.Giris_pushButton.setStyleSheet("QPushButton{\n"
+"\n"
+"    border-radius: 20px;\n"
+"\n"
+"\n"
+"}\n"
+"")
+        self.Giris_pushButton.setObjectName("Giris_pushButton")
+        self.Sifre_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.Sifre_lineEdit.setGeometry(QtCore.QRect(100, 310, 300, 50))
+        self.Sifre_lineEdit.setStyleSheet("QLineEdit{\n"
+"    border: 5px solid rgb(38, 38, 48);\n"
+"    border-radius: 20px;\n"
+"    color: #FFF;\n"
+"    padding-left: 15px;\n"
+"    background-color: #19232D;\n"
+"\n"
+"}\n"
+"QLineEdit:hover{\n"
+"    border: 2px solid rgb(48, 50, 62)\n"
+"}\n"
+"QLineEdit:focus{\n"
+"    border: 2px solid rgb(35, 218, 233);\n"
+"}")
+        self.Sifre_lineEdit.setObjectName("Sifre_lineEdit")
+        self.Sifre_tekrar_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.Sifre_tekrar_lineEdit.setGeometry(QtCore.QRect(100, 390, 300, 50))
+        self.Sifre_tekrar_lineEdit.setStyleSheet("QLineEdit{\n"
+"    border: 5px solid rgb(38, 38, 48);\n"
+"    border-radius: 20px;\n"
+"    color: #FFF;\n"
+"    padding-left: 15px;\n"
+"    background-color: #19232D;\n"
+"\n"
+"}\n"
+"QLineEdit:hover{\n"
+"    border: 2px solid rgb(48, 50, 62)\n"
+"}\n"
+"QLineEdit:focus{\n"
+"    border: 2px solid rgb(35, 218, 233);\n"
+"}")
+        self.Sifre_tekrar_lineEdit.setObjectName("Sifre_tekrar_lineEdit")
+        self.Telefon_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.Telefon_lineEdit.setGeometry(QtCore.QRect(100, 470, 300, 50))
+        self.Telefon_lineEdit.setStyleSheet("QLineEdit{\n"
+"    border: 5px solid rgb(38, 38, 48);\n"
+"    border-radius: 20px;\n"
+"    color: #FFF;\n"
+"    padding-left: 15px;\n"
+"    background-color: #19232D;\n"
+"\n"
+"}\n"
+"QLineEdit:hover{\n"
+"    border: 2px solid rgb(48, 50, 62)\n"
+"}\n"
+"QLineEdit:focus{\n"
+"    border: 2px solid rgb(35, 218, 233);\n"
+"}")
+        self.Telefon_lineEdit.setObjectName("Telefon_lineEdit")
+        self.E_posta_lineEdit = QtWidgets.QLineEdit(self.centralwidget)
+        self.E_posta_lineEdit.setGeometry(QtCore.QRect(100, 550, 300, 50))
+        self.E_posta_lineEdit.setStyleSheet("QLineEdit{\n"
+"    border: 5px solid rgb(38, 38, 48);\n"
+"    border-radius: 20px;\n"
+"    color: #FFF;\n"
+"    padding-left: 15px;\n"
+"    background-color: #19232D;\n"
+"\n"
+"}\n"
+"QLineEdit:hover{\n"
+"    border: 2px solid rgb(48, 50, 62)\n"
+"}\n"
+"QLineEdit:focus{\n"
+"    border: 2px solid rgb(35, 218, 233);\n"
+"}")
+        self.E_posta_lineEdit.setObjectName("E_posta_lineEdit")
+        self.label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.label_2.setGeometry(QtCore.QRect(80, 40, 350, 150))
+        self.label_2.setStyleSheet("image: url(:/Logos/Icon/MainWindow/Menderes_Tekstil_Logo.png);")
+        self.label_2.setText("")
         self.label_2.setObjectName("label_2")
-        self.lineEdit_Camera_Width = QtWidgets.QLineEdit(self.groupBox)
-        self.lineEdit_Camera_Width.setGeometry(QtCore.QRect(290, 310, 200, 40))
-        self.lineEdit_Camera_Width.setObjectName("lineEdit_Camera_Width")
-        self.lineEdit_Camera_Impact_Rate = QtWidgets.QLineEdit(self.groupBox)
-        self.lineEdit_Camera_Impact_Rate.setGeometry(QtCore.QRect(290, 370, 200, 40))
-        self.lineEdit_Camera_Impact_Rate.setObjectName("lineEdit_Camera_Impact_Rate")
-        self.label_3 = QtWidgets.QLabel(self.groupBox)
-        self.label_3.setGeometry(QtCore.QRect(19, 370, 221, 40))
-        self.label_3.setObjectName("label_3")
-        self.lineEdit_Camera_Serial = QtWidgets.QLineEdit(self.groupBox)
-        self.lineEdit_Camera_Serial.setGeometry(QtCore.QRect(290, 191, 200, 40))
-        self.lineEdit_Camera_Serial.setObjectName("lineEdit_Camera_Serial")
-        self.label_Camera_Serial = QtWidgets.QLabel(self.groupBox)
-        self.label_Camera_Serial.setGeometry(QtCore.QRect(19, 190, 221, 40))
-        self.label_Camera_Serial.setObjectName("label_Camera_Serial")
-        self.lineEdit_CutOff = QtWidgets.QLineEdit(self.groupBox)
-        self.lineEdit_CutOff.setGeometry(QtCore.QRect(290, 490, 200, 40))
-        self.lineEdit_CutOff.setObjectName("lineEdit_CutOff")
-        self.label_CutOff = QtWidgets.QLabel(self.groupBox)
-        self.label_CutOff.setGeometry(QtCore.QRect(19, 490, 221, 40))
-        self.label_CutOff.setObjectName("label_CutOff")
-        self.lineEdit_Camera_Exposure_Time = QtWidgets.QLineEdit(self.groupBox)
-        self.lineEdit_Camera_Exposure_Time.setGeometry(QtCore.QRect(290, 430, 200, 40))
-        self.lineEdit_Camera_Exposure_Time.setObjectName("lineEdit_Camera_Exposure_Time")
-        self.label_4 = QtWidgets.QLabel(self.groupBox)
-        self.label_4.setGeometry(QtCore.QRect(19, 430, 221, 40))
-        self.label_4.setObjectName("label_4")
-        self.pushButton_Upload = QtWidgets.QPushButton(self.groupBox)
-        self.pushButton_Upload.setGeometry(QtCore.QRect(290, 540, 110, 40))
-        self.pushButton_Upload.setObjectName("pushButton_Upload")
-        self.radioButton_Camera_IV = QtWidgets.QRadioButton(self.groupBox)
-        self.radioButton_Camera_IV.setGeometry(QtCore.QRect(400, 120, 131, 31))
-        self.radioButton_Camera_IV.setObjectName("radioButton_Camera_IV")
-        self.comboBox = QtWidgets.QComboBox(self.groupBox)
-        self.comboBox.setGeometry(QtCore.QRect(20, 80, 221, 38))
-        self.comboBox.setObjectName("comboBox")
-        self.comboBox.addItem("")
-        self.comboBox.addItem("")
-        self.radioButton_Camera_II = QtWidgets.QRadioButton(self.groupBox)
-        self.radioButton_Camera_II.setGeometry(QtCore.QRect(400, 80, 131, 31))
-        self.radioButton_Camera_II.setObjectName("radioButton_Camera_II")
-        self.radioButton_Camera_III = QtWidgets.QRadioButton(self.groupBox)
-        self.radioButton_Camera_III.setGeometry(QtCore.QRect(270, 120, 131, 31))
-        self.radioButton_Camera_III.setObjectName("radioButton_Camera_III")
-        self.radioButton_Camera_I = QtWidgets.QRadioButton(self.groupBox)
-        self.radioButton_Camera_I.setGeometry(QtCore.QRect(270, 80, 131, 31))
-        self.radioButton_Camera_I.setObjectName("radioButton_Camera_I")
-        self.label_5 = QtWidgets.QLabel(self.groupBox)
-        self.label_5.setGeometry(QtCore.QRect(20, 30, 221, 41))
-        self.label_5.setObjectName("label_5")
-        self.label_6 = QtWidgets.QLabel(self.groupBox)
-        self.label_6.setGeometry(QtCore.QRect(270, 30, 261, 41))
-        self.label_6.setObjectName("label_6")
-        self.label_7 = QtWidgets.QLabel(self.groupBox)
-        self.label_7.setGeometry(QtCore.QRect(-10, 160, 561, 21))
-        self.label_7.setText("")
-        self.label_7.setObjectName("label_7")
-        self.groupBox_2 = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_2.setGeometry(QtCore.QRect(580, 29, 571, 251))
-        self.groupBox_2.setObjectName("groupBox_2")
-        self.pushButton_Find_File = QtWidgets.QPushButton(self.groupBox_2)
-        self.pushButton_Find_File.setGeometry(QtCore.QRect(460, 50, 101, 40))
-        self.pushButton_Find_File.setObjectName("pushButton_Find_File")
-        self.lineEdit_Model = QtWidgets.QLineEdit(self.groupBox_2)
-        self.lineEdit_Model.setGeometry(QtCore.QRect(250, 51, 200, 40))
-        self.lineEdit_Model.setText("")
-        self.lineEdit_Model.setObjectName("lineEdit_Model")
-        self.label_Model = QtWidgets.QLabel(self.groupBox_2)
-        self.label_Model.setGeometry(QtCore.QRect(20, 50, 200, 40))
-        self.label_Model.setObjectName("label_Model")
-        self.pushButton_Aktar_Ysa = QtWidgets.QPushButton(self.groupBox_2)
-        self.pushButton_Aktar_Ysa.setGeometry(QtCore.QRect(20, 190, 110, 40))
-        self.pushButton_Aktar_Ysa.setObjectName("pushButton_Aktar_Ysa")
-        self.groupBox_3 = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_3.setGeometry(QtCore.QRect(580, 290, 571, 341))
-        self.groupBox_3.setObjectName("groupBox_3")
-        self.combo_port = QtWidgets.QComboBox(self.groupBox_3)
-        self.combo_port.setGeometry(QtCore.QRect(250, 50, 201, 40))
-        self.combo_port.setObjectName("combo_port")
-        self.combo_port.addItem("")
-        self.combo_port.addItem("")
-        self.combo_port.addItem("")
-        self.combo_port.addItem("")
-        self.combo_port.addItem("")
-        self.combo_port.addItem("")
-        self.combo_port.addItem("")
-        self.combo_port.addItem("")
-        self.label_Port = QtWidgets.QLabel(self.groupBox_3)
-        self.label_Port.setGeometry(QtCore.QRect(20, 50, 200, 40))
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        self.label_Port.setFont(font)
-        self.label_Port.setObjectName("label_Port")
-        self.combo_baudrate = QtWidgets.QComboBox(self.groupBox_3)
-        self.combo_baudrate.setGeometry(QtCore.QRect(250, 100, 200, 40))
-        self.combo_baudrate.setObjectName("combo_baudrate")
-        self.combo_baudrate.addItem("")
-        self.combo_baudrate.addItem("")
-        self.combo_baudrate.addItem("")
-        self.combo_baudrate.addItem("")
-        self.label_BaudRate = QtWidgets.QLabel(self.groupBox_3)
-        self.label_BaudRate.setGeometry(QtCore.QRect(20, 100, 200, 40))
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        self.label_BaudRate.setFont(font)
-        self.label_BaudRate.setObjectName("label_BaudRate")
-        self.pushButton_Aktar_Serial_Port = QtWidgets.QPushButton(self.groupBox_3)
-        self.pushButton_Aktar_Serial_Port.setGeometry(QtCore.QRect(20, 160, 110, 40))
-        self.pushButton_Aktar_Serial_Port.setObjectName("pushButton_Aktar_Serial_Port")
-        MainWindow.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(MainWindow)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1165, 43))
+        Kayt_Ol.setCentralWidget(self.centralwidget)
+        self.menubar = QtWidgets.QMenuBar(Kayt_Ol)
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 500, 43))
         self.menubar.setObjectName("menubar")
-        self.menuAna_Sayfa = QtWidgets.QMenu(self.menubar)
-        self.menuAna_Sayfa.setObjectName("menuAna_Sayfa")
-        self.menuCamera = QtWidgets.QMenu(self.menubar)
-        self.menuCamera.setObjectName("menuCamera")
-        self.menuDataBases = QtWidgets.QMenu(self.menubar)
-        self.menuDataBases.setObjectName("menuDataBases")
-        MainWindow.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(MainWindow)
+        Kayt_Ol.setMenuBar(self.menubar)
+        self.statusbar = QtWidgets.QStatusBar(Kayt_Ol)
         self.statusbar.setObjectName("statusbar")
-        MainWindow.setStatusBar(self.statusbar)
-        self.menubar.addAction(self.menuAna_Sayfa.menuAction())
-        self.menubar.addAction(self.menuCamera.menuAction())
-        self.menubar.addAction(self.menuDataBases.menuAction())
-        self.label.setBuddy(self.lineEdit_Camera_Height)
-        self.label_2.setBuddy(self.lineEdit_Camera_Width)
-        self.label_3.setBuddy(self.lineEdit_Camera_Impact_Rate)
-        self.label_Camera_Serial.setBuddy(self.lineEdit_Camera_Serial)
-        self.label_CutOff.setBuddy(self.lineEdit_CutOff)
-        self.label_4.setBuddy(self.lineEdit_Camera_Exposure_Time)
-        self.label_5.setBuddy(self.comboBox)
-        self.label_6.setBuddy(self.radioButton_Camera_I)
-        self.label_Model.setBuddy(self.lineEdit_Model)
-        self.label_Port.setBuddy(self.combo_port)
-        self.label_BaudRate.setBuddy(self.combo_baudrate)
+        Kayt_Ol.setStatusBar(self.statusbar)
 
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        MainWindow.setTabOrder(self.comboBox, self.radioButton_Camera_I)
-        MainWindow.setTabOrder(self.radioButton_Camera_I, self.radioButton_Camera_II)
-        MainWindow.setTabOrder(self.radioButton_Camera_II, self.radioButton_Camera_III)
-        MainWindow.setTabOrder(self.radioButton_Camera_III, self.radioButton_Camera_IV)
-        MainWindow.setTabOrder(self.radioButton_Camera_IV, self.lineEdit_Camera_Serial)
-        MainWindow.setTabOrder(self.lineEdit_Camera_Serial, self.lineEdit_Camera_Height)
-        MainWindow.setTabOrder(self.lineEdit_Camera_Height, self.lineEdit_Camera_Width)
-        MainWindow.setTabOrder(self.lineEdit_Camera_Width, self.lineEdit_Camera_Impact_Rate)
-        MainWindow.setTabOrder(self.lineEdit_Camera_Impact_Rate, self.lineEdit_Camera_Exposure_Time)
-        MainWindow.setTabOrder(self.lineEdit_Camera_Exposure_Time, self.lineEdit_CutOff)
-        MainWindow.setTabOrder(self.lineEdit_CutOff, self.pushButton_Aktar_Kamera)
-        MainWindow.setTabOrder(self.pushButton_Aktar_Kamera, self.pushButton_Upload)
-        MainWindow.setTabOrder(self.pushButton_Upload, self.lineEdit_Model)
-        MainWindow.setTabOrder(self.lineEdit_Model, self.pushButton_Find_File)
-        MainWindow.setTabOrder(self.pushButton_Find_File, self.pushButton_Aktar_Ysa)
-        MainWindow.setTabOrder(self.pushButton_Aktar_Ysa, self.combo_port)
-        MainWindow.setTabOrder(self.combo_port, self.combo_baudrate)
-        MainWindow.setTabOrder(self.combo_baudrate, self.pushButton_Aktar_Serial_Port)
+        self.retranslateUi(Kayt_Ol)
+        QtCore.QMetaObject.connectSlotsByName(Kayt_Ol)
+        Kayt_Ol.setTabOrder(self.Kullanici_adi_lineEdit, self.Sifre_lineEdit)
+        Kayt_Ol.setTabOrder(self.Sifre_lineEdit, self.Sifre_tekrar_lineEdit)
+        Kayt_Ol.setTabOrder(self.Sifre_tekrar_lineEdit, self.Telefon_lineEdit)
+        Kayt_Ol.setTabOrder(self.Telefon_lineEdit, self.E_posta_lineEdit)
+        Kayt_Ol.setTabOrder(self.E_posta_lineEdit, self.Giris_pushButton)
 
-    def retranslateUi(self, MainWindow):
+    def retranslateUi(self, Kayt_Ol):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "Admin"))
-        self.groupBox.setTitle(_translate("MainWindow", "Kamera Özellikleri"))
-        self.pushButton_Aktar_Kamera.setText(_translate("MainWindow", "Aktar"))
-        self.label.setText(_translate("MainWindow", "Camera Height"))
-        self.label_2.setText(_translate("MainWindow", "Camera Width"))
-        self.label_3.setText(_translate("MainWindow", "Camera İmpact Rate"))
-        self.label_Camera_Serial.setText(_translate("MainWindow", "Camera Serial"))
-        self.label_CutOff.setText(_translate("MainWindow", "Cut Off"))
-        self.label_4.setText(_translate("MainWindow", "Exposure Time"))
-        self.pushButton_Upload.setText(_translate("MainWindow", "Yükle"))
-        self.radioButton_Camera_IV.setText(_translate("MainWindow", "Camera IV"))
-        self.comboBox.setItemText(0, _translate("MainWindow", "Alan Kamera"))
-        self.comboBox.setItemText(1, _translate("MainWindow", "Çizgi Kamera"))
-        self.radioButton_Camera_II.setText(_translate("MainWindow", "Camera II"))
-        self.radioButton_Camera_III.setText(_translate("MainWindow", "Camera III"))
-        self.radioButton_Camera_I.setText(_translate("MainWindow", "Camera I"))
-        self.label_5.setText(_translate("MainWindow", "Kamera Türü"))
-        self.label_6.setText(_translate("MainWindow", "Kameralar"))
-        self.groupBox_2.setTitle(_translate("MainWindow", "Yapay Zeka Özellikleri"))
-        self.pushButton_Find_File.setText(_translate("MainWindow", "Ara"))
-        self.label_Model.setText(_translate("MainWindow", "Model"))
-        self.pushButton_Aktar_Ysa.setText(_translate("MainWindow", "Aktar"))
-        self.groupBox_3.setTitle(_translate("MainWindow", "Seri Port Ayarları"))
-        self.combo_port.setItemText(0, _translate("MainWindow", "COM8"))
-        self.combo_port.setItemText(1, _translate("MainWindow", "COM7"))
-        self.combo_port.setItemText(2, _translate("MainWindow", "COM6"))
-        self.combo_port.setItemText(3, _translate("MainWindow", "COM5"))
-        self.combo_port.setItemText(4, _translate("MainWindow", "COM4"))
-        self.combo_port.setItemText(5, _translate("MainWindow", "COM3"))
-        self.combo_port.setItemText(6, _translate("MainWindow", "COM2"))
-        self.combo_port.setItemText(7, _translate("MainWindow", "COM1"))
-        self.label_Port.setText(_translate("MainWindow", "Port:"))
-        self.combo_baudrate.setItemText(0, _translate("MainWindow", "9600"))
-        self.combo_baudrate.setItemText(1, _translate("MainWindow", "4800"))
-        self.combo_baudrate.setItemText(2, _translate("MainWindow", "2400"))
-        self.combo_baudrate.setItemText(3, _translate("MainWindow", "1200"))
-        self.label_BaudRate.setText(_translate("MainWindow", "Baud Rate"))
-        self.pushButton_Aktar_Serial_Port.setText(_translate("MainWindow", "Aktar"))
-        self.menuAna_Sayfa.setTitle(_translate("MainWindow", "Ana Sayfa"))
-        self.menuCamera.setTitle(_translate("MainWindow", "Camera"))
-        self.menuDataBases.setTitle(_translate("MainWindow", "DataBases"))
+        Kayt_Ol.setWindowTitle(_translate("Kayt_Ol", "Kayıt Ol"))
+        self.Kullanici_adi_lineEdit.setPlaceholderText(_translate("Kayt_Ol", "   Kullanıcı Adı"))
+        self.Giris_pushButton.setText(_translate("Kayt_Ol", "Tamam"))
+        self.Sifre_lineEdit.setPlaceholderText(_translate("Kayt_Ol", "Şifre"))
+        self.Sifre_tekrar_lineEdit.setPlaceholderText(_translate("Kayt_Ol", "Şifre Tekrar"))
+        self.Telefon_lineEdit.setPlaceholderText(_translate("Kayt_Ol", "Telefon"))
+        self.E_posta_lineEdit.setPlaceholderText(_translate("Kayt_Ol", "E Posta"))
 
+import source

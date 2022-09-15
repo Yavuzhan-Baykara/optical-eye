@@ -2223,7 +2223,7 @@ class Ui_Hata_Goster_Window(object):
 
     def retranslateUi(self, Hata_Goster_Window):
         _translate = QtCore.QCoreApplication.translate
-        Hata_Goster_Window.setWindowTitle(_translate("Hata_Goster_Window", "MainWindow"))
+        Hata_Goster_Window.setWindowTitle(_translate("Hata_Goster_Window", "Hata"))
         self.Isim_Label.setText(_translate("Hata_Goster_Window", "HATALI KUMAŞ TESPİT EDİLDİ"))
         self.groupBox.setTitle(_translate("Hata_Goster_Window", "HATA OZELLIKLERI"))
         self.Sinif_Label.setText(_translate("Hata_Goster_Window", "......................................"))

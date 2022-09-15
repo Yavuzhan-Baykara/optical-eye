@@ -11,6 +11,7 @@ from Db_Con import *
 import Db_Con as DC
 from admin_page import * 
 from Port import*
+from Kayit_Ol import*
 import json
 
 
@@ -40,7 +41,7 @@ class ToolKit():
         self.ui3.setupUi(self.MainWindow3)            #
         ###############################################
 
-        ############ Göster ################40113349###########
+        ############ Göster ################40113349###
         self.app4=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow4=QtWidgets.QMainWindow()      #
         self.ui4=Ui_Goster_Window()                   #
@@ -59,6 +60,13 @@ class ToolKit():
         self.MainWindow6=QtWidgets.QMainWindow()      #
         self.ui6=Ui_Port_Window()                     #
         self.ui6.setupUi(self.MainWindow6)            #
+        ###############################################
+
+        ################ Kayıt Ol #####################
+        self.app7=QtWidgets.QApplication(sys.argv)    #
+        self.MainWindow7=QtWidgets.QMainWindow()      #
+        self.ui7=Ui_Kayt_Ol()                         #
+        self.ui7.setupUi(self.MainWindow7)            #
         ###############################################
         
 
@@ -114,16 +122,15 @@ class ToolKit():
     ############ MainWindow Camera ###############################
     def QWindow_Camera(self):                                    #
         self.MainWindow2.close()                                 #
-        self.MainWindow2.showMaximized()                                  #
+        self.MainWindow2.showMaximized()                         #
     ##############################################################
 
 
     ############ MainWindow VeriTabani ###########################
     def QWindow_DataBase(self):                                  #
         DC.MainWindow3.close()                                   #
-        DC.MainWindow3.showMaximized()                                    #
+        DC.MainWindow3.showMaximized()                           #
     ##############################################################
-
 
     ############ MainWindow Goster ###############################
     def QWindow_Details(self):                                   #
@@ -137,14 +144,20 @@ class ToolKit():
         self.MainWindow5.show()                                  #
     ##############################################################
 
+    ############ MainWindow Adminas ##############################
+    def QWindow_Kayit(self):                                     #
+        self.MainWindow7.close()                                 #
+        self.MainWindow7.show()                                  #
+    ##############################################################
 
-    ########################################## FeedBacks ########################################################################
-    def FeedBack_SetupUi(self):return self.ui1, self.ui2, self.ui3, self.ui4, self.ui5                                          #
-    def FeedBack_Windows(self):return self.MainWindow1, self.MainWindow2, self.MainWindow3, self.MainWindow4, self.MainWindow5  #
-    def FeedBack_App(self):return self.app1,self.app2,self.app3,self.app4, self.app5                                            #
-    def FeedBack_Zoom_Rate(self):return self.zoom_impact_rate                                                                   #
-    def FeedBack_Port_UI(self):return self.ui6, self.MainWindow6, self.app6                                                     #                
-    ########################################## FeedBacks ########################################################################
+    ########################################## FeedBacks ##########################################################################
+    def FeedBack_SetupUi(self) : return self.ui1, self.ui2, self.ui3, self.ui4, self.ui5                                          #
+    def FeedBack_Windows(self) : return self.MainWindow1, self.MainWindow2, self.MainWindow3, self.MainWindow4, self.MainWindow5  #
+    def FeedBack_App(self) : return self.app1,self.app2,self.app3,self.app4, self.app5                                            #
+    def FeedBack_Zoom_Rate(self) : return self.zoom_impact_rate                                                                   #
+    def FeedBack_Port_UI(self) : return self.ui6, self.MainWindow6, self.app6                                                     #
+    def Feedback_Kayt_UI(self) : return self.ui7, self.MainWindow7, self.app7                                                     #
+    ########################################## FeedBacks ##########################################################################
 
     def Cam_out_file_folder(self):
         obj = os.scandir("./")

@@ -2253,7 +2253,7 @@ class Ui_Goster_Window(object):
 
     def retranslateUi(self, Goster_Window):
         _translate = QtCore.QCoreApplication.translate
-        Goster_Window.setWindowTitle(_translate("Goster_Window", "MainWindow"))
+        Goster_Window.setWindowTitle(_translate("Goster_Window", "Hata"))
         self.Isim_Label.setText(_translate("Goster_Window", "........................."))
         self.label_6.setText(_translate("Goster_Window", "Hatanın Duvar Tarafından Mesafesi :"))
         self.label_7.setText(_translate("Goster_Window", "Hata Eni(mm) :"))

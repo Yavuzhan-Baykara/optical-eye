@@ -2388,7 +2388,7 @@ class Ui_Camera_Window(object):
 
     def retranslateUi(self, Camera_Window):
         _translate = QtCore.QCoreApplication.translate
-        Camera_Window.setWindowTitle(_translate("Camera_Window", "MainWindow"))
+        Camera_Window.setWindowTitle(_translate("Camera_Window", "Camera"))
         self.groupBox.setTitle(_translate("Camera_Window", "KONTROL"))
         self.label_3.setText(_translate("Camera_Window", "KAMERA KONTROL"))
         self.Off_pushButton.setText(_translate("Camera_Window", "Kapat"))

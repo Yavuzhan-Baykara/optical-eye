@@ -223,7 +223,32 @@ class Veri_Tabani_Window():
         path = curs.fetchall()
         return path
 
-    
+    def Last_Cameras_Info_Add(Camera_Height, Camera_Width, Camera_Impact_Rate, Camera_Serial, Camera_Exposure_Time, Camera_Cut_Off, Camera_Type):
+        print(str(Camera_Serial[0]))
+        Camera_Serials=Camera_Serial[0]+','+Camera_Serial[1]+','+Camera_Serial[2]+','+Camera_Serial[3]
+        Cameras_Type=Camera_Type[0]+','+Camera_Type[1]+','+Camera_Type[2]+','+Camera_Type[3]
+        Camera_Exposure_Times=Camera_Exposure_Time[0]+','+Camera_Exposure_Time[1]+','+Camera_Exposure_Time[2]+','+Camera_Exposure_Time[3]
+        curs.execute("""
+        INSERT INTO Cameras_Inf
+        (Camera_Height, Camera_Width, Camera_İmpact_Rate, Camera_Serial, Camera_Exposure_Time, Camera_Cut_Off, Camera_Type)
+        VALUES
+        (?,?,?,?,?,?,?)""",
+        ( Camera_Height, Camera_Width, Camera_Impact_Rate, Camera_Serials, Camera_Exposure_Times, Camera_Cut_Off, Cameras_Type))
+        conn.commit()
+
+    def get_users_inf():
+        curs.execute("SELECT * FROM Kullanicilar")
+        conn.commit()
+        users = curs.fetchall()
+        return users
+
+    def set_users_inf(Kullanici_adi, Sifre):
+        try:
+            curs.execute("INSERT INTO Kullanicilar (Kullanici_adi, Sifre) VALUES (?,?)", (Kullanici_adi, Sifre))
+            conn.commit()
+        except sqlite3.Error as er:
+            print(er)
+
     def Clear():
         ui3.Veri_Tabani_Widget.clear()
         ui3.Veri_Tabani_Widget.setHorizontalHeaderLabels(('Id','Tarih','Dok_No','Kalite_No','Hatanin_Geldiği_Metre','Bez_Eni','Hatanin_Duvar_Tarafından_Mesafesi','Hata_Eni','Hata_Boyutu','Hata_Alanı','Hata_Sınıfı','Sonuc_Isım'))
@@ -239,19 +264,6 @@ class Veri_Tabani_Window():
             
         conn.commit()
     
-    def Last_Cameras_Info_Add(Camera_Height, Camera_Width, Camera_Impact_Rate, Camera_Serial, Camera_Exposure_Time, Camera_Cut_Off, Camera_Type):
-        print(str(Camera_Serial[0]))
-        Camera_Serials=Camera_Serial[0]+','+Camera_Serial[1]+','+Camera_Serial[2]+','+Camera_Serial[3]
-        Cameras_Type=Camera_Type[0]+','+Camera_Type[1]+','+Camera_Type[2]+','+Camera_Type[3]
-        Camera_Exposure_Times=Camera_Exposure_Time[0]+','+Camera_Exposure_Time[1]+','+Camera_Exposure_Time[2]+','+Camera_Exposure_Time[3]
-        curs.execute("""
-        INSERT INTO Cameras_Inf
-        (Camera_Height, Camera_Width, Camera_İmpact_Rate, Camera_Serial, Camera_Exposure_Time, Camera_Cut_Off, Camera_Type)
-        VALUES
-        (?,?,?,?,?,?,?)""",
-        ( Camera_Height, Camera_Width, Camera_Impact_Rate, Camera_Serials, Camera_Exposure_Times, Camera_Cut_Off, Cameras_Type))
-        conn.commit()
-
     def Update():
         selected = ui3.Veri_Tabani_Widget.selectedItems()
         if selected:
@@ -270,7 +282,6 @@ class Veri_Tabani_Window():
             ui3.Delete_PushButton.setDisabled(True)
             Veri_Tabani_Window.Listele()
 
-
     def Delete():
         selected = ui3.Veri_Tabani_Widget.selectedItems()
         if selected:
@@ -287,4 +298,3 @@ class Veri_Tabani_Window():
             ui3.Delete_PushButton.setDisabled(True)
             ui3.Gunclle_PushButton.setDisabled(True)
             Veri_Tabani_Window.Listele()
-            

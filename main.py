@@ -24,7 +24,6 @@ import pandas as pd
 import numpy as np
 from db_reader import *
 from Camera import*
-from Giris import*
 from pypylon import pylon
 from pypylon import genicam
 from datetime import datetime
@@ -51,7 +50,7 @@ import sys
 from post_thread import *
 import io
 import time
-
+from GirisKayit import *
 
 Arduino_Tools=Arduino_Toolkits()
 Tools=ToolKit()
@@ -73,34 +72,14 @@ app1,app2,app3,app4,app5=Tools.FeedBack_App()
 zoom_impact_rate=Tools.FeedBack_Zoom_Rate()
 app6,MainWindow6,ui6=Arduino_Tools.FeedBack_MainWindow_Error()
 
-ui7, MainWindow7, app7= Tools.FeedBack_Port_UI()
-
-
-####### Giris Doğrulaması #######
-def Login():
-    global name
-    name=ui1.Kullaniciadi_lineEdit.text()
-    password=ui1.Sifre_lineEdit.text()
-    
-    if(name=="yavzan" and password=='123'):
-        print("Giriş Başarılı")
-        MainWindow1.close()
-        MainWindow2.show()
-################################     
-
-
+ui7, MainWindow7, app7 = Tools.FeedBack_Port_UI()
+ui8, MainWindow8, app8 = Tools.Feedback_Kayt_UI()
 
 def displayImage():
         MainWindow7.show()
         ui2.logic_All = 1
         ui2.Ac_pushButton.setDisabled(True)
         ui2.Off_pushButton.setDisabled(False)
-        # if Tools.Trigg_Port_Button==True:
-        #     MainWindow7.close()
-        #     Basler_Cameras()
-        # if Tools.Non_Trigg_Port_Button==True:
-        #     MainWindow7.close()
-        #     Basler_Cameras() 
             
 def Soft_Serial_OPEN():
     Tools.Port_Op()
@@ -411,7 +390,6 @@ def Basler_Cameras():
             
             # Görüntülerin Birleştirilmesi
             tensor = torch.cat([tensor1, tensor2], dim=0)
-            
             # Tensorlerin CPU'ya atanması
             results = model(tensor.cpu().numpy())
             results.display(render=True)
@@ -728,9 +706,6 @@ def default_model():
     Tools.Model_Path = path
 def main():
     MainWindow1.show()
-    MainWindow2.showMaximized()
-    DC.MainWindow3.showMaximized()
-    MainWindow5.show()
     Tools.Cam_out_file_folder()
     New_Day_Folder()
     Veri_Tabani_Window.Listele()
@@ -784,7 +759,10 @@ if __name__ == '__main__':
 ##Camera Ekran Slotları
 ##Button Slotları
 
-##Cam Stop
+#Cam Stop
+get_log_reg=GirisVKayit(app1, ui1, ui2, ui8, MainWindow1, MainWindow2, MainWindow8, Veri_Tabani_Window.get_users_inf(), Veri_Tabani_Window)
+ui1.Giris_pushButton.clicked.connect(lambda : get_log_reg.Giris("Camera"))
+ui1.Kayit_pushButton.clicked.connect(lambda : get_log_reg.Giris("Kayit"))
 
 ## Cam Kayıt
 ui2.Start_pushButton.clicked.connect(Video_Selected)
@@ -822,6 +800,8 @@ def handle_upload():
 ui2.Gezginler.clicked.connect(lambda: Tools.download(configs, helper.now.strftime('%H.%M.%S')))
 ui2.Gezginler_2.clicked.connect(handle_upload)
 ui2.menuAna_Sayfa.aboutToShow.connect(Tools.QWindow_DataBase)
+
+
 
 def Pdf_Show():
     PDFThread().start()
@@ -869,5 +849,6 @@ ui6.Ikaz_kapat_pushButton.clicked.connect(Arduino_Tools.hepsini_kapat)
 ui7.Ac_pushButton.clicked.connect(Soft_Serial_OPEN)
 ui7.Kapat_pushButton.clicked.connect(Soft_NSerial_OPEN)
 
+ui8.Giris_pushButton.clicked.connect(lambda : get_log_reg.kayit())
 
 os._exit(app1.exec_())

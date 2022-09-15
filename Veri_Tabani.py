@@ -2329,7 +2329,7 @@ class Ui_Veri_Tabani_Window(object):
 
     def retranslateUi(self, Veri_Tabani_Window):
         _translate = QtCore.QCoreApplication.translate
-        Veri_Tabani_Window.setWindowTitle(_translate("Veri_Tabani_Window", "MainWindow"))
+        Veri_Tabani_Window.setWindowTitle(_translate("Veri_Tabani_Window", "Veri Tabanı"))
         self.details_groupBox.setTitle(_translate("Veri_Tabani_Window", "KONTROL"))
         self.label_3.setText(_translate("Veri_Tabani_Window", "Başlangıç Tarihi"))
         self.label_4.setText(_translate("Veri_Tabani_Window", "Bitiş Tarihi"))
