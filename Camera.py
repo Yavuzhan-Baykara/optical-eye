@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Camera_Window(object):
     def setupUi(self, Camera_Window):
         Camera_Window.setObjectName("Camera_Window")
-        Camera_Window.resize(1934, 1000)
+        Camera_Window.resize(1934, 990)
         Camera_Window.setMaximumSize(QtCore.QSize(2000, 1000))
         Camera_Window.setStyleSheet("/* ---------------------------------------------------------------------------\n"
 "\n"
@@ -306,6 +306,7 @@ class Ui_Camera_Window(object):
 "QMenuBar::item {\n"
 "  background: transparent;\n"
 "  padding: 4px;\n"
+"  margin-right: 8px;\n"
 "}\n"
 "\n"
 "QMenuBar::item:selected {\n"
@@ -2372,16 +2373,30 @@ class Ui_Camera_Window(object):
         self.menubar = QtWidgets.QMenuBar(Camera_Window)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1934, 43))
         self.menubar.setObjectName("menubar")
-        self.menuAna_Sayfa = QtWidgets.QMenu(self.menubar)
-        self.menuAna_Sayfa.setObjectName("menuAna_Sayfa")
         self.menuCamera = QtWidgets.QMenu(self.menubar)
         self.menuCamera.setObjectName("menuCamera")
+        self.menuAdmin = QtWidgets.QMenu(self.menubar)
+        self.menuAdmin.setObjectName("menuAdmin")
+        self.menuHakk_nda = QtWidgets.QMenu(self.menubar)
+        self.menuHakk_nda.setObjectName("menuHakk_nda")
         Camera_Window.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(Camera_Window)
         self.statusbar.setObjectName("statusbar")
         Camera_Window.setStatusBar(self.statusbar)
-        self.menubar.addAction(self.menuAna_Sayfa.menuAction())
+        self.actionMain = QtWidgets.QAction(Camera_Window)
+        self.actionMain.setObjectName("actionMain")
+        self.actionVeri_Taban_Penceresi = QtWidgets.QAction(Camera_Window)
+        self.actionVeri_Taban_Penceresi.setObjectName("actionVeri_Taban_Penceresi")
+        self.actionAdmin_Paneli = QtWidgets.QAction(Camera_Window)
+        self.actionAdmin_Paneli.setObjectName("actionAdmin_Paneli")
+        self.actionHakk_nda = QtWidgets.QAction(Camera_Window)
+        self.actionHakk_nda.setObjectName("actionHakk_nda")
+        self.menuCamera.addAction(self.actionVeri_Taban_Penceresi)
+        self.menuAdmin.addAction(self.actionAdmin_Paneli)
+        self.menuHakk_nda.addAction(self.actionHakk_nda)
         self.menubar.addAction(self.menuCamera.menuAction())
+        self.menubar.addAction(self.menuAdmin.menuAction())
+        self.menubar.addAction(self.menuHakk_nda.menuAction())
 
         self.retranslateUi(Camera_Window)
         QtCore.QMetaObject.connectSlotsByName(Camera_Window)
@@ -2421,6 +2436,11 @@ class Ui_Camera_Window(object):
         self.Gezginler_2.setText(_translate("Camera_Window", "Ayarları Yükle"))
         self.label.setText(_translate("Camera_Window", "Video kayıt seçenekleri:"))
         self.groupBox_4.setTitle(_translate("Camera_Window", "KAMERALAR"))
-        self.menuAna_Sayfa.setTitle(_translate("Camera_Window", "Ana Sayfa"))
-        self.menuCamera.setTitle(_translate("Camera_Window", "Camera"))
+        self.menuCamera.setTitle(_translate("Camera_Window", "Veri Tabanı"))
+        self.menuAdmin.setTitle(_translate("Camera_Window", "Admin Paneli"))
+        self.menuHakk_nda.setTitle(_translate("Camera_Window", "Hakkında"))
+        self.actionMain.setText(_translate("Camera_Window", "Main"))
+        self.actionVeri_Taban_Penceresi.setText(_translate("Camera_Window", "Veri Tabanı"))
+        self.actionAdmin_Paneli.setText(_translate("Camera_Window", "Admin Paneli"))
+        self.actionHakk_nda.setText(_translate("Camera_Window", "Hakkında"))
 

@@ -797,11 +797,11 @@ def handle_upload():
         if ui2.radioButton_Camera_II.isChecked():
             Tools.handle_change(configs[2])
 
+
 ui2.Gezginler.clicked.connect(lambda: Tools.download(configs, helper.now.strftime('%H.%M.%S')))
 ui2.Gezginler_2.clicked.connect(handle_upload)
-ui2.menuAna_Sayfa.aboutToShow.connect(Tools.QWindow_DataBase)
-
-
+ui2.actionVeri_Taban_Penceresi.triggered.connect(Tools.QWindow_DataBase)
+ui2.actionAdmin_Paneli.triggered.connect(Tools.QWindow_Admin)
 
 def Pdf_Show():
     PDFThread().start()
@@ -814,7 +814,8 @@ def Pdf_Lister():
     
 
     
-DC.ui3.menuCamera.aboutToShow.connect(Tools.QWindow_Camera)
+DC.ui3.actionKameralar.triggered.connect(Tools.QWindow_Camera)
+DC.ui3.actionAdmin_Paneli.triggered.connect(Tools.QWindow_Admin)
 DC.ui3.Temiz_pushButton.clicked.connect(Veri_Tabani_Window.Clear)
 DC.ui3.Veri_Tabani_Widget.itemSelectionChanged.connect(Veri_Tabani_Window.Doldur)
 DC.ui3.Goster_pushButton.clicked.connect(Veri_Tabani_Window.Ara)
@@ -841,6 +842,8 @@ ui5.pushButton_Aktar_Ysa.clicked.connect(Tools.Import_Model)
 ui5.pushButton_Aktar_Kamera.clicked.connect(Camera_Inf)
 ui5.pushButton_Aktar_Serial_Port.clicked.connect(Tools.Import_Serial_Port)
 ui5.pushButton_Upload.clicked.connect(Upload_Cameras_Inf)
+ui5.actionKameralar.triggered.connect(Tools.QWindow_Camera)
+ui5.actionVeri_Taban.triggered.connect(Tools.QWindow_DataBase)
 
 
 ui6.Ikaz_kapat_pushButton.clicked.connect(Arduino_Tools.hepsini_kapat)

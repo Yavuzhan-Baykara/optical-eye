@@ -76,6 +76,9 @@ class Veri_Tabani_Window():
 
             Veri_Tabani_Window.Button_Show(satirVeri[0], cnt)
             cnt+=1
+            if cnt == 999:
+                return
+
         
                 
     def Doldur():

@@ -313,6 +313,7 @@ QMenuBar:focus {
 QMenuBar::item {
   background: transparent;
   padding: 4px;
+  margin-right: 8px;
 }
 
 QMenuBar::item:selected {
@@ -3704,6 +3705,14 @@ PlotWidget {
      <string notr="true"/>
     </property>
    </widget>
+   <zorder>label_Dok_No</zorder>
+   <zorder>details_groupBox</zorder>
+   <zorder>details_groupBox_2</zorder>
+   <zorder>details_groupBox_3</zorder>
+   <zorder>details_groupBox_4</zorder>
+   <zorder>Dok_No_LineEdit</zorder>
+   <zorder>label_Kalite_No</zorder>
+   <zorder>Kalite_No_LineEdit</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -3716,18 +3725,42 @@ PlotWidget {
    </property>
    <widget class="QMenu" name="menuCamera">
     <property name="title">
-     <string>Camera</string>
+     <string>Kameralar</string>
     </property>
+    <addaction name="actionKameralar"/>
    </widget>
    <widget class="QMenu" name="menuHakk_nda">
     <property name="title">
      <string>Hakkında</string>
     </property>
+    <addaction name="actionHakk_nda"/>
+   </widget>
+   <widget class="QMenu" name="menuAdmin_Paneli">
+    <property name="title">
+     <string>Admin Paneli</string>
+    </property>
+    <addaction name="actionAdmin_Paneli"/>
    </widget>
    <addaction name="menuCamera"/>
+   <addaction name="menuAdmin_Paneli"/>
    <addaction name="menuHakk_nda"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionKameralar">
+   <property name="text">
+    <string>Kameralar</string>
+   </property>
+  </action>
+  <action name="actionAdmin_Paneli">
+   <property name="text">
+    <string>Admin Paneli</string>
+   </property>
+  </action>
+  <action name="actionHakk_nda">
+   <property name="text">
+    <string>Hakkında</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

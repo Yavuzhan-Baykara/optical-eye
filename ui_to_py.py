@@ -26,9 +26,9 @@ with open('Port.py', 'w', encoding="utf-8") as fout:
 with open('Veri_Tabani.py', 'w', encoding="utf-8") as fout:
    uic.compileUi('Veri_Tabani.ui',fout)
 
-with open('Giris.py', 'w', encoding="utf-8") as fout:
-   uic.compileUi('Giris.ui',fout)
+# with open('Giris.py', 'w', encoding="utf-8") as fout:
+#    uic.compileUi('Giris.ui',fout)
 
-with open('Kayit_Ol.py', 'w', encoding="utf-8") as fout:
-   uic.compileUi('Kayit_Ol.ui',fout)
+# with open('Kayit_Ol.py', 'w', encoding="utf-8") as fout:
+#    uic.compileUi('Kayit_Ol.ui',fout)
 

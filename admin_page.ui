@@ -2691,26 +2691,44 @@ PlotWidget {
      <height>43</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuAna_Sayfa">
+   <widget class="QMenu" name="menuKameralar">
     <property name="title">
-     <string>Ana Sayfa</string>
+     <string>Kameralar</string>
     </property>
+    <addaction name="actionKameralar"/>
    </widget>
-   <widget class="QMenu" name="menuCamera">
+   <widget class="QMenu" name="menuVeri_Tabani">
     <property name="title">
-     <string>Camera</string>
+     <string>Veri Tabanı</string>
     </property>
+    <addaction name="actionVeri_Taban"/>
    </widget>
-   <widget class="QMenu" name="menuDataBases">
+   <widget class="QMenu" name="menuHakknda">
     <property name="title">
-     <string>DataBases</string>
+     <string>Hakkında</string>
     </property>
+    <addaction name="actionHakk_nda"/>
    </widget>
-   <addaction name="menuAna_Sayfa"/>
-   <addaction name="menuCamera"/>
-   <addaction name="menuDataBases"/>
+   <addaction name="menuKameralar"/>
+   <addaction name="menuVeri_Tabani"/>
+   <addaction name="menuHakknda"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionKameralar">
+   <property name="text">
+    <string>Kameralar</string>
+   </property>
+  </action>
+  <action name="actionVeri_Taban">
+   <property name="text">
+    <string>Veri Tabanı</string>
+   </property>
+  </action>
+  <action name="actionHakk_nda">
+   <property name="text">
+    <string>Hakkında</string>
+   </property>
+  </action>
  </widget>
  <tabstops>
   <tabstop>comboBox</tabstop>

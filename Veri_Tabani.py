@@ -306,6 +306,7 @@ class Ui_Veri_Tabani_Window(object):
 "QMenuBar::item {\n"
 "  background: transparent;\n"
 "  padding: 4px;\n"
+"  margin-right: 8px;\n"
 "}\n"
 "\n"
 "QMenuBar::item:selected {\n"
@@ -2309,6 +2310,14 @@ class Ui_Veri_Tabani_Window(object):
         self.Kalite_No_LineEdit.setGeometry(QtCore.QRect(840, 260, 230, 40))
         self.Kalite_No_LineEdit.setStyleSheet("")
         self.Kalite_No_LineEdit.setObjectName("Kalite_No_LineEdit")
+        self.label_Dok_No.raise_()
+        self.details_groupBox.raise_()
+        self.details_groupBox_2.raise_()
+        self.details_groupBox_3.raise_()
+        self.details_groupBox_4.raise_()
+        self.Dok_No_LineEdit.raise_()
+        self.label_Kalite_No.raise_()
+        self.Kalite_No_LineEdit.raise_()
         Veri_Tabani_Window.setCentralWidget(self.centralwidget)
         self.menubar = QtWidgets.QMenuBar(Veri_Tabani_Window)
         self.menubar.setGeometry(QtCore.QRect(0, 0, 1940, 43))
@@ -2317,11 +2326,23 @@ class Ui_Veri_Tabani_Window(object):
         self.menuCamera.setObjectName("menuCamera")
         self.menuHakk_nda = QtWidgets.QMenu(self.menubar)
         self.menuHakk_nda.setObjectName("menuHakk_nda")
+        self.menuAdmin_Paneli = QtWidgets.QMenu(self.menubar)
+        self.menuAdmin_Paneli.setObjectName("menuAdmin_Paneli")
         Veri_Tabani_Window.setMenuBar(self.menubar)
         self.statusbar = QtWidgets.QStatusBar(Veri_Tabani_Window)
         self.statusbar.setObjectName("statusbar")
         Veri_Tabani_Window.setStatusBar(self.statusbar)
+        self.actionKameralar = QtWidgets.QAction(Veri_Tabani_Window)
+        self.actionKameralar.setObjectName("actionKameralar")
+        self.actionAdmin_Paneli = QtWidgets.QAction(Veri_Tabani_Window)
+        self.actionAdmin_Paneli.setObjectName("actionAdmin_Paneli")
+        self.actionHakk_nda = QtWidgets.QAction(Veri_Tabani_Window)
+        self.actionHakk_nda.setObjectName("actionHakk_nda")
+        self.menuCamera.addAction(self.actionKameralar)
+        self.menuHakk_nda.addAction(self.actionHakk_nda)
+        self.menuAdmin_Paneli.addAction(self.actionAdmin_Paneli)
         self.menubar.addAction(self.menuCamera.menuAction())
+        self.menubar.addAction(self.menuAdmin_Paneli.menuAction())
         self.menubar.addAction(self.menuHakk_nda.menuAction())
 
         self.retranslateUi(Veri_Tabani_Window)
@@ -2355,6 +2376,10 @@ class Ui_Veri_Tabani_Window(object):
         self.Delete_PushButton.setText(_translate("Veri_Tabani_Window", "Sil"))
         self.label_Dok_No.setText(_translate("Veri_Tabani_Window", "Dok No:"))
         self.label_Kalite_No.setText(_translate("Veri_Tabani_Window", "Kalite No:"))
-        self.menuCamera.setTitle(_translate("Veri_Tabani_Window", "Camera"))
+        self.menuCamera.setTitle(_translate("Veri_Tabani_Window", "Kameralar"))
         self.menuHakk_nda.setTitle(_translate("Veri_Tabani_Window", "Hakkında"))
+        self.menuAdmin_Paneli.setTitle(_translate("Veri_Tabani_Window", "Admin Paneli"))
+        self.actionKameralar.setText(_translate("Veri_Tabani_Window", "Kameralar"))
+        self.actionAdmin_Paneli.setText(_translate("Veri_Tabani_Window", "Admin Paneli"))
+        self.actionHakk_nda.setText(_translate("Veri_Tabani_Window", "Hakkında"))
 

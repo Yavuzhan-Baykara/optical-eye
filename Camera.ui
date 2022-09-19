@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>1934</width>
-    <height>1000</height>
+    <height>990</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -313,6 +313,7 @@ QMenuBar:focus {
 QMenuBar::item {
   background: transparent;
   padding: 4px;
+  margin-right: 8px;
 }
 
 QMenuBar::item:selected {
@@ -2880,26 +2881,49 @@ PlotWidget {
      <height>43</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuAna_Sayfa">
-    <property name="title">
-     <string>Ana Sayfa</string>
-    </property>
-   </widget>
    <widget class="QMenu" name="menuCamera">
     <property name="title">
-     <string>Camera</string>
+     <string>Veri Tabanı</string>
     </property>
+    <addaction name="actionVeri_Taban_Penceresi"/>
    </widget>
    <widget class="QMenu" name="menuAdmin">
     <property name="title">
-     <string>Admin</string>
+     <string>Admin Paneli</string>
     </property>
+    <addaction name="actionAdmin_Paneli"/>
    </widget>
-   <addaction name="menuAna_Sayfa"/>
+   <widget class="QMenu" name="menuHakk_nda">
+    <property name="title">
+     <string>Hakkında</string>
+    </property>
+    <addaction name="actionHakk_nda"/>
+   </widget>
    <addaction name="menuCamera"/>
    <addaction name="menuAdmin"/>
+   <addaction name="menuHakk_nda"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
+  <action name="actionMain">
+   <property name="text">
+    <string>Main</string>
+   </property>
+  </action>
+  <action name="actionVeri_Taban_Penceresi">
+   <property name="text">
+    <string>Veri Tabanı</string>
+   </property>
+  </action>
+  <action name="actionAdmin_Paneli">
+   <property name="text">
+    <string>Admin Paneli</string>
+   </property>
+  </action>
+  <action name="actionHakk_nda">
+   <property name="text">
+    <string>Hakkında</string>
+   </property>
+  </action>
  </widget>
  <resources/>
  <connections/>

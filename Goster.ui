@@ -2417,24 +2417,6 @@ PlotWidget {
      <height>43</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuAna_Sayfa">
-    <property name="title">
-     <string>Ana Sayfa</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuCamera">
-    <property name="title">
-     <string>Camera</string>
-    </property>
-   </widget>
-   <widget class="QMenu" name="menuHakk_nda">
-    <property name="title">
-     <string>Hakkında</string>
-    </property>
-   </widget>
-   <addaction name="menuAna_Sayfa"/>
-   <addaction name="menuCamera"/>
-   <addaction name="menuHakk_nda"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>
