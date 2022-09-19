@@ -236,27 +236,48 @@ def Basler_Cameras():
                         
                         if str(df.iloc[:]['name'][detect])=='Delik' or str(df.iloc[:]['name'][detect])=='Leke':
                             cnt=cnt+1
-                        if cnt>=50:
+                        if cnt>=1: 
                             cnt=0
-                            MainWindow6.show()
-                            crop=cv2.resize(crop, (320,320),interpolation=cv2.INTER_CUBIC)
-                            image = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
-                            ui6.Goster_Label.setPixmap(QtGui.QPixmap.fromImage(image))
-                            ui6.Metre_Label.setText(str(src))
-                            ui6.Sinif_Label.setText(str(df.iloc[:]['name'][detect]))
-                            ui6.Eni_Label.setText(str(x))
-                            ui6.boyu_Label.setText(str(y))
-                            ui6.Alan_Label.setText(str(xy))
-                            
                             if not helper.check_similarity(crop):
-                                if len(helper.last_images)>=7:
-                                    del helper.last_images[0:4]
+                                MainWindow6.show()
+                                crop=cv2.resize(crop, (320,320),interpolation=cv2.INTER_CUBIC)
+                                image = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
+                                ui6.Goster_Label.setPixmap(QtGui.QPixmap.fromImage(image))
+                                ui6.Metre_Label.setText(str(src))
+                                ui6.Sinif_Label.setText(str(df.iloc[:]['name'][detect]))
+                                ui6.Eni_Label.setText(str(x))
+                                ui6.boyu_Label.setText(str(y))
+                                ui6.Alan_Label.setText(str(xy))
+                                
+                                postOut = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
+                                img = Image.fromarray(postOut, "RGB")
+                                img_byte_arr = io.BytesIO()
+                                img.save(img_byte_arr, format='PNG')
+                                img_byte_arr = img_byte_arr.getvalue()
+                                url= "https://menderes-mobile-app.herokuapp.com/errors/add"
+                                headers = {'accept': 'application/json',
+                                                                "Authorization":'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MmZiMzVjYjY5YThiZDk5MTUwNjhiYTMiLCJpYXQiOjE2NjA4MzM3NTczNTIsImV4cCI6MTY2MDgzMzg0Mzc1Mn0.tfKjNRPlo7IvDN6Cp2K81Z0wfreNQkJtDsYZAxl4w7T3j4m4fcgVoephYxaUljoGKxli6OsnBvnf7BVoV994Mm_b-nvfp9srm-rqQdCOfsB_GI65GyHwpsnVbLo9uODhcbtcKXWE_x_rBBGphHcU12XXxsHrRTGUkhG5btn7f3JBt9uRrkXiuu_0G9cdFRrha8RwYNs6ZvJo3AuUit1iWGVyWSw7mI92wTBZJWt629ozc1Dd7fMR7j6z_twxLjT9mEKFAd7k4wJUTl4s3upKVZNfTOQP_DBJ9ci_FgpJYwxZqMwQbNF8ltTtyC3TFTZTqczL1dIuFaV44t7eu8FM6OcbklY3dQ-1aYtMMDBWmxUA3zDr7Z50f-ZC5n3YZJlE9hN8d7mcAqN47nbTBzkuofp2kSmhTPWwKce3LJWx9B8ZqWssTSKZegFh_Ldn-xrD8mB7IIDM48D-JgHvLTelIxnGkUDKbg8vL26VR-aJmceL89EYA2K-Kal2FBF18qN7I2icGcMp9k3CDZEeBaTqmVGkqmWGLLKCnxeaN2HVDSdD5bGoPFBVCL6TDgf53HYNRU7WafpL6Ln8MnIdr2n9gm6hKEtTUGam_MrEH54yHKTLi4XcxQbYOV4uavOXA0ICck_WfHbIRo6jLBf-eVmoQP5uHzK4mwhRz3C7NjfZOws'}
+                                data = {
+                                                            "class": str(df.iloc[:]['name'][detect]),
+                                                            "meterInFabric":  str(src),
+                                                            "width": str(x),
+                                                            "height": str(y),
+                                }
+                            
+                                multiple_files = [
+                                        ('photo', ('arda.jpg', img_byte_arr, 'image  /jpg')),
+                                        
+                                ]
+    
+                                post_reader.append_post_thread(headers, files=multiple_files, data=data, url=url)
+                                if len(helper.last_images)>=5:
+                                    del helper.last_images[0]
                                     helper.last_images.append(crop)
                                 else:
                                     helper.last_images.append(crop)
-                                cv2.imwrite(Save_image,crop)
-                                if Tools.Trigg_Port_Button==True:
-                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
+                                cv2.imwrite(Save_image, single_frame2)
+                                cv2.waitKey(1)
+                                helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
                                     
                             if Tools.Trigg_Port_Button==True:
                                 Arduino_Tools.kirmizi_led_ac()
@@ -265,79 +286,17 @@ def Basler_Cameras():
                                 except:
                                     ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                     src=0
-                                    
-                            postOut = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
-                            img = Image.fromarray(postOut, "RGB")
-                            img_byte_arr = io.BytesIO()
-                            img.save(img_byte_arr, format='PNG')
-                            img_byte_arr = img_byte_arr.getvalue()
-                            url= "https://menderes-mobile-app.herokuapp.com/errors/add"
-                            headers = {'accept': 'application/json',
-                                                            "Authorization":'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MmZiMzVjYjY5YThiZDk5MTUwNjhiYTMiLCJpYXQiOjE2NjA4MzM3NTczNTIsImV4cCI6MTY2MDgzMzg0Mzc1Mn0.tfKjNRPlo7IvDN6Cp2K81Z0wfreNQkJtDsYZAxl4w7T3j4m4fcgVoephYxaUljoGKxli6OsnBvnf7BVoV994Mm_b-nvfp9srm-rqQdCOfsB_GI65GyHwpsnVbLo9uODhcbtcKXWE_x_rBBGphHcU12XXxsHrRTGUkhG5btn7f3JBt9uRrkXiuu_0G9cdFRrha8RwYNs6ZvJo3AuUit1iWGVyWSw7mI92wTBZJWt629ozc1Dd7fMR7j6z_twxLjT9mEKFAd7k4wJUTl4s3upKVZNfTOQP_DBJ9ci_FgpJYwxZqMwQbNF8ltTtyC3TFTZTqczL1dIuFaV44t7eu8FM6OcbklY3dQ-1aYtMMDBWmxUA3zDr7Z50f-ZC5n3YZJlE9hN8d7mcAqN47nbTBzkuofp2kSmhTPWwKce3LJWx9B8ZqWssTSKZegFh_Ldn-xrD8mB7IIDM48D-JgHvLTelIxnGkUDKbg8vL26VR-aJmceL89EYA2K-Kal2FBF18qN7I2icGcMp9k3CDZEeBaTqmVGkqmWGLLKCnxeaN2HVDSdD5bGoPFBVCL6TDgf53HYNRU7WafpL6Ln8MnIdr2n9gm6hKEtTUGam_MrEH54yHKTLi4XcxQbYOV4uavOXA0ICck_WfHbIRo6jLBf-eVmoQP5uHzK4mwhRz3C7NjfZOws'}
-                            data = {
-                                                        "class": str(df.iloc[:]['name'][detect]),
-                                                        "meterInFabric":  str(src),
-                                                        "width": str(x),
-                                                        "height": str(y),
-                            }
-                        
-                            multiple_files = [
-                                    ('photo', ('arda.jpg', img_byte_arr, 'image/jpg')),
-                                    
-                            ]
-
-                            post_reader.append_post_thread(headers, files=multiple_files, data=data, url=url)
-                    
-                        if not str(df.iloc[:]['name'][detect])=='Delik' and not str(df.iloc[:]['name'][detect])=='Leke':
-                            print(detect)
+    
+                        if not str(df.iloc[:]['name'][detect])=='Delik' or not str(df.iloc[:]['name'][detect])=='Leke':
                             if not helper.check_similarity(crop):
-                                if len(helper.last_images)>=7:
-                                    del helper.last_images[0:4]
+                                if len(helper.last_images)>=5:
+                                    del helper.last_images[0]
                                     helper.last_images.append(crop)
-                                helper.last_images.append(crop)
+                                else:
+                                    helper.last_images.append(crop)
+                                cv2.imwrite(Save_image,crop)
                                 helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
-                                
-
-                        if Tools.Trigg_Port_Button==True:
-                            Arduino_Tools.kirmizi_led_ac()
-                            try:
-                                src=Arduino_Tools.Feedback_src()
-                            except:
-                                ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
-                                src=0
-                                
-                        postOut = cv2.cvtColor(crop, cv2.COLOR_BGR2RGB)
-                        img = Image.fromarray(postOut, "RGB")
-                        img_byte_arr = io.BytesIO()
-                        img.save(img_byte_arr, format='PNG')
-                        img_byte_arr = img_byte_arr.getvalue()
-                        url= "https://menderes-mobile-app.herokuapp.com/errors/add"
-                        headers = {'accept': 'application/json',
-                                                        "Authorization":'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MmZiMzVjYjY5YThiZDk5MTUwNjhiYTMiLCJpYXQiOjE2NjA4MzM3NTczNTIsImV4cCI6MTY2MDgzMzg0Mzc1Mn0.tfKjNRPlo7IvDN6Cp2K81Z0wfreNQkJtDsYZAxl4w7T3j4m4fcgVoephYxaUljoGKxli6OsnBvnf7BVoV994Mm_b-nvfp9srm-rqQdCOfsB_GI65GyHwpsnVbLo9uODhcbtcKXWE_x_rBBGphHcU12XXxsHrRTGUkhG5btn7f3JBt9uRrkXiuu_0G9cdFRrha8RwYNs6ZvJo3AuUit1iWGVyWSw7mI92wTBZJWt629ozc1Dd7fMR7j6z_twxLjT9mEKFAd7k4wJUTl4s3upKVZNfTOQP_DBJ9ci_FgpJYwxZqMwQbNF8ltTtyC3TFTZTqczL1dIuFaV44t7eu8FM6OcbklY3dQ-1aYtMMDBWmxUA3zDr7Z50f-ZC5n3YZJlE9hN8d7mcAqN47nbTBzkuofp2kSmhTPWwKce3LJWx9B8ZqWssTSKZegFh_Ldn-xrD8mB7IIDM48D-JgHvLTelIxnGkUDKbg8vL26VR-aJmceL89EYA2K-Kal2FBF18qN7I2icGcMp9k3CDZEeBaTqmVGkqmWGLLKCnxeaN2HVDSdD5bGoPFBVCL6TDgf53HYNRU7WafpL6Ln8MnIdr2n9gm6hKEtTUGam_MrEH54yHKTLi4XcxQbYOV4uavOXA0ICck_WfHbIRo6jLBf-eVmoQP5uHzK4mwhRz3C7NjfZOws'}
-                        data = {
-                                                    "class": str(df.iloc[:]['name'][detect]),
-                                                    "meterInFabric":  str(src),
-                                                    "width": str(x),
-                                                    "height": str(y),
-                        }
-                    
-                        multiple_files = [
-                                ('photo', ('arda.jpg', img_byte_arr, 'image/jpg')),
-                                
-                        ]
-
-                        post_reader.append_post_thread(headers, files=multiple_files, data=data, url=url)
-                    
-                    if not str(df.iloc[:]['name'][detect])=='Delik' and not str(df.iloc[:]['name'][detect])=='Leke':
-                        if not helper.check_similarity(crop):
-                            if len(helper.last_images)>=7:
-                                del helper.last_images[0:4]
-                                helper.last_images.append(crop)
-                            helper.last_images.append(crop)
-                            helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
-                            
-                    cv2.waitKey(1)     
-                        
+    
             if model_name == Tools.Camera_Serial[0]:
                 qImg=QImage(out,width,height,step,QImage.Format_RGB888)
                 ui2.Camera_1.setPixmap(QPixmap.fromImage(qImg))
@@ -353,7 +312,7 @@ def Basler_Cameras():
             elif model_name == Tools.Camera_Serial[3]:
                 qImg=QImage(out,width,height,step,QImage.Format_RGB888)
                 ui2.Camera_2.setPixmap(QPixmap.fromImage(qImg))
-                    
+            cv2.waitKey(2)
         if len(frames) == 2:
             # Kameraların serial ve görüntü alınması
             frame, frame2 = frames[0][0], frames[1][0]
