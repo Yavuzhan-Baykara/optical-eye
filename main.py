@@ -128,9 +128,10 @@ def Basler_Cameras():
     while 1:
         Dok_no= ui3.Dok_No_LineEdit.text()
         Kalite_no= ui3.Kalite_No_LineEdit.text()
-        if not ui3.Dok_No_LineEdit.text() and ui3.Kalite_No_LineEdit.text():
+        if not ui3.Kalite_No_LineEdit.text():
+            Kalite_no=0
+        if not ui3.Dok_No_LineEdit.text():
             Dok_no= 0
-            Kalite_no= 0
         if vs_pylon.cameras.IsCameraDeviceRemoved() :
             vs_pylon.cameras.Close()
             pixmap = QPixmap('./Icon/Label Img/CameraOFF.PNG')
@@ -139,11 +140,6 @@ def Basler_Cameras():
             ui2.Camera_3.setPixmap(pixmap) 
             ui2.Camera_4.setPixmap(pixmap) 
             return Basler_Cameras()
-        
-        # if vs_pylon.cameras.IsPylonDeviceAttached():
-        #     if vs_pylon.cameras.IsGrabbing():
-        #         vs_pylon.cameras.Close()
-        #     return Basler_Cameras()
         
         frames = vs_pylon.read()
         
@@ -312,6 +308,7 @@ def Basler_Cameras():
             elif model_name == Tools.Camera_Serial[3]:
                 qImg=QImage(out,width,height,step,QImage.Format_RGB888)
                 ui2.Camera_2.setPixmap(QPixmap.fromImage(qImg))
+            ui2.label_8.setText(str(fps))
             cv2.waitKey(2)
         if len(frames) == 2:
             # Kameraların serial ve görüntü alınması
