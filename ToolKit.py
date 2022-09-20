@@ -23,6 +23,7 @@ class ToolKit():
         self.app1=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow1=QtWidgets.QMainWindow()      #
         self.ui1= Ui_Giris_Window()                   #
+        self.MainWindow1.setWindowFlag(Qt.FramelessWindowHint)
         self.ui1.setupUi(self.MainWindow1)            #
         ###############################################
 
@@ -30,6 +31,7 @@ class ToolKit():
         self.app2=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow2=QtWidgets.QMainWindow()      #
         self.app2.setWindowIcon(QtGui.QIcon('./Icon/MainWindow/mmm.png'))
+        self.MainWindow2.setWindowFlag(Qt.FramelessWindowHint)
         self.ui2=Ui_Camera_Window()                   #
         self.ui2.setupUi(self.MainWindow2)            #
         ###############################################
@@ -38,6 +40,7 @@ class ToolKit():
         self.app3=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow3=QtWidgets.QMainWindow()      #
         self.ui3=Ui_Veri_Tabani_Window()              #
+        self.MainWindow3.setWindowFlag(Qt.FramelessWindowHint)
         self.ui3.setupUi(self.MainWindow3)            #
         ###############################################
 
@@ -45,6 +48,7 @@ class ToolKit():
         self.app4=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow4=QtWidgets.QMainWindow()      #
         self.ui4=Ui_Goster_Window()                   #
+        self.MainWindow4.setWindowFlag(Qt.FramelessWindowHint)
         self.ui4.setupUi(self.MainWindow4)            #
         ###############################################
 
@@ -52,6 +56,7 @@ class ToolKit():
         self.app5=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow5=QtWidgets.QMainWindow()      #
         self.ui5=Ui_MainWindow()                      #
+        self.MainWindow5.setWindowFlag(Qt.FramelessWindowHint)
         self.ui5.setupUi(self.MainWindow5)            #
         ###############################################
 
@@ -59,6 +64,7 @@ class ToolKit():
         self.app6=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow6=QtWidgets.QMainWindow()      #
         self.ui6=Ui_Port_Window()                     #
+        self.MainWindow6.setWindowFlag(Qt.FramelessWindowHint)
         self.ui6.setupUi(self.MainWindow6)            #
         ###############################################
 
@@ -66,6 +72,7 @@ class ToolKit():
         self.app7=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow7=QtWidgets.QMainWindow()      #
         self.ui7=Ui_Kayt_Ol()                         #
+        self.MainWindow7.setWindowFlag(Qt.FramelessWindowHint)
         self.ui7.setupUi(self.MainWindow7)            #
         ###############################################
         

@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1934</width>
+    <width>1784</width>
     <height>990</height>
    </rect>
   </property>
@@ -18,6 +18,9 @@
   </property>
   <property name="windowTitle">
    <string>Camera</string>
+  </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
   </property>
   <property name="styleSheet">
    <string notr="true">/* ---------------------------------------------------------------------------
@@ -304,6 +307,7 @@ QMenuBar {
   border: 1px solid #19232D;
   color: #E0E1E3;
   selection-background-color: #1A72BB;
+
 }
 
 QMenuBar:focus {
@@ -314,6 +318,7 @@ QMenuBar::item {
   background: transparent;
   padding: 4px;
   margin-right: 8px;
+
 }
 
 QMenuBar::item:selected {
@@ -330,8 +335,8 @@ QMenuBar::item:pressed {
   color: #E0E1E3;
   margin-bottom: 0px;
   padding-bottom: 0px;
-}
 
+}
 /* QMenu ------------------------------------------------------------------
 
 https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qmenu
@@ -2176,7 +2181,7 @@ PlotWidget {
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>10</y>
+      <y>30</y>
       <width>891</width>
       <height>181</height>
      </rect>
@@ -2277,7 +2282,7 @@ PlotWidget {
     <property name="geometry">
      <rect>
       <x>960</x>
-      <y>10</y>
+      <y>30</y>
       <width>911</width>
       <height>181</height>
      </rect>
@@ -2517,7 +2522,7 @@ PlotWidget {
     <property name="geometry">
      <rect>
       <x>50</x>
-      <y>180</y>
+      <y>200</y>
       <width>371</width>
       <height>731</height>
      </rect>
@@ -2795,7 +2800,7 @@ PlotWidget {
     <property name="geometry">
      <rect>
       <x>440</x>
-      <y>210</y>
+      <y>230</y>
       <width>1431</width>
       <height>701</height>
      </rect>
@@ -2872,12 +2877,13 @@ PlotWidget {
     </widget>
    </widget>
   </widget>
+  <widget class="QStatusBar" name="statusbar"/>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1934</width>
+     <width>1784</width>
      <height>43</height>
     </rect>
    </property>
@@ -2899,11 +2905,21 @@ PlotWidget {
     </property>
     <addaction name="actionHakk_nda"/>
    </widget>
+   <widget class="QMenu" name="menuDosya">
+    <property name="title">
+     <string>Dosya</string>
+    </property>
+    <property name="icon">
+     <iconset>
+      <normaloff>Icon/MainWindow/mmm.png</normaloff>Icon/MainWindow/mmm.png</iconset>
+    </property>
+    <addaction name="action_k"/>
+   </widget>
+   <addaction name="menuDosya"/>
    <addaction name="menuCamera"/>
    <addaction name="menuAdmin"/>
    <addaction name="menuHakk_nda"/>
   </widget>
-  <widget class="QStatusBar" name="statusbar"/>
   <action name="actionMain">
    <property name="text">
     <string>Main</string>
@@ -2922,6 +2938,15 @@ PlotWidget {
   <action name="actionHakk_nda">
    <property name="text">
     <string>Hakkında</string>
+   </property>
+  </action>
+  <action name="action_k">
+   <property name="icon">
+    <iconset>
+     <normaloff>Icon/MainWindow/close.png</normaloff>Icon/MainWindow/close.png</iconset>
+   </property>
+   <property name="text">
+    <string>Çıkış</string>
    </property>
   </action>
  </widget>

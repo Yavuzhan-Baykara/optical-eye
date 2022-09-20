@@ -758,6 +758,7 @@ ui2.Gezginler.clicked.connect(lambda: Tools.download(configs, helper.now.strftim
 ui2.Gezginler_2.clicked.connect(handle_upload)
 ui2.actionVeri_Taban_Penceresi.triggered.connect(Tools.QWindow_DataBase)
 ui2.actionAdmin_Paneli.triggered.connect(Tools.QWindow_Admin)
+ui2.action_k.triggered.connect(Close)
 
 def Pdf_Show():
     PDFThread().start()

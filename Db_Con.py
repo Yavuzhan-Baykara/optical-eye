@@ -26,6 +26,7 @@ app3=QtWidgets.QApplication(sys.argv)
 MainWindow3=QtWidgets.QMainWindow()
 ui3=Ui_Veri_Tabani_Window()
 ui3.setupUi(MainWindow3)
+MainWindow3.setWindowFlag(Qt.FramelessWindowHint)
 ####################################
 
 
@@ -34,6 +35,7 @@ from Goster import*
 app4=QtWidgets.QApplication(sys.argv)
 MainWindow4=QtWidgets.QMainWindow()
 ui4=Ui_Goster_Window()
+MainWindow4.setWindowFlag(Qt.FramelessWindowHint)
 ui4.setupUi(MainWindow4)
 ####################################
 onlyInt = QIntValidator()

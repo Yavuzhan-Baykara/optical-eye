@@ -11,8 +11,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Camera_Window(object):
     def setupUi(self, Camera_Window):
         Camera_Window.setObjectName("Camera_Window")
-        Camera_Window.resize(1934, 990)
+        Camera_Window.resize(1784, 990)
         Camera_Window.setMaximumSize(QtCore.QSize(2000, 1000))
+        Camera_Window.setLayoutDirection(QtCore.Qt.LeftToRight)
         Camera_Window.setStyleSheet("/* ---------------------------------------------------------------------------\n"
 "\n"
 "    WARNING! File created programmatically. All changes made in this file will be lost!\n"
@@ -297,6 +298,7 @@ class Ui_Camera_Window(object):
 "  border: 1px solid #19232D;\n"
 "  color: #E0E1E3;\n"
 "  selection-background-color: #1A72BB;\n"
+"\n"
 "}\n"
 "\n"
 "QMenuBar:focus {\n"
@@ -307,6 +309,7 @@ class Ui_Camera_Window(object):
 "  background: transparent;\n"
 "  padding: 4px;\n"
 "  margin-right: 8px;\n"
+"\n"
 "}\n"
 "\n"
 "QMenuBar::item:selected {\n"
@@ -323,8 +326,8 @@ class Ui_Camera_Window(object):
 "  color: #E0E1E3;\n"
 "  margin-bottom: 0px;\n"
 "  padding-bottom: 0px;\n"
-"}\n"
 "\n"
+"}\n"
 "/* QMenu ------------------------------------------------------------------\n"
 "\n"
 "https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qmenu\n"
@@ -2166,7 +2169,7 @@ class Ui_Camera_Window(object):
         self.centralwidget = QtWidgets.QWidget(Camera_Window)
         self.centralwidget.setObjectName("centralwidget")
         self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox.setGeometry(QtCore.QRect(50, 10, 891, 181))
+        self.groupBox.setGeometry(QtCore.QRect(50, 30, 891, 181))
         self.groupBox.setStyleSheet("")
         self.groupBox.setObjectName("groupBox")
         self.label_3 = QtWidgets.QLabel(self.groupBox)
@@ -2193,7 +2196,7 @@ class Ui_Camera_Window(object):
         self.Kayit_pushButton_2.setStyleSheet("")
         self.Kayit_pushButton_2.setObjectName("Kayit_pushButton_2")
         self.groupBox_2 = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_2.setGeometry(QtCore.QRect(960, 10, 911, 181))
+        self.groupBox_2.setGeometry(QtCore.QRect(960, 30, 911, 181))
         self.groupBox_2.setStyleSheet("")
         self.groupBox_2.setObjectName("groupBox_2")
         self.label_9 = QtWidgets.QLabel(self.groupBox_2)
@@ -2268,7 +2271,7 @@ class Ui_Camera_Window(object):
         self.label_Dok_No_2.setGeometry(QtCore.QRect(200, 50, 171, 41))
         self.label_Dok_No_2.setObjectName("label_Dok_No_2")
         self.groupBox_3 = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_3.setGeometry(QtCore.QRect(50, 180, 371, 731))
+        self.groupBox_3.setGeometry(QtCore.QRect(50, 200, 371, 731))
         self.groupBox_3.setStyleSheet("")
         self.groupBox_3.setObjectName("groupBox_3")
         self.horizontalSlider = QtWidgets.QSlider(self.groupBox_3)
@@ -2346,7 +2349,7 @@ class Ui_Camera_Window(object):
         self.label_2.setText("")
         self.label_2.setObjectName("label_2")
         self.groupBox_4 = QtWidgets.QGroupBox(self.centralwidget)
-        self.groupBox_4.setGeometry(QtCore.QRect(440, 210, 1431, 701))
+        self.groupBox_4.setGeometry(QtCore.QRect(440, 230, 1431, 701))
         self.groupBox_4.setStyleSheet("")
         self.groupBox_4.setObjectName("groupBox_4")
         self.Camera_1 = QtWidgets.QLabel(self.groupBox_4)
@@ -2370,8 +2373,11 @@ class Ui_Camera_Window(object):
         self.Camera_4.setText("")
         self.Camera_4.setObjectName("Camera_4")
         Camera_Window.setCentralWidget(self.centralwidget)
+        self.statusbar = QtWidgets.QStatusBar(Camera_Window)
+        self.statusbar.setObjectName("statusbar")
+        Camera_Window.setStatusBar(self.statusbar)
         self.menubar = QtWidgets.QMenuBar(Camera_Window)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1934, 43))
+        self.menubar.setGeometry(QtCore.QRect(0, 0, 1784, 43))
         self.menubar.setObjectName("menubar")
         self.menuCamera = QtWidgets.QMenu(self.menubar)
         self.menuCamera.setObjectName("menuCamera")
@@ -2379,10 +2385,12 @@ class Ui_Camera_Window(object):
         self.menuAdmin.setObjectName("menuAdmin")
         self.menuHakk_nda = QtWidgets.QMenu(self.menubar)
         self.menuHakk_nda.setObjectName("menuHakk_nda")
+        self.menuDosya = QtWidgets.QMenu(self.menubar)
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap("Icon/MainWindow/mmm.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.menuDosya.setIcon(icon)
+        self.menuDosya.setObjectName("menuDosya")
         Camera_Window.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(Camera_Window)
-        self.statusbar.setObjectName("statusbar")
-        Camera_Window.setStatusBar(self.statusbar)
         self.actionMain = QtWidgets.QAction(Camera_Window)
         self.actionMain.setObjectName("actionMain")
         self.actionVeri_Taban_Penceresi = QtWidgets.QAction(Camera_Window)
@@ -2391,9 +2399,16 @@ class Ui_Camera_Window(object):
         self.actionAdmin_Paneli.setObjectName("actionAdmin_Paneli")
         self.actionHakk_nda = QtWidgets.QAction(Camera_Window)
         self.actionHakk_nda.setObjectName("actionHakk_nda")
+        self.action_k = QtWidgets.QAction(Camera_Window)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap("Icon/MainWindow/close.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.action_k.setIcon(icon1)
+        self.action_k.setObjectName("action_k")
         self.menuCamera.addAction(self.actionVeri_Taban_Penceresi)
         self.menuAdmin.addAction(self.actionAdmin_Paneli)
         self.menuHakk_nda.addAction(self.actionHakk_nda)
+        self.menuDosya.addAction(self.action_k)
+        self.menubar.addAction(self.menuDosya.menuAction())
         self.menubar.addAction(self.menuCamera.menuAction())
         self.menubar.addAction(self.menuAdmin.menuAction())
         self.menubar.addAction(self.menuHakk_nda.menuAction())
@@ -2439,8 +2454,10 @@ class Ui_Camera_Window(object):
         self.menuCamera.setTitle(_translate("Camera_Window", "Veri Tabanı"))
         self.menuAdmin.setTitle(_translate("Camera_Window", "Admin Paneli"))
         self.menuHakk_nda.setTitle(_translate("Camera_Window", "Hakkında"))
+        self.menuDosya.setTitle(_translate("Camera_Window", "Dosya"))
         self.actionMain.setText(_translate("Camera_Window", "Main"))
         self.actionVeri_Taban_Penceresi.setText(_translate("Camera_Window", "Veri Tabanı"))
         self.actionAdmin_Paneli.setText(_translate("Camera_Window", "Admin Paneli"))
         self.actionHakk_nda.setText(_translate("Camera_Window", "Hakkında"))
+        self.action_k.setText(_translate("Camera_Window", "Çıkış"))
 
