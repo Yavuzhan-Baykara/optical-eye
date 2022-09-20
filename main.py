@@ -1,16 +1,10 @@
-
 import os
-import asyncio
-from pickle import FALSE
-import torch 
+from torch import tensor, device, cuda, cat
 import imutils
-import json
-import requests
 import cv2
-#GUI (arayüz) kütüphaneleri
-from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog, QMainWindow, QMessageBox, QTableWidgetItem,QDialog            
-from PyQt5 import QtCore # timer için
-from PyQt5.QtCore import pyqtSlot
+from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog, QMainWindow, QMessageBox, QTableWidgetItem,QDialog       
+from PyQt5 import QtCore # timer için   
+from PyQt5.QtCore import pyqtSlot  
 from PyQt5.QtGui import QImage,QPixmap
 from PyQt5.uic import loadUi
 from PyQt5.QtCore import QTimer, QTime, Qt
@@ -18,35 +12,26 @@ from Camera import*
 from Giris import*
 from Save_Result import Save_result
 from admin_page import * 
-from datetime import datetime
 from compare import *
 import pandas as pd
 import numpy as np
 from db_reader import *
 from Camera import*
 from pypylon import pylon
-from pypylon import genicam
-from datetime import datetime
 from imageio import get_writer
 from Db_Con import *
 import Db_Con as DC
-import random
-import copy
-#kamera yeni 
-from webcamReader import WebcamVideoStream
-#pylon kamera import
 from pylonReader import PylonVideoStream
 from Ysa import get_model
 from Helper import Helper
 from ToolKit import ToolKit
 from Cop import *
-import asyncio
+import asyncio 
 from ArduinoThread import *
 from Arduino_Con import *
 from Hata_Goster import *
 from PDF_Thread import *
 from Pdf_Lister_Thread import *
-import sys
 from post_thread import *
 import io
 import time
@@ -118,11 +103,11 @@ def Basler_Cameras():
     prev_frame_time = 0
     # used to record the time at which we processed current frame
     new_frame_time = 0
-    tensor = torch.tensor([1.0,2.0], device="cuda")
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    print("CUDA GPU:", torch.cuda.is_available())
-    if torch.cuda.is_available():
-        tensor = tensor.to(device)
+    tensor_temp = tensor([1.0,2.0], device="cuda")
+    device_temp = device('cuda' if cuda.is_available() else 'cpu')
+    print("CUDA GPU:", cuda.is_available())
+    if cuda.is_available():
+        tensor_temp = tensor_temp.to(device_temp)
 
     myTime = 0
     while 1:
@@ -333,8 +318,8 @@ def Basler_Cameras():
             frame_2 = imutils.resize(frame2, width=1400)
             
             # Görüntünün cuda ile tensore dönüşümü
-            tensor1 = torch.tensor(frame_1, device="cuda")
-            tensor2 = torch.tensor(frame_2, device="cuda")
+            tensor1 = tensor(frame_1, device="cuda")
+            tensor2 = tensor(frame_2, device="cuda")
 
             # Fps ölçümü
             new_frame_time = time.time()
@@ -345,7 +330,7 @@ def Basler_Cameras():
             myTime+=1
             
             # Görüntülerin Birleştirilmesi
-            tensor = torch.cat([tensor1, tensor2], dim=0)
+            tensor_temp = cat([tensor1, tensor2], dim=0)
             # Tensorlerin CPU'ya atanması
             results = model(tensor.cpu().numpy())
             results.display(render=True)
@@ -752,7 +737,6 @@ def handle_upload():
             Tools.handle_change(configs[1])
         if ui2.radioButton_Camera_II.isChecked():
             Tools.handle_change(configs[2])
-
 
 ui2.Gezginler.clicked.connect(lambda: Tools.download(configs, helper.now.strftime('%H.%M.%S')))
 ui2.Gezginler_2.clicked.connect(handle_upload)
