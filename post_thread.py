@@ -1,4 +1,4 @@
-from threading import Thread, Timer
+from threading import Thread
 import json
 from requests import post
 from time import sleep
