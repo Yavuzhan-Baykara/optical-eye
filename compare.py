@@ -12,17 +12,7 @@ def compare_images(img1, img2):
     hash0 = imagehash.dhash(img1) 
     hash1 = imagehash.dhash(img2)
     cutoff = 20  # maximum bits that could be different between the hashes. 
-    
     if hash0 - hash1 < cutoff:
         return True
     else:
         return False
-
-
-# img1 = cv2.imread(r'compare photos\l1.png')
-# img2 = cv2.imread(r'compare photos\z1.png')
-
-# if compare_images(img1, img2):
-#     print('same')
-# else : 
-#     print('different')

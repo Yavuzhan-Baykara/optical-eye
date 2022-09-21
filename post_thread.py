@@ -1,7 +1,6 @@
-from threading import Thread, Timer
-import json
-import requests
-import time
+from threading import Thread
+from requests import post
+from time import sleep
 
 class post_thread():
     def __init__(self):
@@ -17,10 +16,10 @@ class post_thread():
     def update_post_thread(self):
   
         while True:
-            time.sleep(0.0001)
+            sleep(0.0001)
             if self.post_queue:
                 task=self.post_queue.pop(0)
-                response = requests.post(task['url'], headers=task['headers'], data=task['data'], files=task['files'])
+                response = post(task['url'], headers=task['headers'], data=task['data'], files=task['files'])
                 print("Status Code", response.status_code)
                 print("JSON Response ", response.json())
                 self.post_queue.clear()

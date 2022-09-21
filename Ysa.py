@@ -1,4 +1,3 @@
-
 from torch import hub
 
 def get_model(Tools):
