@@ -1,12 +1,10 @@
 import sys
-from time import *
 from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog, QMainWindow, QMessageBox, QTableWidgetItem             
 from PyQt5 import QtCore # timer için
 from ArduinoThread import *
 from Hata_Goster import *
 
 class Arduino_Toolkits():
-
     def __init__(self):
         self.MainWindow_Error()
     def MainWindow_Error(self):
@@ -14,10 +12,8 @@ class Arduino_Toolkits():
         self.MainWindow = QtWidgets.QMainWindow()
         self.ui = Ui_Hata_Goster_Window()
         self.ui.setupUi(self.MainWindow)
-    
     def FeedBack_MainWindow_Error(self):
         return self.app, self.MainWindow, self.ui
-
     def port_ac(self,Tools):
         port,baud=Tools.feedback_Import_Serial_Port()
         self.port=str(port)
@@ -32,7 +28,6 @@ class Arduino_Toolkits():
             # timer1.timeout.connect(self.sensoroku)
         else:
             print(" Port açılamadı !!!")
-        
     def port_kapat(self):
         try:
             if sa.ser.is_open:
@@ -42,14 +37,8 @@ class Arduino_Toolkits():
                 sa.stop()
         except:
             print("Beklenmeyen Bir Hata Port Kapatırken Bir Sorun Oluştu...")
-
-    # def sensoroku(self):
-    #     print(sa.src)
-
     def Feedback_src(self):
         return sa.src
-
-
     def sari_led_ac(self):
         try:
             sa.ser.write(b'1')
@@ -66,11 +55,3 @@ class Arduino_Toolkits():
         except:
             print("Beklenmeyen Bir Hata Lambaların Kapatılması")
         self.MainWindow.close()
-        
-            
-
-    # ui.portac.clicked.connect(port_ac)
-    # ui.sari_isik_pushButton.clicked.connect(sari_led_ac)
-    # ui.Kirmizi_isik_pushButton.clicked.connect(kirmizi_led_ac)
-    # ui.Tumunu_Kapat_pushButton.clicked.connect(hepsini_kapat)
-    # ui.portkapat.clicked.connect(port_kapat)

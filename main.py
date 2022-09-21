@@ -19,7 +19,6 @@ from db_reader import *
 from Camera import*
 from pypylon import pylon
 from imageio import get_writer
-from Db_Con import *
 import Db_Con as DC
 from pylonReader import PylonVideoStream
 from Ysa import get_model
