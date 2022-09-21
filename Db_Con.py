@@ -220,10 +220,12 @@ class Veri_Tabani_Window():
         return path
 
     def Last_Cameras_Info_Add(Camera_Height, Camera_Width, Camera_Impact_Rate, Camera_Serial, Camera_Exposure_Time, Camera_Cut_Off, Camera_Type):
-        print(str(Camera_Serial[0]))
+        
         Camera_Serials=Camera_Serial[0]+','+Camera_Serial[1]+','+Camera_Serial[2]+','+Camera_Serial[3]
         Cameras_Type=Camera_Type[0]+','+Camera_Type[1]+','+Camera_Type[2]+','+Camera_Type[3]
         Camera_Exposure_Times=Camera_Exposure_Time[0]+','+Camera_Exposure_Time[1]+','+Camera_Exposure_Time[2]+','+Camera_Exposure_Time[3]
+        Camera_Camera_Cut_Off=Camera_Cut_Off[0]+','+Camera_Cut_Off[1]+','+Camera_Cut_Off[2]+','+Camera_Cut_Off[3]
+        
         curs.execute("""
         INSERT INTO Cameras_Inf
         (Camera_Height, Camera_Width, Camera_İmpact_Rate, Camera_Serial, Camera_Exposure_Time, Camera_Cut_Off, Camera_Type)

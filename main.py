@@ -373,12 +373,17 @@ def Basler_Cameras():
                         y=abs(y2-y1)
                         xy=x*y
                         
-                        
+                        cutoff=20
                         if str(df.iloc[:]['name'][detect])=='Delik' or str(df.iloc[:]['name'][detect])=='Leke': # Hatanın Delik veya Leke olması durumunda
                             cnt=cnt+1
                         if cnt>=1: 
                             cnt=0
-                            if not helper.check_similarity(crop):
+                            if yc<=175:
+                                cutoff=Tools.cutoffs[0]
+                            elif yc>175 :
+                                cutoff= Tools.cutoffs[1]
+                                
+                            if not helper.check_similarity(crop,cutoff):
                                 MainWindow6.show()
                                 crop=resize_cv2(crop, (320,320),interpolation=INTER_CUBIC)
                                 image = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()

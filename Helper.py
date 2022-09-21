@@ -44,14 +44,14 @@ class Helper():
             else:
                 continue
             
-    def check_similarity(self, img1):
+    def check_similarity(self, img1,cutoff):
         
        
         result = False
         # if len(self.last_images) >7:
         #     del self.last_images[:4]
         for image in self.last_images:
-            if compare_images(image, img1):
+            if compare_images(image, img1,cutoff):
                 result = True
         return result
             

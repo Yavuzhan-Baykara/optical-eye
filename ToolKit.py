@@ -111,6 +111,10 @@ class ToolKit():
             str(self._Camera_Type[0]),str(self._Camera_Type[1]),
             str(self._Camera_Type[2]), str(self._Camera_Type[3])
             ]
+        self.cutoffs = [
+            str(self._Camera_Cut_Off[0]), str(self._Camera_Cut_Off[1]),
+            str(self._Camera_Cut_Off[2]), str(self._Camera_Cut_Off[3])
+        ]
 #############################################################################
 
     
