@@ -1,29 +1,20 @@
-import sqlite3
-from turtle import width
+from sqlite3 import connect, Error
 global curs
 global conn
-import time
 import sys
 import os
-import cv2
+from cv2 import imread, resize, INTER_CUBIC
 
-from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QLineEdit, QFileDialog, QMainWindow, QMessageBox, QTableWidgetItem, QDialog, QPushButton
-from PyQt5 import QtCore # timer için
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.QtGui import QImage,QPixmap
-
-from PyQt5 import QtGui
-from PyQt5 import QtCore
-from PyQt5.QtCore import *
-from PyQt5.QtWidgets import *
-from PyQt5.QtGui import *
+from PyQt5.QtWidgets import QApplication, QMainWindow, QTableWidgetItem,  QPushButton, QAbstractItemView
+from PyQt5.QtGui import QImage,QPixmap, QIntValidator
+from PyQt5.QtCore import Qt
 
 
 
 from Veri_Tabani import*
 ############Veri Tabani#############
-app3=QtWidgets.QApplication(sys.argv)
-MainWindow3=QtWidgets.QMainWindow()
+app3=QApplication(sys.argv)
+MainWindow3=QMainWindow()
 ui3=Ui_Veri_Tabani_Window()
 ui3.setupUi(MainWindow3)
 MainWindow3.setWindowFlag(Qt.FramelessWindowHint)
@@ -32,8 +23,8 @@ MainWindow3.setWindowFlag(Qt.FramelessWindowHint)
 
 from Goster import*
 ############Veri Tabani#############
-app4=QtWidgets.QApplication(sys.argv)
-MainWindow4=QtWidgets.QMainWindow()
+app4=QApplication(sys.argv)
+MainWindow4=QMainWindow()
 ui4=Ui_Goster_Window()
 MainWindow4.setWindowFlag(Qt.FramelessWindowHint)
 ui4.setupUi(MainWindow4)
@@ -45,7 +36,7 @@ ui3.Gunclle_PushButton.setDisabled(True)
 ui3.Delete_PushButton.setDisabled(True)
 
 
-conn=sqlite3.connect('./Database/Tespit_Edilen_Veriler.db',timeout=1, check_same_thread=False)
+conn=connect('./Database/Tespit_Edilen_Veriler.db',timeout=1, check_same_thread=False)
 curs=conn.cursor()
 sorguVeri=("""CREATE TABLE IF NOT EXISTS Hata_Sonuclari(
                  Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -112,12 +103,12 @@ class Veri_Tabani_Window():
                     ui4.Metre_Label.setText(str(row[4]))
                     ui4.Sinif_Label.setText(str(row[10]))
                     ui4.Isim_Label.setText(str(row[11]))
-                    img_Goster=cv2.imread(row[11])
-                    img_Goster=cv2.resize(img_Goster, (320,320),interpolation=cv2.INTER_CUBIC)
-                    image = QtGui.QImage(img_Goster.data, img_Goster.shape[1], img_Goster.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
+                    img_Goster=imread(row[11])
+                    img_Goster=resize(img_Goster, (320,320),interpolation=INTER_CUBIC)
+                    image = QImage(img_Goster.data, img_Goster.shape[1], img_Goster.shape[0], QImage.Format_RGB888).rgbSwapped()
                     
                     ### Doldurma Göster Window
-                    ui4.Goster_Label.setPixmap(QtGui.QPixmap.fromImage(image))
+                    ui4.Goster_Label.setPixmap(QPixmap.fromImage(image))
                     
                     return str(row[11])
                 except Exception as e:
@@ -144,7 +135,7 @@ class Veri_Tabani_Window():
     def Button_Show(i, row):
         table=ui3.Veri_Tabani_Widget
     
-        button = QtWidgets.QPushButton('Goster', MainWindow3)
+        button = QPushButton('Goster', MainWindow3)
         button.clicked.connect(lambda _, x=i: Veri_Tabani_Window.Goster(x))
         
         table.setCellWidget(row, 0, button)
@@ -251,7 +242,7 @@ class Veri_Tabani_Window():
         try:
             curs.execute("INSERT INTO Kullanicilar (Kullanici_adi, Sifre) VALUES (?,?)", (Kullanici_adi, Sifre))
             conn.commit()
-        except sqlite3.Error as er:
+        except Error as er:
             print(er)
 
     def Clear():
@@ -278,7 +269,7 @@ class Veri_Tabani_Window():
         try:
             curs.execute(""" Update Hata_Sonuclari SET Dok_No=?, Kalite_No=? WHERE Id=?""", (str(Dok_No),str(Kalite_No), str(Id),))
             conn.commit()
-        except sqlite3.Error as error:
+        except Error as error:
             ui3.Gunclle_PushButton.setDisabled(True)
             ui3.Delete_PushButton.setDisabled(True)
             print("Failed to update sqlite table: ",error)
@@ -295,7 +286,7 @@ class Veri_Tabani_Window():
             sql_delete_query = """DELETE from Hata_Sonuclari where id = ?"""
             curs.execute(sql_delete_query, (Id,))
             conn.commit()
-        except sqlite3.Error as error:
+        except Error as error:
             ui3.Gunclle_PushButton.setDisabled(True)
             ui3.Delete_PushButton.setDisabled(True)
             print("Failed to update sqlite table: ",error)

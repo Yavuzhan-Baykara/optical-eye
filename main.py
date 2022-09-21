@@ -16,7 +16,7 @@ from compare import *
 import pandas as pd
 import numpy as np
 from db_reader import *
-from Camera import*
+from Camera import *
 from pypylon import pylon
 from imageio import get_writer
 import Db_Con as DC

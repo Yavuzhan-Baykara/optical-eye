@@ -5,13 +5,11 @@ Created on Thu Jul 21 08:58:17 2022
 @author: kaans
 """
 
-import cv2 
 from datetime import datetime
-from PyQt5.QtCore import QTimer, QTime,  QThread, pyqtSignal
+from PyQt5.QtCore import  QTime
 from imageio import get_writer
-import time
+from time import sleep 
 from compare import * 
-
 from threading import Thread, Timer
 from Db_Con import *
 
@@ -37,7 +35,7 @@ class Helper():
     def update_db(self):
        
         while 1:
-            time.sleep(0.0001)
+            sleep(0.0001)
             if len(self.db_queue) != 0:
                 print("sa")
                 task=self.db_queue.pop(0)
@@ -108,21 +106,6 @@ class Helper():
         
         if src==4:
             return  img_save_cam_IV
-        
-       
-    #WebCam sayısını bulmaya yarayan fonksiyon
-    def get_cams(self):
-        index = 0
-        arr = []
-        while True:
-            cap = cv2.VideoCapture(index)
-            if not cap.read()[0]:
-                break
-            else:
-                arr.append(index)
-            cap.release()
-            index += 1
-        return arr
     
     def video_path_definer(self):
         ##Zaman ve path uzantıları   

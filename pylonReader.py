@@ -1,14 +1,7 @@
-
-import time
-import torch
 from pypylon import pylon
-import matplotlib.pyplot as plt
-import imutils
-import PIL
-import torchvision.transforms as T
 from threading import Thread
-import cv2
 from Db_Con import *
+
 class Active_Camera:
     def __init__(self, cam, converter, Tools, MinCamerasSize):
         

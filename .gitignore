@@ -155,3 +155,5 @@ cython_debug/
 /models/*
 
 /compare photos/*
+
+/yolov5

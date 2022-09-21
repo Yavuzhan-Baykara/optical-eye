@@ -1,7 +1,5 @@
-from array import array
 from typing import Any
-from PyQt5 import *
-import re
+
 
 class GirisVKayit():
     def __init__(self, app1, ui1, ui2, ui8, MainWindow1, MainWindow2, MainWindow8, users, db):

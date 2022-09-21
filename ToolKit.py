@@ -1,18 +1,14 @@
 from os import mkdir
 import sys
-
-from PyQt5.QtCore import pyqtSlot
-from PyQt5.uic import loadUi
-from cv2 import CAP_AVFOUNDATION
-from torch import true_divide
-from Camera import*
-from Giris import*
+from PyQt5.QtCore import Qt
+from Camera import *
+from Giris import *
 from Db_Con import *
 import Db_Con as DC
 from admin_page import * 
-from Port import*
-from Kayit_Ol import*
-import json
+from Port import *
+from Kayit_Ol import *
+from json import loads, dumps
 
 
 
@@ -397,7 +393,7 @@ class ToolKit():
 
     def download(self, configs, time):
         with open(f'./configs/{time}.txt', 'w') as convert_file:
-            convert_file.write(json.dumps(configs))
+            convert_file.write(dumps(configs))
             Veri_Tabani_Window.set_last_path(f'./configs/{time}.txt')
 
 
@@ -431,7 +427,7 @@ class ToolKit():
             if self.filepaths[-1].split('/')[-1].split('.')[-1]=="txt":
                 with open(str(self.filepaths[-1])) as f:
                     data = f.read()
-                self.js = json.loads(data)
+                self.js = loads(data)
                 Veri_Tabani_Window.set_last_path(str(self.filepaths[-1]))
                 return True
             else:
@@ -444,7 +440,7 @@ class ToolKit():
         config_path = Veri_Tabani_Window.get_last_path()
         with open(config_path) as f:
             data = f.read()
-            self.js = json.loads(data)
+            self.js = loads(data)
 
     def Port_Op(self):
         self.Trigg_Port_Button=True
