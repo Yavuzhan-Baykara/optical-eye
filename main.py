@@ -1,3 +1,4 @@
+# Gerekli kütüphanelerin immport edilmesi
 from compare import *
 from db_reader import *
 from Cop import *
@@ -13,7 +14,6 @@ from Giris import *
 from admin_page import * 
 from Camera import*
 from Yukleniyor import *
-
 import sys
 import time
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
@@ -23,47 +23,51 @@ from PyQt5.QtWidgets import (
     qApp
 )
 
-
+# Yükleniyor ekranı için worker objesinin yaratılması
 class Worker(QObject):
-    finished = pyqtSignal()
-    progress = pyqtSignal(int)
+    finished = pyqtSignal() # Yükleme işleminin bittiğine dair sinyal
+    progress = pyqtSignal(int) # Yükleme işleminin ilerlemesi için gerekli olan sinyal
     
 
-    def run(self):
+    def run(self): # Worker sınıfının update fonskiyonu 
         
         while 1: 
             time.sleep(0.01)
 
+# Yükleniyor ekranı
 class MainWindow(QMainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
-        self.ui_ = Ui_LoadingScreen()
-        self.setWindowFlag(Qt.FramelessWindowHint)
+        self.ui_ = Ui_LoadingScreen() # Yükleniyor ekranının alınması
+        self.setWindowFlag(Qt.FramelessWindowHint) # pencere çubuğunun kaldırılması
         self.ui_.setupUi(self)
         self.show()
         self.execute()
 
-    def execute(self):
+    def execute(self): # Yükleme işleminin başlaması
         self.update_progress(0)
-        self.thread = QThread()
+        self.thread = QThread() 
         self.worker = Worker()
-        self.worker.moveToThread(self.thread)
+        self.worker.moveToThread(self.thread) # Workerın ana thread içinde çalıştırılması
 
+        # sinyallerin fonksiyonlara bağlanması
         self.thread.started.connect(self.worker.run)
         self.worker.finished.connect(self.thread.quit)
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.progress.connect(self.update_progress)
 
-        self.thread.start()
-        main(self.worker, self)
+        
+        self.thread.start() # threadin başlaması
+        main(self.worker, self) # mainin çalıştırılması
         
         
-        
-    def update_progress(self, progress):
+    # Yükleniyor barının güncellenmesi
+    def update_progress(self, progress): 
         self.ui_.progressBar.setValue(progress)
         qApp.processEvents()
 
+# worker ve window objesi geçilen main fonksiyonu
 def main(worker, window):
 
     import Db_Con as DC
@@ -71,7 +75,7 @@ def main(worker, window):
     from Ysa import get_model
     from Helper import Helper
     from ToolKit import ToolKit
-    worker.progress.emit(25)
+    worker.progress.emit(25) # Yükleniyor barının %25 e ayarlanması
     time.sleep(1)
     from os import _exit, mkdir, scandir
     from torch import tensor, device, cuda, cat
@@ -80,15 +84,16 @@ def main(worker, window):
     from cv2 import resize as resize_cv2
     from PyQt5.QtGui import QImage,QPixmap
     from PyQt5.QtCore import QTimer, QTime
-    worker.progress.emit(50)
+    worker.progress.emit(50) # Yükleniyor barının %50 ye ayarlanması
     time.sleep(1)
     from io import BytesIO
     
     from pandas import DataFrame
     from pypylon import pylon
-    worker.progress.emit(75)
+    worker.progress.emit(75) # Yükleniyor barının %75 e ayarlanması
     time.sleep(1)
 
+    # kameraların zoom ayarları için config mapinin oluşturulması
     global configs
     configs =  {
         1: {
@@ -112,23 +117,25 @@ def main(worker, window):
             'value5': [0,0]
         },
     }
+
+    # aç butonuna basınca çalışan fonksiyon
     def displayImage():
             MainWindow7.show()
             ui2.logic_All = 1
-            ui2.Ac_pushButton.setDisabled(True)
-            ui2.Off_pushButton.setDisabled(False)
+            ui2.Ac_pushButton.setDisabled(True) # aç butonunun disable yapılması 
+            ui2.Off_pushButton.setDisabled(False) # kapat butonunun etkinleştirilmesi
                 
     def Soft_Serial_OPEN():
         Tools.Port_Op()
         if Tools.Trigg_Port_Button==True:
             MainWindow7.close()
-            Basler_Cameras()
+            Basler_Cameras() # kameraların açılması
             
     def Soft_NSerial_OPEN():
         Tools.Port_Close()
         if Tools.Non_Trigg_Port_Button==True:
             MainWindow7.close()
-            Basler_Cameras()
+            Basler_Cameras() # kameraların açılması
             
     def Basler_Cameras():
         try:
@@ -136,33 +143,43 @@ def main(worker, window):
         except:
             time.sleep(0.1)
             ui2.statusbar.showMessage(" "*1 + " Port açılamadı !!!", 1500)
-        cnt=0
+        
+        cnt=0 # hata sayısı sayacı 
+
+        # kameraların saptanması
         tlFactory = pylon.TlFactory.GetInstance()
         devices = tlFactory.EnumerateDevices()
         cameras = pylon.InstantCameraArray(min(len(devices), 2))
-        
         for i, cam in enumerate(cameras):
             cam.Attach(tlFactory.CreateDevice(devices[i]))
             print("Using device ", cam.GetDeviceInfo().GetSerialNumber())
 
+        # kameralar threadi için objenin oluşturulması
         vs_pylon = PylonVideoStream(cameras, Tools).start()
+
+        # fps için gerekli değişkenler
         prev_frame_time = 0
         new_frame_time = 0
+
+        # tensorun oluşturulması
         tensor_temp = tensor([1.0,2.0], device="cuda")
         device_temp = device('cuda' if cuda.is_available() else 'cpu')
         print("CUDA GPU:", cuda.is_available())
         
-        if cuda.is_available():
+        if cuda.is_available(): # Cuda aktif ise
             tensor_temp = tensor_temp.to(device_temp)
         myTime = 0
         while 1:
+            # dok no ve kalite no nun alınması
             Dok_no= ui3.Dok_No_LineEdit.text()
-            Kalite_no= ui3.Kalite_No_LineEdit.text()
+            Kalite_no= ui3.Kalite_No_LineEdit.text() 
             if not ui3.Kalite_No_LineEdit.text():
                 Kalite_no=0
             if not ui3.Dok_No_LineEdit.text():
                 Dok_no= 0
-            if vs_pylon.cameras.IsCameraDeviceRemoved() :
+
+            if vs_pylon.cameras.IsCameraDeviceRemoved() : # kamera çıkartılırsa
+                # kamerların kapatalıp pixmaplerin ayarlanması
                 vs_pylon.cameras.Close()
                 pixmap = QPixmap('./Icon/Label Img/CameraOFF.PNG')
                 ui2.Camera_1.setPixmap(pixmap) 
@@ -170,57 +187,82 @@ def main(worker, window):
                 ui2.Camera_3.setPixmap(pixmap) 
                 ui2.Camera_4.setPixmap(pixmap) 
                 return Basler_Cameras()
-            frames = vs_pylon.read()
-            if ui2.logic_All == 0:
-                vs_pylon.stop()
+
+            frames = vs_pylon.read() # kameradan gelen framelerin alınması
+            
+            if ui2.logic_All == 0: # UI logic kapalı durumda ise
+                # Kameraları kapat
+                vs_pylon.stop() 
                 for cam in vs_pylon.Active_cameras:
                     cam.grabResult.Release()
                 cameras.StopGrabbing()
                 break
-            if len(frames) == 0:
+
+            if len(frames) == 0: # hiç kamera bağlı değil ise
                 print('No camera is detected!')
                 ui2.Off_pushButton.setDisabled(True)
                 vs_pylon.stop()
                 ui2.Ac_pushButton.setDisabled(False)
                 return 
-            if len(frames) == 1:
+
+            if len(frames) == 1: # bir kamera var ise
+                # görüntü ve kamera serilinin alınması
                 model_name = frames[0][1]
                 model_image =frames[0][0]
                 height, width, channel = model_image.shape
+
+                # zoom değerlerinin alınması
                 zoom_value_5 = Tools.zoom_value_5()
                 zoom_value_3 = Tools.zoom_value_3()
                 zoom_value_1 = Tools.zoom_value_1()
-                    
-                if ui2.radioButton_Camera_I.isChecked()==True and model_name== Tools.Camera_Serial[0]:
+
+
+                if ui2.radioButton_Camera_I.isChecked()==True and model_name== Tools.Camera_Serial[0]: # kamera 1 radio butonu seçilitse ve serial numarası doğruysa
+                    # zoom işlemi
                     model_image = model_image[zoom_value_5[1]+ zoom_value_3: -zoom_value_5[1]+height  + zoom_value_3, zoom_value_5[0]+zoom_value_1 : width - (zoom_value_5[0])+ zoom_value_1 ]
             
 
-                if ui2.radioButton_Camera_II.isChecked()==True and model_name==Tools.Camera_Serial[1]:
+                if ui2.radioButton_Camera_II.isChecked()==True and model_name==Tools.Camera_Serial[1]: # kamera 2 radio butonu seçilitse ve serial numarası doğruysa
+                    # zoom işlemi
                     model_image = model_image[zoom_value_5[1]+ zoom_value_3: -zoom_value_5[1]+height  + zoom_value_3, zoom_value_5[0]+zoom_value_1 : width - (zoom_value_5[0])+ zoom_value_1 ]
-
+                
+                # fotoğrafın 1400px genişliğe düüşürülmesi    
                 single_frame = resize(model_image,  width=1400)
                 single_frame2  = resize(model_image, width=1400)
+                
+                # fps 
                 new_frame_time = time.time()
                 fps = 1/(new_frame_time-prev_frame_time)
                 prev_frame_time = new_frame_time
                 fps = int(fps)
                 fps = str(fps)
+                
+                # modele görüntünün sokulması
                 results = model(single_frame)         
                 results.display(render=True) 
+
                 height, width, channel=results.imgs[0].shape
                 step=channel*width
+
+                # görüntü için gerekli alt ve üst sınırların belirlenmesi
                 out= cvtColor(results.imgs[0],COLOR_BGR2RGB)
                 outh1 = int((64*height)/256)
                 outh2 = int((192*height)/256)   
                 out[outh1,:] = 0           
-                out[outh2,:] = 0           
+                out[outh2,:] = 0
+
+                # model sonrası bulunun hatalarla ilgili dataframe in alınması
                 df=results.pandas().xyxy[0]
                 df=DataFrame(df)
+
                 myTime+=1
                 
-                if len(df)!=0:
-                    for detect in range(len(df.iloc[:]['name'])):
+                if len(df)!=0: # hata var ise
+                    for detect in range(len(df.iloc[:]['name'])): # tüm hataların döndürülmesi
+                        # resmi kaydetmek için gerekli pathin oluşturulması
                         Save_image="./Database"+"/"+helper.Db_path_time(choice="Now-Day")+"/"+"Cam"+"/"+"images"+"/"+df.iloc[:]['name'][detect]+"-"+helper.Db_path_time(choice="Now-Time")+"-"+".jpg"
+                        
+                        # hata koordinatları
                         x1=int(df.iloc[:]['xmin'][detect])
                         x2=int(df.iloc[:]['xmax'][detect])
                         y1=int(df.iloc[:]['ymin'][detect])
@@ -228,13 +270,17 @@ def main(worker, window):
                         classId = df.iloc[:]['class'][detect]
                         cx = (x1 + x2)/ 2
                         cy = (y1 + y2)/ 2
+                        
+                        # hata sınırlarının güncellenmesi
                         if(x1<=0):x1=0
                         if(y1<=0):y1=0 
                         if (x1<=6):x1=6
                         if(y1<=6):y1=6
-                        yc = (y1+y2)/2
-                        if yc>outh1 and  yc<outh2:
-                            crop=single_frame2[y1-5:y2+5,x1-5:x2+5]
+
+                        yc = (y1+y2)/2 # hata merkezi
+
+                        if yc>outh1 and  yc<outh2: # hata belirttiğimiz sınırların içinde kalıyorsa
+                            crop=single_frame2[y1-5:y2+5,x1-5:x2+5] # hatanın kırpılması
                                         
                             if Tools.Trigg_Port_Button==True:
                                     Arduino_Tools.kirmizi_led_ac()
@@ -245,16 +291,19 @@ def main(worker, window):
                                         src=0
                             if Tools.Trigg_Port_Button==False:
                                     src=0
+
+                            # hata uzunluk genişlik ve alanının hesaplanması        
                             x=abs(x2-x1)
                             y=abs(y2-y1)
                             xy=x*y
                             
-                            if str(df.iloc[:]['name'][detect])=='Delik' or str(df.iloc[:]['name'][detect])=='Leke':
-                                cnt=cnt+1
+                            if str(df.iloc[:]['name'][detect])=='Delik' or str(df.iloc[:]['name'][detect])=='Leke': # hata leke veya delık ise
+                                cnt=cnt+1 # hata sayısnın artırılması
                             if cnt>=1: 
                                 cnt=0
-                                if not helper.check_similarity(crop):
-                                    MainWindow6.show()
+                                if not helper.check_similarity(crop): # hata onceki hatalarla aynı değilse
+                                    # hatanın gosterileceği pencerenin açılması
+                                    MainWindow6.show() 
                                     crop=resize_cv2(crop, (320,320),interpolation=INTER_CUBIC)
                                     image = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
                                     ui6.Goster_Label.setPixmap(QtGui.QPixmap.fromImage(image))
@@ -263,12 +312,14 @@ def main(worker, window):
                                     ui6.Eni_Label.setText(str(x))
                                     ui6.boyu_Label.setText(str(y))
                                     ui6.Alan_Label.setText(str(xy))
+
+                                    # hatanın post request ile veritabanına gönderilmesi
                                     postOut = cvtColor(crop, COLOR_BGR2RGB)
                                     img = Image.fromarray(postOut, "RGB")
                                     img_byte_arr = BytesIO()
                                     img.save(img_byte_arr, format='PNG')
                                     img_byte_arr = img_byte_arr.getvalue()
-                                    url= "https://menderes-mobile-app.herokuapp.com/errors/add"
+                                    url= "https://menderes-mobile-app.herokuapp.com/errors/add" # backend urlsi
                                     headers = {'accept': 'application/json',
                                                                     "Authorization":'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MmZiMzVjYjY5YThiZDk5MTUwNjhiYTMiLCJpYXQiOjE2NjA4MzM3NTczNTIsImV4cCI6MTY2MDgzMzg0Mzc1Mn0.tfKjNRPlo7IvDN6Cp2K81Z0wfreNQkJtDsYZAxl4w7T3j4m4fcgVoephYxaUljoGKxli6OsnBvnf7BVoV994Mm_b-nvfp9srm-rqQdCOfsB_GI65GyHwpsnVbLo9uODhcbtcKXWE_x_rBBGphHcU12XXxsHrRTGUkhG5btn7f3JBt9uRrkXiuu_0G9cdFRrha8RwYNs6ZvJo3AuUit1iWGVyWSw7mI92wTBZJWt629ozc1Dd7fMR7j6z_twxLjT9mEKFAd7k4wJUTl4s3upKVZNfTOQP_DBJ9ci_FgpJYwxZqMwQbNF8ltTtyC3TFTZTqczL1dIuFaV44t7eu8FM6OcbklY3dQ-1aYtMMDBWmxUA3zDr7Z50f-ZC5n3YZJlE9hN8d7mcAqN47nbTBzkuofp2kSmhTPWwKce3LJWx9B8ZqWssTSKZegFh_Ldn-xrD8mB7IIDM48D-JgHvLTelIxnGkUDKbg8vL26VR-aJmceL89EYA2K-Kal2FBF18qN7I2icGcMp9k3CDZEeBaTqmVGkqmWGLLKCnxeaN2HVDSdD5bGoPFBVCL6TDgf53HYNRU7WafpL6Ln8MnIdr2n9gm6hKEtTUGam_MrEH54yHKTLi4XcxQbYOV4uavOXA0ICck_WfHbIRo6jLBf-eVmoQP5uHzK4mwhRz3C7NjfZOws'}
                                     data = {
@@ -282,14 +333,18 @@ def main(worker, window):
                                             ('photo', ('arda.jpg', img_byte_arr, 'image  /jpg')),
                                             
                                     ]
+                                    # post requestin threade gönderilmesi
                                     post_reader.append_post_thread(headers, files=multiple_files, data=data, url=url)
-                                    if len(helper.last_images)>=5:
-                                        del helper.last_images[0]
-                                        helper.last_images.append(crop)
-                                    else:
-                                        helper.last_images.append(crop)
-                                    imwrite(Save_image, single_frame2)
+
+                                    if len(helper.last_images)>=5: # last images dizisinin uzunluğu 5 den büyükse
+                                        del helper.last_images[0]  # ilk elemanı sil
+                                        helper.last_images.append(crop) # bu hatayı ekle
+                                    else: 
+                                        helper.last_images.append(crop) # bu hatayı ekle
+                                    imwrite(Save_image, single_frame2) # resmin kaydedilmesi
                                     waitKey(1)
+
+                                    # veri tabanına yüklemek için threade gönderilmesi
                                     helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
                                         
                                 if Tools.Trigg_Port_Button==True:
@@ -300,16 +355,19 @@ def main(worker, window):
                                         ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                         src=0
         
-                            if not str(df.iloc[:]['name'][detect])=='Delik' or not str(df.iloc[:]['name'][detect])=='Leke':
-                                if not helper.check_similarity(crop):
-                                    if len(helper.last_images)>=5:
-                                        del helper.last_images[0]
-                                        helper.last_images.append(crop)
+                            if not str(df.iloc[:]['name'][detect])=='Delik' or not str(df.iloc[:]['name'][detect])=='Leke': #leke veya delik değilse
+                                if not helper.check_similarity(crop): # hata onceki hatalarla aynı değilse
+                                    if len(helper.last_images)>=5: # last images dizisinin uzunluğu 5 den büyükse
+                                        del helper.last_images[0] # ilk elemanı sil
+                                        helper.last_images.append(crop) # bu hatayı ekle
                                     else:
-                                        helper.last_images.append(crop)
-                                    imwrite(Save_image,crop)
+                                        helper.last_images.append(crop) # bu hatayı ekle
+                                    imwrite(Save_image,crop) # resmin kaydedilmesi
+
+                                    # veri tabanına yüklemek için threade gönderilmesi
                                     helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
-        
+
+                # Serial numarası doğru ise resmin gerekli pixmapa verilmesi
                 if model_name == Tools.Camera_Serial[0]:
                     qImg=QImage(out,width,height,step,QImage.Format_RGB888)
                     ui2.Camera_1.setPixmap(QPixmap.fromImage(qImg))
