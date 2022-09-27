@@ -1,0 +1,5 @@
+train: C:/Users/ybaykara/Desktop/yolov5-master/data/Dataset/train/images
+val: C:/Users/ybaykara/Desktop/yolov5-master/data/Dataset/valid/images
+
+nc: 8
+names: ['Delik', 'Dikey', 'Iplik', 'Kirisik', 'Leke', 'Siyah_Yag', 'Yag', 'Yatay']

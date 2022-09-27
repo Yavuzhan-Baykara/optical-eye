@@ -1,0 +1,13 @@
+<RCC>
+  <qresource prefix="Logos">
+    <file>Icon/MainWindow/Menderes_Tekstil_Logo.png</file>
+    <file>Icon/MainWindow/mmm.png</file>
+  </qresource>
+  <qresource prefix="down">
+    <file>Icon/MainWindow/arrow_drop_down.png</file>
+  </qresource>
+  <qresource prefix="close">
+    <file>Icon/MainWindow/clear.png</file>
+    <file>Icon/MainWindow/close.png</file>
+  </qresource>
+</RCC>
