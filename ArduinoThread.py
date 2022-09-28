@@ -1,4 +1,4 @@
-from serial import Serial
+from serial import * 
 from time import sleep
 from threading import Thread
 from re import findall
@@ -6,7 +6,7 @@ class AThread:
     def __init__(self,com,bound):
         self.com = com
         self.bound = bound
-        self.ser = Serial(com, baudrate=bound, timeout=0)
+        self.ser = serial(com, baudrate=bound, timeout=0)
         self.src = 0
         self._stop = False
 
