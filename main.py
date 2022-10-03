@@ -795,5 +795,5 @@ if __name__ == '__main__':
     app1 = QApplication(sys.argv)
     window = MainWindow()
     app1.exec_()
-    print("müchait KIZILHAN")
+
     
