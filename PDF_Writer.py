@@ -135,7 +135,7 @@ class Data_Pre_Process:
         
         
         Tarih_Splited=[Res_Tarih_Splited[x:x+Hafta] for x in range(0, len(Res_Tarih_Splited), Hafta)]
-        
+        print(Tarih_Splited)
         def Week_Datas(Datas):
             Toplam_Delik=0
             Toplam_Leke=0
@@ -198,6 +198,7 @@ class Data_Pre_Process:
             df['Iplik'] = [Month[1][3], Month[3][3]]
             d = [2.0, 4.0]
             h= [1.5, 3.5]
+            print("Er *")
         elif len(Tarih_Splited)==3:
             df['Question'] = [f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}",
                                f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}",
@@ -243,8 +244,8 @@ class Data_Pre_Process:
         
         xticks(d, df2['Question'])
         
-        plt.plot(h, listx, label='Delik')
-        plt.plot(d, listy, '-r', label='Leke')
+        # plt.plot(h, listx, label='Delik')
+        # plt.plot(d, listy, '-r', label='Leke')
         
         plt.bar(m, df['Delik'], width=0.5, color="#521B1D", label="Delik")
         plt.bar(d, df['Leke'], width=0.5, color="#39521B", label="Leke")
@@ -309,12 +310,12 @@ class Data_Pre_Process:
             pdf.cell(0, 10, f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[1][0]}-{Month[1][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[3][0]}-{Month[3][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[2][0]}-{Tarih_Splited[2][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[5][0]}-{Month[5][1]} (Adet)",ln=0.5, align="")
-        if len(Tarih_Splited)==3:
+        if len(Tarih_Splited)==4:
             pdf.cell(0, 10, f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[1][0]}-{Month[1][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[3][0]}-{Month[3][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[2][0]}-{Tarih_Splited[2][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[5][0]}-{Month[5][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[3][0]}-{Tarih_Splited[3][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[7][0]}-{Month[7][1]} (Adet)",ln=0.5, align="")
-        
+
         
         pdf.output('test2.pdf', 'F')
         os.system('test2.pdf')

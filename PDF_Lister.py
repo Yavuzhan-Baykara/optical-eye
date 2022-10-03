@@ -267,8 +267,8 @@ class Data_Pre_Process_Lister:
         
         xticks(d, df2['Question'])
         
-        plt.plot(h, listx, label='Delik')
-        plt.plot(d, listy, '-r', label='Leke')
+        # plt.plot(h, listx, label='Delik')
+        # plt.plot(d, listy, '-r', label='Leke')
         
         bar(m, df['Delik'], width=0.5, color="#521B1D", label="Delik")
         bar(d, df['Leke'], width=0.5, color="#39521B", label="Leke")
@@ -330,7 +330,7 @@ class Data_Pre_Process_Lister:
             pdf.cell(0, 10, f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[1][0]}-{Month[1][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[3][0]}-{Month[3][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[2][0]}-{Tarih_Splited[2][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[5][0]}-{Month[5][1]} (Adet)",ln=0.5, align="")
-        if len(Tarih_Splited)==3:
+        if len(Tarih_Splited)==4:
             pdf.cell(0, 10, f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[1][0]}-{Month[1][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[3][0]}-{Month[3][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[2][0]}-{Tarih_Splited[2][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[5][0]}-{Month[5][1]} (Adet)",ln=0.5, align="")
