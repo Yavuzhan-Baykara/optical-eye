@@ -5,6 +5,7 @@ from fpdf import FPDF
 import matplotlib.pyplot as plt
 import numpy as np
 import os
+from os import getcwd
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
 from datetime import date
 # -----------------------------------------------------------------------
@@ -336,8 +337,12 @@ class Data_Pre_Process_Lister:
             pdf.cell(0, 10, f"{Tarih_Splited[2][0]}-{Tarih_Splited[2][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[5][0]}-{Month[5][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[3][0]}-{Tarih_Splited[3][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[7][0]}-{Month[7][1]} (Adet)",ln=0.5, align="")
 
-        pdf.output('test2.pdf', 'F')
-        os.system('test2.pdf')
+        main_path = getcwd()
+        main_path = main_path.replace('\\' , "/")
+        main_path = main_path +'/' + "PDF" + "/" + str(Re_Tarih_Splited[0]) +str(Re_Tarih_Splited[-1]) + '-aylık-rapor.pdf'
+        print(main_path)
+        pdf.output(main_path, 'F')
+        os.system(main_path)
         
         
         

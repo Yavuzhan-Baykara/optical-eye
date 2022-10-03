@@ -316,10 +316,13 @@ class Data_Pre_Process:
             pdf.cell(0, 10, f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[3][0]}-{Month[3][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[2][0]}-{Tarih_Splited[2][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[5][0]}-{Month[5][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[3][0]}-{Tarih_Splited[3][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[7][0]}-{Month[7][1]} (Adet)",ln=0.5, align="")
-
-
-        pdf.output(f'./PDF/{self.Tarih}-aylık-rapor.pdf', 'F')
-        os.system(f'PDF/{self.Tarih}-aylık-rapor.pdf')
+            
+        main_path = getcwd()
+        main_path = main_path.replace('\\' , "/")
+        main_path = main_path +'/' + "PDF" + "/" + str(self.Tarih) + '-aylık-rapor.pdf'
+        print(main_path)
+        pdf.output(main_path, 'F')
+        os.system(main_path)
         
         
         
