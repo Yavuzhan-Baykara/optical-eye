@@ -723,6 +723,7 @@ def main(worker, window):
     time.sleep(0.5)
     window.close()
     worker.finished.emit()
+    helper.pdf_folder_create()
     
     MainWindow1.show()
     Tools.Cam_out_file_folder()
@@ -794,4 +795,5 @@ if __name__ == '__main__':
     app1 = QApplication(sys.argv)
     window = MainWindow()
     app1.exec_()
+    print("müchait KIZILHAN")
     

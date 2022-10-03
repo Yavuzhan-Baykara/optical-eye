@@ -11,6 +11,7 @@ from PyQt5.QtCore import QTimer, QTime,  QThread, pyqtSignal
 from imageio import get_writer
 import time
 from compare import * 
+from os import scandir, mkdir
 
 from threading import Thread, Timer
 from Db_Con import *
@@ -21,7 +22,8 @@ class Helper():
        self.db_queue=[]
        self.stopped = False
        self.last_images = []
-
+       self.main_path = "./" 
+       self.main_pdf_path = "./PDF"
 
     def start(self):
         Timer(0.01,self.get_time,args=()).start()
@@ -185,5 +187,18 @@ class Helper():
         else:
             now="00.00.00"
             return now
+    def pdf_folder_create(self):
+        folders = scandir(self.main_path)
+        for folder in folders:
+            if folder.is_dir() or folder.is_file() :
+                if (folder.name == "PDF"):
+                    print("PDF klasörü bulunmakta...")
+                else:
+                    try:
+                        mkdir(self.main_pdf_path)
+                        print("PDF klasörü oluşturuldu...")
+                        return
+                    except:
+                        print("PDF klasörü oluşturuldu...")
 
         

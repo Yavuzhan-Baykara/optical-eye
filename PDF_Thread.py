@@ -7,7 +7,6 @@ class PDFThread:
     def __init__(self):
         
         self._stop=False
-        
     def stop(self):
         
         self._stop=True
