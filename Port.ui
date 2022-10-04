@@ -2134,7 +2134,7 @@ PlotWidget {
      </rect>
     </property>
     <property name="text">
-     <string>Serial port açılması için lütfen evet'e tıklayınız.</string>
+     <string>Serial port açılması için lütfen aç'a tıklayınız.</string>
     </property>
    </widget>
    <widget class="QPushButton" name="Ac_pushButton">

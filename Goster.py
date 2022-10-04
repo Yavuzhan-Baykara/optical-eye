@@ -2230,6 +2230,9 @@ class Ui_Goster_Window(object):
         self.Sinif_Label = QtWidgets.QLabel(self.centralwidget)
         self.Sinif_Label.setGeometry(QtCore.QRect(390, 650, 161, 41))
         self.Sinif_Label.setObjectName("Sinif_Label")
+        self.Ikaz_kapat_pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.Ikaz_kapat_pushButton.setGeometry(QtCore.QRect(175, 710, 250, 50))
+        self.Ikaz_kapat_pushButton.setObjectName("Ikaz_kapat_pushButton")
         Goster_Window.setCentralWidget(self.centralwidget)
         self.statusbar = QtWidgets.QStatusBar(Goster_Window)
         self.statusbar.setObjectName("statusbar")
@@ -2254,4 +2257,5 @@ class Ui_Goster_Window(object):
         self.Alan_Label.setText(_translate("Goster_Window", "......................................"))
         self.Metre_Label.setText(_translate("Goster_Window", "......................................"))
         self.Sinif_Label.setText(_translate("Goster_Window", "......................................"))
+        self.Ikaz_kapat_pushButton.setText(_translate("Goster_Window", "Kapat"))
 

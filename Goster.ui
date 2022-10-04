@@ -2407,6 +2407,19 @@ PlotWidget {
      <string>......................................</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="Ikaz_kapat_pushButton">
+    <property name="geometry">
+     <rect>
+      <x>175</x>
+      <y>710</y>
+      <width>250</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Kapat</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

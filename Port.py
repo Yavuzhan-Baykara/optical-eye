@@ -2141,7 +2141,7 @@ class Ui_Port_Window(object):
     def retranslateUi(self, Port_Window):
         _translate = QtCore.QCoreApplication.translate
         Port_Window.setWindowTitle(_translate("Port_Window", "Port"))
-        self.label.setText(_translate("Port_Window", "Serial port açılması için lütfen evet\'e tıklayınız."))
+        self.label.setText(_translate("Port_Window", "Serial port açılması için lütfen aç\'a tıklayınız."))
         self.Ac_pushButton.setText(_translate("Port_Window", "Aç"))
         self.Kapat_pushButton.setText(_translate("Port_Window", "Kapat"))
 

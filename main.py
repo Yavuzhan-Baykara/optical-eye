@@ -775,7 +775,7 @@ def main(worker, window):
     DC.ui3.Listele_pushButton.clicked.connect(Pdf_Lister)
     DC.ui3.Gunclle_PushButton.clicked.connect(Veri_Tabani_Window.Update)
     DC.ui3.Delete_PushButton.clicked.connect(Veri_Tabani_Window.Delete)
-    # DC.ui4.Off_pushButton.clicked.connect(lambda: DC.MainWindow4.close())
+    DC.ui4.Ikaz_kapat_pushButton.clicked.connect(lambda: DC.MainWindow4.close())
     ui5.action_k.triggered.connect(Close)
     ui5.pushButton_Find_File.clicked.connect(Tools.getFile)
     ui5.pushButton_Aktar_Ysa.clicked.connect(Tools.Import_Model)
