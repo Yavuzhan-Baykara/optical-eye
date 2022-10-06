@@ -14,8 +14,8 @@ from admin_page import *
 from Camera import*
 from Yukleniyor import *
 
-import sys
 import time
+import sys
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from PyQt5.QtWidgets import (
     QApplication,
@@ -97,7 +97,9 @@ def main(worker, window):
     loadingbar(75)
     from pypylon import pylon
     loadingbar(80)
+    import random
     global configs
+    
     configs =  {
         1: {
             'value1': 0,
@@ -137,8 +139,18 @@ def main(worker, window):
         if Tools.Non_Trigg_Port_Button==True:
             MainWindow7.close()
             Basler_Cameras()
+    def record_cameras_data():
+        ui2.logic_All = 1
+        ui2.Ac_pushButton.setDisabled(True)
+        ui2.Off_pushButton.setDisabled(False)
+        Tools.Port_Close()
+        if Tools.Non_Trigg_Port_Button==True:
+            MainWindow7.close()
+            Basler_Cameras(choise = "Record")
+
+    
             
-    def Basler_Cameras():
+    def Basler_Cameras(choise: str = "Detection"):
         try:
             Arduino_Tools.port_ac(Tools)
         except:
@@ -167,8 +179,11 @@ def main(worker, window):
         
         if cuda.is_available():
             tensor_temp = tensor_temp.to(device_temp)
+        
         myTime = 0
+        recordcounter = 0
         while 1:
+            recordcounter = recordcounter +1
             Dok_no= ui3.Dok_No_LineEdit.text()
             Kalite_no= ui3.Kalite_No_LineEdit.text()
             if not ui3.Kalite_No_LineEdit.text():
@@ -322,7 +337,7 @@ def main(worker, window):
                                         helper.last_images.append(crop)
                                     imwrite(Save_image,crop)
                                     helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
-        
+
                 if model_name == Tools.Camera_Serial[0]:
                     qImg=QImage(out,width,height,step,QImage.Format_RGB888)
                     ui2.Camera_1.setPixmap(QPixmap.fromImage(qImg))
@@ -339,6 +354,11 @@ def main(worker, window):
                     qImg=QImage(out,width,height,step,QImage.Format_RGB888)
                     ui2.Camera_2.setPixmap(QPixmap.fromImage(qImg))
                 ui2.label_8.setText(str(fps))
+                if choise == "Record":
+                    record_now_day = helper.Db_path_time(choice="Now-Day")
+                    save_image_record_path = "./Database" + "/" + record_now_day + "/" + "Cam" + "/" + "images" + "/" + record_now_day + str(recordcounter) + ".jpg"
+                    if recordcounter % 50 == 0:
+                      imwrite(save_image_record_path, single_frame2)
                 waitKey(2)
                 
             if len(frames) == 2:
@@ -755,6 +775,7 @@ def main(worker, window):
     ui2.Off_pushButton.clicked.connect(Click_Button_All_Stop)
     ui2.Close_pushButton.clicked.connect(Close)
     ui2.Ac_pushButton.clicked.connect(displayImage)
+    ui2.Kayit_pushButton_2.clicked.connect(record_cameras_data)
     ui2.horizontalSlider.valueChanged.connect(Tools.zoom_value_1)
     ui2.horizontalSlider_3.valueChanged.connect(Tools.zoom_value_3)
     ui2.horizontalSlider_5.valueChanged.connect(Tools.zoom_value_5)
