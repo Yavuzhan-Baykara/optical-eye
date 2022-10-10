@@ -25,6 +25,5 @@ class PDFThread:
                 sleep(1./120)
                 self._stop =True
         except:
-            
             print("PDF Oluşumunda beklenmeyen bir hata")
             return

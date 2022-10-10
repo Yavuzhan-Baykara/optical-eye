@@ -101,7 +101,6 @@ class Veri_Tabani_Window():
         Data = curs.fetchall()
         for row in Data:
             if not Data==None:
-                print(row)
                 try: 
                     MainWindow4.close()
                     MainWindow4.show()
@@ -252,6 +251,7 @@ class Veri_Tabani_Window():
             curs.execute("INSERT INTO Kullanicilar (Kullanici_adi, Sifre) VALUES (?,?)", (Kullanici_adi, Sifre))
             conn.commit()
         except sqlite3.Error as er:
+            ui3.statusbar.showMessage(" " * 1 + f"Bir sorun oluştu: {er} ",1500)
             print(er)
 
     def Clear(self):
@@ -280,7 +280,8 @@ class Veri_Tabani_Window():
         except sqlite3.Error as error:
             ui3.Gunclle_PushButton.setDisabled(True)
             ui3.Delete_PushButton.setDisabled(True)
-            print("Failed to update sqlite table: ",error)
+            ui3.statusbar.showMessage(" " * 1 + f"Veri tabanında bir sorun oluştu. {error}", 1500)
+            print("Failed to update sqlite table: ", error)
         finally:
             ui3.Gunclle_PushButton.setDisabled(True)
             ui3.Delete_PushButton.setDisabled(True)
@@ -297,6 +298,7 @@ class Veri_Tabani_Window():
         except sqlite3.Error as error:
             ui3.Gunclle_PushButton.setDisabled(True)
             ui3.Delete_PushButton.setDisabled(True)
+            ui3.statusbar.showMessage(" " * 1 + f"Veri tabanında bir sorun oluştu. {error}", 1500)
             print("Failed to update sqlite table: ",error)
         finally:
             ui3.Delete_PushButton.setDisabled(True)

@@ -9,13 +9,11 @@ class post_thread():
        print("__init__: " + str(self.post_queue))
        self.stopped = False
 
-
     def post_thread_start(self):
         Thread(target=self.update_post_thread, args=()).start()
         return self
     
     def update_post_thread(self):
-  
         while True:
             time.sleep(0.0001)
             if self.post_queue:
@@ -26,7 +24,6 @@ class post_thread():
                 self.post_queue.clear()
             else:
                 continue
-
 
     def append_post_thread(self, headers, files, data, url):
         task ={

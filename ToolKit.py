@@ -14,8 +14,6 @@ from Port import*
 from Kayit_Ol import*
 import json
 
-
-
 class ToolKit():
     def Windows(self):
         self.Model_Path=Veri_Tabani_Window.get_last_model_path()
@@ -79,30 +77,30 @@ class ToolKit():
 
         
 ###################### İnit #################################################
-    def __init__(self):                                                     #
-        self.camera_W_H_I=Veri_Tabani_Window.get_last_Heigt_Width()         #   
-        self.Camera_Inf = Veri_Tabani_Window.get_last_data()                #
+    def __init__(self):                                                    
+        self.camera_W_H_I=Veri_Tabani_Window.get_last_Heigt_Width()         
+        self.Camera_Inf = Veri_Tabani_Window.get_last_data()                
         
         self._Camera_Serials=self.Camera_Inf[0][3].split(',') 
         self._Camera_Exposure_Time=self.Camera_Inf[0][4].split(',')
         self._Camera_Cut_Off=self.Camera_Inf[0][5]
         self._Camera_Type=self.Camera_Inf[0][6].split(',')
-        self.H,self.W,self.I=self.camera_W_H_I                              #
-        self.zoom_impact_rate=int(self.I)                                        #
-        self.horizontal_value_5 = 0                                         #
-        self.Camera_Height=int(self.H)                                          #
-        self.Camera_Width = int(self.W)                                        #
-        # self.Camera_Exposure_Time = self._Camera_Exposure_Time              #
-        self.camera_1 = False                                               # 
-        self.camera_2 = False                                               #
-        self.camera_3 = False                                               #
-        self.camera_4 = False                                               #
-        self.upload_path = './configs/13.46.55.txt'                         #
-        self.Serial_port="COM8"                                             #
-        self.Baud_Rate="9600"                                               #
-        self.Windows()                                                      #
-        self.Trigg_Port_Button=False                                        #
-        self.Non_Trigg_Port_Button=False                                    #
+        self.H,self.W,self.I=self.camera_W_H_I                              
+        self.zoom_impact_rate=int(self.I)                                        
+        self.horizontal_value_5 = 0                                         
+        self.Camera_Height=int(self.H)                                          
+        self.Camera_Width = int(self.W)                                        
+        # self.Camera_Exposure_Time = self._Camera_Exposure_Time             
+        self.camera_1 = False                                               
+        self.camera_2 = False                                               
+        self.camera_3 = False                                               
+        self.camera_4 = False                                               
+        self.upload_path = './configs/13.46.55.txt'                         
+        self.Serial_port="COM8"                                             
+        self.Baud_Rate="9600"                                               
+        self.Windows()                                                      
+        self.Trigg_Port_Button=False                                        
+        self.Non_Trigg_Port_Button=False                                    
         self.Camera_Serial = [
             str(self._Camera_Serials[0]), str(self._Camera_Serials[1]),
             str(self._Camera_Serials[2]), str(self._Camera_Serials[3])
@@ -259,9 +257,11 @@ class ToolKit():
     def Import_Model(self):                                                                             #
         if self.ui5.lineEdit_Model.text().split('/')[-1].split('.')[-1]!="pt":                          #
             print("Başarısız, lütfen sonu .pt ile biten bir dosya seçiniz...")                          #
+            self.ui5.statusbar.showMessage(" " * 1 + "Başarısız, lütfen sonu .pt ile biten bir dosya seçiniz..." , 1500)
         else:                                                                                           #
             self.Model_Path=str(self.filepaths[0])                                                      #
             print("Başarılı")                                                                           #
+            self.ui5.statusbar.showMessage(" " * 1 + "Yapay zeka import'u başarılı..." , 1500)
             Veri_Tabani_Window.set_last_model_path(self.Model_Path)                                     #
     #####################################################################################################
     def feedback_Model_Filepath(self):return self.Model_Path                                            #
@@ -273,9 +273,13 @@ class ToolKit():
             self.Camera_Height=int(self.ui5.lineEdit_Camera_Height.text())                                   #
             print(self.Camera_Height)                                                                   #
             print("Başarılı")                                                                           #
+            self.ui5.statusbar.showMessage(" " * 1 + "Kamera yükseklik paramatresi başarılı bir şekilde import edilmiştir..." , 1500)
+
         else:                                                                                           #
             self.Camera_Height=256                                                                      #
             print("Başarısız... Default 256 olarak ayarlanmıştır...")                                   #
+            self.ui5.statusbar.showMessage(" " * 1 + "Kamera yükseklik paramatresi yüklenirken bir hata oluştu. Özellik 256 olarak ayarlanmıştır..." , 1500)
+
     def feedback_Import_Height(self):return int(self.Camera_Height)                                          #
     #####################################################################################################
 
@@ -284,8 +288,10 @@ class ToolKit():
         if self.ui5.lineEdit_Camera_Width.text() and int(self.ui5.lineEdit_Camera_Width.text())>=50 and int(self.ui5.lineEdit_Camera_Width.text()) % 32 == 0:   #
             self.Camera_Width = int(self.ui5.lineEdit_Camera_Width.text())                                                                                           #
             print(int(self.Camera_Width))                                                                                                                            #
+            self.ui5.statusbar.showMessage(" " * 1 + "Kamera genişlik paramatresi başarılı bir şekilde import edilmiştir..." , 1500)
         else:                                                                                                                                                   #
             self.Camera_Width = 2592                                                                                                                            #
+            self.ui5.statusbar.showMessage(" " * 1 + "Kamera genişlik paramatresi yüklenirken bir hata oluştu. Özellik 2592 olarak ayarlanmıştır..." , 1500)
             print("Başarısız... Default 2592 olarak ayarlanmıştır...")                                                                                          #
     #############################################################################################################################################################
     def feedback_Import_Width(self):return int(int(self.Camera_Width))                                                                                                    #
@@ -296,45 +302,46 @@ class ToolKit():
     def Import_Serial_Port(self):
         self.Serial_port=self.ui5.combo_port.currentText()
         self.Baud_Rate=self.ui5.combo_baudrate.currentText()
-        print("Başarılı")
+        self.ui5.statusbar.showMessage(" " * 1 + "Serial port import'u başarılı bir şekilde import edilmiştir..." , 1500)
+        print("Serial port import'u başarılı bir şekilde import edilmiştir...")
     def feedback_Import_Serial_Port(self):return self.Serial_port,self.Baud_Rate
 
     def Import_Camera_Exposure_Time(self):
         if self.ui5.radioButton_Camera_I.isChecked() == True:
             if self.ui5.lineEdit_Camera_Exposure_Time.text():
                 self.Camera_Exposure_Time[0]=str(self.ui5.lineEdit_Camera_Exposure_Time.text())
-                print("Başarılı")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera I Exposure time import'u başarılı bir şekilde import edilmiştir..." , 1500)
                 return self.Camera_Exposure_Time[0]
             else:
                 self.Camera_Exposure_Time[0] = "20000"
-                print("geçersiz numara")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera I Exposure time import'u başarısız olmuştur. 20.000 olarak ayarlanmıştır...." , 1500)
                 return self.Camera_Exposure_Time[0]
         if self.ui5.radioButton_Camera_II.isChecked() == True:
             if self.ui5.lineEdit_Camera_Exposure_Time.text():
                 self.Camera_Exposure_Time[1]=str(self.ui5.lineEdit_Camera_Exposure_Time.text())
-                print("Başarılı")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera II Exposure time import'u başarılı bir şekilde import edilmiştir..." , 1500)
                 return self.Camera_Exposure_Time
             else:
                 self.Camera_Exposure_Time[1] = "20000"
-                print("geçersiz numara")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera II Exposure time import'u başarısız olmuştur. 20.000 olarak ayarlanmıştır...." , 1500)
                 return self.Camera_Exposure_Time[1]
         if self.ui5.radioButton_Camera_III.isChecked() == True:
             if self.ui5.lineEdit_Camera_Exposure_Time.text():
                 self.Camera_Exposure_Time[2]=str(self.ui5.lineEdit_Camera_Exposure_Time.text())
-                print("Başarılı")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera III Exposure time import'u başarılı bir şekilde import edilmiştir..." , 1500)
                 return self.Camera_Exposure_Time[2]
             else:
                 self.Camera_Exposure_Time[2] = "20000"
-                print("geçersiz numara")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera III Exposure time import'u başarısız olmuştur. 20.000 olarak ayarlanmıştır...." , 1500)
                 return self.Camera_Exposure_Time[2]
         if self.ui5.radioButton_Camera_III.isChecked() == True:
             if self.ui5.lineEdit_Camera_Exposure_Time.text():
                 self.Camera_Exposure_Time[3]=str(self.ui5.lineEdit_Camera_Exposure_Time.text())
-                print("Başarılı")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera IV Exposure time import'u başarılı bir şekilde import edilmiştir..." , 1500)
                 return self.Camera_Exposure_Time[3]
             else:
                 self.Camera_Exposure_Time[3] = "20000"
-                print("geçersiz numara")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera IV Exposure time import'u başarısız olmuştur. 20.000 olarak ayarlanmıştır...." , 1500)
                 return self.Camera_Exposure_Time[3]
         print(self.Camera_Exposure_Time)
     def feedback_Import_Exposure_Time(self, index): return int(self.Camera_Exposure_Time[index])      
@@ -342,38 +349,38 @@ class ToolKit():
         if self.ui5.radioButton_Camera_I.isChecked() == True:
             if self.ui5.lineEdit_Camera_Serial.text():
                 self.Camera_Serial[0]=str(self.ui5.lineEdit_Camera_Serial.text())
-                print("Başarılı")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera serial import'u başarılı olmuştur..." , 1500)
                 return self.Camera_Serial
             else:
                 self.Camera_Serial[0] = "40113345"
-                print("geçersiz numara")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera serial import'u başarısız olmuştur. '40113345' olarak ayarlandı" , 1500)
                 return self.Camera_Serial
         if self.ui5.radioButton_Camera_II.isChecked() == True:
             if self.ui5.lineEdit_Camera_Serial.text():
                 self.Camera_Serial[1]=str(self.ui5.lineEdit_Camera_Serial.text())
-                print("Başarılı")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera serial import'u başarılı olmuştur..." , 1500)
                 return self.Camera_Serial
             else:
                 self.Camera_Serial[1] = "40113349"
-                print("geçersiz numara")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera serial import'u başarısız olmuştur. '40113349' olarak ayarlandı" , 1500)
                 return self.Camera_Serial
         if self.ui5.radioButton_Camera_III.isChecked() == True:
             if self.ui5.lineEdit_Camera_Serial.text():
                 self.Camera_Serial[2]=str(self.ui5.lineEdit_Camera_Serial.text())
-                print("Başarılı")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera serial import'u başarılı olmuştur..." , 1500)
                 return self.Camera_Serial
             else:
                 self.Camera_Serial[2] = "40174977"
-                print("geçersiz numara")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera serial import'u başarısız olmuştur. '40174977' olarak ayarlandı" , 1500)
                 return self.Camera_Serial
         if self.ui5.radioButton_Camera_IV.isChecked() == True:
             if self.ui5.lineEdit_Camera_Serial.text():
                 self.Camera_Serial[3]=str(self.ui5.lineEdit_Camera_Serial.text())
-                print("Başarılı")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera serial import'u başarılı olmuştur..." , 1500)
                 return self.Camera_Serial
             else:
                 self.Camera_Serial[3] = "40113349"
-                print("geçersiz numara")
+                self.ui5.statusbar.showMessage(" " * 1 + "Kamera serial import'u başarısız olmuştur. '40113349' olarak ayarlandı" , 1500)
                 return self.Camera_Serial
         print(self.Camera_Serial)
 

@@ -156,6 +156,7 @@ def main(worker, window):
         except:
             time.sleep(0.1)
             ui2.statusbar.showMessage(" "*1 + " Port açılamadı !!!", 1500)
+
         cnt=0
         tlFactory = pylon.TlFactory.GetInstance()
         devices = tlFactory.EnumerateDevices()
@@ -163,9 +164,15 @@ def main(worker, window):
         
         for i, cam in enumerate(cameras):
             cam.Attach(tlFactory.CreateDevice(devices[i]))
+            serial_cam = cam.GetDeviceInfo().GetSerialNumber()
             print("Using device ", cam.GetDeviceInfo().GetSerialNumber())
+            ui2.statusbar.showMessage(" "*1 + f" Tanımlı kamera: {serial_cam}", 1500)
+
+
         if cameras.GetSize() == 0:
             print('No camera is detected!')
+            ui2.statusbar.showMessage(" "*1 + " Pylon kamera bulunmamaktadır...", 1500)
+
             ui2.Off_pushButton.setDisabled(True)
             ui2.Ac_pushButton.setDisabled(False)
             return 
@@ -176,10 +183,11 @@ def main(worker, window):
         tensor_temp = tensor([1.0,2.0], device="cuda")
         device_temp = device('cuda' if cuda.is_available() else 'cpu')
         print("CUDA GPU:", cuda.is_available())
-        
+        ui2.statusbar.showMessage( " " * 1 + f" Cuda GPU Durumu: {cuda.is_available()}", 1500)
+
+
         if cuda.is_available():
             tensor_temp = tensor_temp.to(device_temp)
-        
         myTime = 0
         recordcounter = 0
         while 1:
@@ -207,6 +215,7 @@ def main(worker, window):
                 break
             if len(frames) == 0:
                 print('No camera is detected!')
+                ui2.statusbar.showMessage(" "*1 + " Tanımlı kamera bulunmamaktadır. Lütfen kamera takılı ise admin panelinden ayarlayınız...", 1500)
                 ui2.Off_pushButton.setDisabled(True)
                 vs_pylon.stop()
                 ui2.Ac_pushButton.setDisabled(False)
@@ -263,26 +272,25 @@ def main(worker, window):
                         yc = (y1+y2)/2
                         if yc>outh1 and  yc<outh2:
                             crop=single_frame2[y1-5:y2+5,x1-5:x2+5]
-                                        
-                            if Tools.Trigg_Port_Button==True:
-                                    Arduino_Tools.kirmizi_led_ac()
+                            if Tools.Trigg_Port_Button == True:
                                     try:
-                                        src=Arduino_Tools.Feedback_src()
+                                        src = Arduino_Tools.Feedback_src()
                                     except:
                                         ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                         src=0
                             if Tools.Trigg_Port_Button==False:
                                     src=0
-                            x=abs(x2-x1)
-                            y=abs(y2-y1)
-                            xy=x*y
+                            x = abs(x2-x1)
+                            y = abs(y2-y1)
+                            xy = x * y
                             
                             if str(df.iloc[:]['name'][detect])=='Delik' or str(df.iloc[:]['name'][detect])=='Leke':
-                                cnt=cnt+1
-                            if cnt>=1: 
-                                cnt=0
+                                Arduino_Tools.kirmizi_led_ac()
+                                MainWindow6.show()
+                                cnt = cnt + 1
+                            if cnt >= 1: 
+                                cnt = 0
                                 if not helper.check_similarity(crop):
-                                    MainWindow6.show()
                                     crop=resize_cv2(crop, (320,320),interpolation=INTER_CUBIC)
                                     image = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
                                     ui6.Goster_Label.setPixmap(QtGui.QPixmap.fromImage(image))
@@ -668,6 +676,7 @@ def main(worker, window):
                         break
                     except:
                         print("Klasör Zaten var")
+                        ui2.statusbar.showMessage(" "*1 + " Yerel veri tabanı klasörü zaten bulunmaktadır...", 1500)
                         break
                     
     ########################################################################################################################
@@ -701,10 +710,12 @@ def main(worker, window):
             if ui2.radioButton_Camera_II.isChecked():
                 Tools.handle_change(configs[2])
     def Pdf_Show():
+        Click_Button_All_Stop()
         PDFThread().start()
         PDFThread().stop()
         
     def Pdf_Lister():
+        Click_Button_All_Stop()
         Date=DC.ui3.Baslangic_dateEdit.text().split('.')
         DateLast=DC.ui3.Bitis_dateEdit.text().split('.')
         PDFThread_Lister(Date, DateLast).start()
@@ -717,18 +728,24 @@ def main(worker, window):
         Tools.Import_Cameras_Type()
     
     print("Arayüzlerin Yüklenmesi")
+    worker.progress.emit(83)
     Arduino_Tools=Arduino_Toolkits()
     print("Arduino Toolkit Yüklendi")
+    worker.progress.emit(86)
     Tools=ToolKit()
     print("Toolkit Yüklendi")
+    worker.progress.emit(90)
     helper = Helper().start()
     print("Helper Yüklendi")
+    worker.progress.emit(93)
     post_reader = post_thread()
     print("Mobil araçları Yüklendi")
+    worker.progress.emit(96)
     post_reader.post_thread_start()
+    worker.progress.emit(98)
     model = get_model(Tools)
     print("Yapay Zeka Yüklendi")
-
+    worker.progress.emit(99)
     ################################################ Giris ################################################
     MainWindow1,MainWindow2,MainWindow3,MainWindow4,MainWindow5=Tools.FeedBack_Windows()
     ui1,ui2,ui3,ui4,ui5=Tools.FeedBack_SetupUi()

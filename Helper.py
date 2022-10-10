@@ -41,7 +41,7 @@ class Helper():
         while 1:
             time.sleep(0.0001)
             if len(self.db_queue) != 0:
-                print("sa")
+
                 task=self.db_queue.pop(0)
                 Veri_Tabani_Window.Ekle(self.Db_path_time(choice="Now-Day"),task['Dok_no'] , task['Kalite_no'], task['Metre'], 0, 0, task['En'], task['Boy'], task['Alan'],str(task['df'].iloc[:]['name'][task['detect']]), task['Save_image'])
                 self.db_queue.clear()

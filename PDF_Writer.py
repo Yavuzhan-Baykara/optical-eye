@@ -8,7 +8,6 @@ import os
 from os import getcwd
 
 os.environ["KMP_DUPLICATE_LIB_OK"]="TRUE"
-
 # -----------------------------------------------------------------------
 import sqlite3
 global curs
@@ -16,11 +15,8 @@ global conn
 global Tarih
 global Month
 
-
-
 Month=[]
 LastVer=40
-
 conn=sqlite3.connect('./Database/Tespit_Edilen_Veriler.db',timeout=1, check_same_thread=False)
 curs=conn.cursor()
 sorguVeri=("""CREATE TABLE IF NOT EXISTS Hata_Sonuclari(
@@ -41,11 +37,6 @@ sorguVeri=("""CREATE TABLE IF NOT EXISTS Hata_Sonuclari(
 curs.execute(sorguVeri)
 conn.commit()
 Data = curs.fetchall()
-
-
-
-        
-
 class Data_Pre_Process:
     class CustomPDF(FPDF):
         def header(self):
@@ -121,20 +112,15 @@ class Data_Pre_Process:
         return self.Data
     
     def PDF_W(self):
-        
         Res_Tarih_Splited=self.Res_Tarih_Splited
         Tarih_Splited=Data_Pre_Process().positioning("All")['Tarih_Splited']
         Tarih_Array=Data_Pre_Process().positioning("All")['Tarih_All']
         Hafta=Data_Pre_Process().positioning("All")['Hafta']
-        
-        
         for item in Tarih_Array: 
             if item not in Res_Tarih_Splited: 
                 Res_Tarih_Splited.append(item) 
         
         self.Tarih=Res_Tarih_Splited[-1]
-        
-        
         Tarih_Splited=[Res_Tarih_Splited[x:x+Hafta] for x in range(0, len(Res_Tarih_Splited), Hafta)]
 
         def Week_Datas(Datas):
@@ -154,8 +140,6 @@ class Data_Pre_Process:
             Toplam.append(Toplam_Yag)
             Toplam.append(Toplam_Iplik)
             return Toplam
-        
-        
         for Week in range(len(Tarih_Splited)):
             Toplam=Week_Datas(Tarih_Splited[Week])
             Month.append(f'{Week+1}. Hafta')
@@ -170,12 +154,9 @@ class Data_Pre_Process:
             pdf.line(WIDTH-10, 10, 200, HEIGHT-10)
             pdf.line(10, HEIGHT-10, WIDTH-10, HEIGHT-10)
             pdf.line(10, HEIGHT-255, WIDTH-10, HEIGHT-255)
-            
-        
-        
+
         df = pd.DataFrame()
         df2 = pd.DataFrame()
-        
         if len(Tarih_Splited)==1:
             df['Question'] = [f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}"
                              ]
@@ -252,19 +233,12 @@ class Data_Pre_Process:
         plt.bar(d, df['Leke'], width=0.5, color="#39521B", label="Leke")
         plt.bar(y, df['Yag'], width=0.5, color="#1B5250", label="Yag")
         plt.bar(I, df['Iplik'], width=0.5, color="#341B52", label="Iplik")
-        
-        
         plt.legend()
-        
         savefig('barchart.png')
-        
         plt.cla()
-        
         WIDTH=210
         HEIGHT=297
         pdf = self.CustomPDF(orientation = 'P', unit = 'mm', format='A4')
-        
-        
         pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_line_width(0.5)
@@ -275,8 +249,6 @@ class Data_Pre_Process:
         pdf.cell(0, 5, f'Tarih: {Res_Tarih_Splited[-1]}', ln=1)
         
         pdf.set_font('Arial',size=12)
-        
-        
         pdf.set_xy(WIDTH/5, HEIGHT/5)
         pdf.cell(50, 10, 'Hafta', 1, 0, 'C')
         pdf.cell(40, 10, 'Delik', 1, 0, 'C')
