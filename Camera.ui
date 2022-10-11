@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1784</width>
+    <width>1897</width>
     <height>990</height>
    </rect>
   </property>
@@ -2226,7 +2226,7 @@ PlotWidget {
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Kapat</string>
+      <string>KAPAT</string>
      </property>
     </widget>
     <widget class="QPushButton" name="Close_pushButton">
@@ -2242,7 +2242,7 @@ PlotWidget {
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Çıkış Yap</string>
+      <string>ÇIKIŞ YAP</string>
      </property>
     </widget>
     <widget class="QPushButton" name="Ac_pushButton">
@@ -2458,7 +2458,7 @@ PlotWidget {
       <string notr="true">color: rgb(255, 255, 255);</string>
      </property>
      <property name="text">
-      <string>Durum</string>
+      <string>DURUM</string>
      </property>
     </widget>
     <widget class="QComboBox" name="comboBox_Kalite_No">
@@ -2501,7 +2501,7 @@ PlotWidget {
       </rect>
      </property>
      <property name="text">
-      <string>Dok No</string>
+      <string>DOK NO</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_Dok_No_2">
@@ -2514,7 +2514,7 @@ PlotWidget {
       </rect>
      </property>
      <property name="text">
-      <string>Kalite No</string>
+      <string>KALİTE NO</string>
      </property>
     </widget>
    </widget>
@@ -2718,13 +2718,13 @@ PlotWidget {
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Başlat</string>
+      <string>BAŞLAT</string>
      </property>
     </widget>
     <widget class="QPushButton" name="Stop_pushButton">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>220</x>
        <y>600</y>
        <width>141</width>
        <height>50</height>
@@ -2734,7 +2734,7 @@ PlotWidget {
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Durdur</string>
+      <string>DURUR</string>
      </property>
     </widget>
     <widget class="QPushButton" name="Gezginler">
@@ -2742,7 +2742,7 @@ PlotWidget {
       <rect>
        <x>10</x>
        <y>420</y>
-       <width>141</width>
+       <width>161</width>
        <height>50</height>
       </rect>
      </property>
@@ -2750,15 +2750,15 @@ PlotWidget {
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Ayarları İndir</string>
+      <string>AYARLARI İNDİR</string>
      </property>
     </widget>
     <widget class="QPushButton" name="Gezginler_2">
      <property name="geometry">
       <rect>
-       <x>170</x>
+       <x>190</x>
        <y>420</y>
-       <width>141</width>
+       <width>171</width>
        <height>50</height>
       </rect>
      </property>
@@ -2766,7 +2766,7 @@ PlotWidget {
       <string notr="true"/>
      </property>
      <property name="text">
-      <string>Ayarları Yükle</string>
+      <string>AYARLARI YÜKLE</string>
      </property>
     </widget>
     <widget class="QLabel" name="label">
@@ -2883,7 +2883,7 @@ PlotWidget {
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1784</width>
+     <width>1897</width>
      <height>43</height>
     </rect>
    </property>

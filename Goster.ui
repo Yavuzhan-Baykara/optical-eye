@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>600</width>
-    <height>800</height>
+    <height>820</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>600</width>
-    <height>800</height>
+    <height>820</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>600</width>
-    <height>800</height>
+    <height>820</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -2190,6 +2190,236 @@ PlotWidget {
      <string/>
     </property>
    </widget>
+   <widget class="QPushButton" name="Ikaz_kapat_pushButton">
+    <property name="geometry">
+     <rect>
+      <x>175</x>
+      <y>730</y>
+      <width>250</width>
+      <height>50</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Kapat</string>
+    </property>
+   </widget>
+   <widget class="QGroupBox" name="groupBox">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>390</y>
+      <width>561</width>
+      <height>331</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>HATA OZELLIKLERI</string>
+    </property>
+    <widget class="QLabel" name="Sinif_Label">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>265</y>
+       <width>161</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>......................................</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_9">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>175</y>
+       <width>331</width>
+       <height>37</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>-1</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;</string>
+     </property>
+     <property name="text">
+      <string>Hata Alanı(mm2) :</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Alan_Label">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>165</y>
+       <width>161</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>......................................</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_7">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>75</y>
+       <width>331</width>
+       <height>37</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>-1</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;</string>
+     </property>
+     <property name="text">
+      <string>Hata Eni(mm) :</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Eni_Label">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>65</y>
+       <width>161</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>......................................</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>225</y>
+       <width>331</width>
+       <height>37</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>-1</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;</string>
+     </property>
+     <property name="text">
+      <string>Hatanın Geldiği Metre(m) :</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_11">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>275</y>
+       <width>331</width>
+       <height>37</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>-1</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;</string>
+     </property>
+     <property name="text">
+      <string>Hatanın Sınıfı :</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="boyu_Label">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>115</y>
+       <width>161</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>......................................</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Metre_Label">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>215</y>
+       <width>161</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>......................................</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>125</y>
+       <width>331</width>
+       <height>37</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>-1</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;</string>
+     </property>
+     <property name="text">
+      <string>Hata Boyu(mm) :</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="Duvar_Label">
+     <property name="geometry">
+      <rect>
+       <x>380</x>
+       <y>20</y>
+       <width>161</width>
+       <height>41</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>......................................</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_6">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>25</y>
+       <width>341</width>
+       <height>37</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>-1</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;</string>
+     </property>
+     <property name="text">
+      <string>Hatanın Duvar Tarafından Mesafesi :</string>
+     </property>
+    </widget>
+   </widget>
    <widget class="QLabel" name="Isim_Label">
     <property name="geometry">
      <rect>
@@ -2200,224 +2430,13 @@ PlotWidget {
      </rect>
     </property>
     <property name="text">
-     <string>.........................</string>
+     <string>HATALI KUMAŞ</string>
     </property>
-   </widget>
-   <widget class="QLabel" name="label_6">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>410</y>
-      <width>341</width>
-      <height>37</height>
-     </rect>
+    <property name="textFormat">
+     <enum>Qt::PlainText</enum>
     </property>
-    <property name="font">
-     <font>
-      <pointsize>-1</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:white;</string>
-    </property>
-    <property name="text">
-     <string>Hatanın Duvar Tarafından Mesafesi :</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_7">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>460</y>
-      <width>331</width>
-      <height>37</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>-1</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:white;</string>
-    </property>
-    <property name="text">
-     <string>Hata Eni(mm) :</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_8">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>510</y>
-      <width>331</width>
-      <height>37</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>-1</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:white;</string>
-    </property>
-    <property name="text">
-     <string>Hata Boyu(mm) :</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_9">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>560</y>
-      <width>331</width>
-      <height>37</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>-1</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:white;</string>
-    </property>
-    <property name="text">
-     <string>Hata Alanı(mm2) :</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_11">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>660</y>
-      <width>331</width>
-      <height>37</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>-1</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:white;</string>
-    </property>
-    <property name="text">
-     <string>Hatanın Sınıfı :</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="label_10">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>610</y>
-      <width>331</width>
-      <height>37</height>
-     </rect>
-    </property>
-    <property name="font">
-     <font>
-      <pointsize>-1</pointsize>
-     </font>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">color:white;</string>
-    </property>
-    <property name="text">
-     <string>Hatanın Geldiği Metre(m) :</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="Duvar_Label">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>405</y>
-      <width>161</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>......................................</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="Eni_Label">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>450</y>
-      <width>161</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>......................................</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="boyu_Label">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>500</y>
-      <width>161</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>......................................</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="Alan_Label">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>550</y>
-      <width>161</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>......................................</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="Metre_Label">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>600</y>
-      <width>161</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>......................................</string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="Sinif_Label">
-    <property name="geometry">
-     <rect>
-      <x>390</x>
-      <y>650</y>
-      <width>161</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>......................................</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="Ikaz_kapat_pushButton">
-    <property name="geometry">
-     <rect>
-      <x>175</x>
-      <y>710</y>
-      <width>250</width>
-      <height>50</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Kapat</string>
+    <property name="alignment">
+     <set>Qt::AlignCenter</set>
     </property>
    </widget>
   </widget>

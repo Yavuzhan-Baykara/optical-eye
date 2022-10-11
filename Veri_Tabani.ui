@@ -2257,7 +2257,7 @@ PlotWidget {
       <rect>
        <x>510</x>
        <y>60</y>
-       <width>130</width>
+       <width>161</width>
        <height>80</height>
       </rect>
      </property>
@@ -2273,7 +2273,7 @@ PlotWidget {
       <rect>
        <x>510</x>
        <y>200</y>
-       <width>130</width>
+       <width>161</width>
        <height>80</height>
       </rect>
      </property>
@@ -2282,6 +2282,27 @@ PlotWidget {
      </property>
      <property name="text">
       <string>Raporla</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Kalite_No_2">
+     <property name="geometry">
+      <rect>
+       <x>40</x>
+       <y>180</y>
+       <width>171</width>
+       <height>37</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>-1</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">color:white;</string>
+     </property>
+     <property name="text">
+      <string>Dok No</string>
      </property>
     </widget>
    </widget>
@@ -2306,7 +2327,7 @@ PlotWidget {
        <x>40</x>
        <y>240</y>
        <width>130</width>
-       <height>41</height>
+       <height>50</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -2322,7 +2343,7 @@ PlotWidget {
        <x>200</x>
        <y>240</y>
        <width>130</width>
-       <height>41</height>
+       <height>50</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -3610,7 +3631,7 @@ PlotWidget {
        <x>359</x>
        <y>250</y>
        <width>201</width>
-       <height>41</height>
+       <height>51</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -3626,7 +3647,7 @@ PlotWidget {
        <x>40</x>
        <y>250</y>
        <width>201</width>
-       <height>41</height>
+       <height>51</height>
       </rect>
      </property>
      <property name="styleSheet">
@@ -3689,7 +3710,7 @@ PlotWidget {
      <string notr="true">color:white;</string>
     </property>
     <property name="text">
-     <string>Kalite No:</string>
+     <string>Kalite No</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="Kalite_No_LineEdit">

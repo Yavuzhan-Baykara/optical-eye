@@ -11,9 +11,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_Hata_Goster_Window(object):
     def setupUi(self, Hata_Goster_Window):
         Hata_Goster_Window.setObjectName("Hata_Goster_Window")
-        Hata_Goster_Window.resize(600, 810)
-        Hata_Goster_Window.setMinimumSize(QtCore.QSize(600, 810))
-        Hata_Goster_Window.setMaximumSize(QtCore.QSize(600, 810))
+        Hata_Goster_Window.resize(600, 820)
+        Hata_Goster_Window.setMinimumSize(QtCore.QSize(600, 820))
+        Hata_Goster_Window.setMaximumSize(QtCore.QSize(600, 820))
         Hata_Goster_Window.setStyleSheet("/* ---------------------------------------------------------------------------\n"
 "\n"
 "    WARNING! File created programmatically. All changes made in this file will be lost!\n"

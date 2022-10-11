@@ -110,7 +110,6 @@ class Veri_Tabani_Window():
                     ui4.Alan_Label.setText(str(row[9]))
                     ui4.Metre_Label.setText(str(row[4]))
                     ui4.Sinif_Label.setText(str(row[10]))
-                    ui4.Isim_Label.setText(str(row[11]))
                     img_Goster=cv2.imread(row[11])
                     img_Goster=cv2.resize(img_Goster, (320,320),interpolation=cv2.INTER_CUBIC)
                     image = QtGui.QImage(img_Goster.data, img_Goster.shape[1], img_Goster.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
