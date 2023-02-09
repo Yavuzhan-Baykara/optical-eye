@@ -24,10 +24,10 @@ class AThread:
                 self.inp = str(self.inp)
                 self.inp = findall('[0-9]+', self.inp)
                 if self.inp:
-                    self.src = self.src + 1
+                    self.src = int(self.inp[0]) / 1000
                 sleep(1./120)
-        except:
-            print("Stopped")
+        except serial.SerialException as e:
+            print("Serial portu kapanırken hata oluştu", e)
             return
     def read(self):
         return self.inp

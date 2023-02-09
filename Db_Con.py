@@ -26,7 +26,7 @@ app3=QtWidgets.QApplication(sys.argv)
 MainWindow3=QtWidgets.QMainWindow()
 ui3=Ui_Veri_Tabani_Window()
 ui3.setupUi(MainWindow3)
-MainWindow3.setWindowFlag(Qt.FramelessWindowHint)
+# MainWindow3.setWindowFlag(Qt.FramelessWindowHint)
 ####################################
 
 
@@ -35,7 +35,7 @@ from Goster import*
 app4=QtWidgets.QApplication(sys.argv)
 MainWindow4=QtWidgets.QMainWindow()
 ui4=Ui_Goster_Window()
-MainWindow4.setWindowFlag(Qt.FramelessWindowHint)
+# MainWindow4.setWindowFlag(Qt.FramelessWindowHint)
 ui4.setupUi(MainWindow4)
 ####################################
 onlyInt = QIntValidator()
@@ -303,3 +303,33 @@ class Veri_Tabani_Window():
             ui3.Delete_PushButton.setDisabled(True)
             ui3.Gunclle_PushButton.setDisabled(True)
             Veri_Tabani_Window.Listele()
+
+    def set_fabric_settings(kumas_ismi, isik_siddeti):
+        try:
+            curs.execute("INSERT INTO Kumas_ayari (kumas_ismi, ısık_siddeti) VALUES (?,?)", (kumas_ismi, isik_siddeti))
+            conn.commit()
+            print("Veri başarıyla eklendi.")
+            
+        except sqlite3.IntegrityError:
+            print("Bu kumaş ismi zaten kayıtlı.")
+            try:
+                curs.execute("UPDATE Kumas_ayari SET ısık_siddeti = ? WHERE kumas_ismi = ?", (isik_siddeti, kumas_ismi))
+                conn.commit()
+                print("Veri başarıyla güncellendi.")
+            except:
+                print("Veri güncellenirken hata oluştu.")
+    
+    def get_fabric_name():
+        curs.execute("SELECT kumas_ismi FROM Kumas_ayari")
+        fabric_names = [row[0] for row in curs.fetchall()]
+        return fabric_names
+    def get_fabric_brightness(kumas_ismi):
+        try:
+            curs.execute("SELECT ısık_siddeti FROM Kumas_ayari WHERE kumas_ismi=?", (kumas_ismi,))
+            result = curs.fetchone()
+            if result:
+                return result[0]
+            else:
+                print("Bu isimde bir kumaş verisi bulunamadı.")
+        except sqlite3.Error as error:
+            print("Veri çekilirken hata oluştu:", error)

@@ -13,6 +13,7 @@ from admin_page import *
 from Port import*
 from Kayit_Ol import*
 import json
+from FaultyFabricWindow import *
 
 class ToolKit():
     def Windows(self):
@@ -21,7 +22,7 @@ class ToolKit():
         self.app1=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow1=QtWidgets.QMainWindow()      #
         self.ui1= Ui_Giris_Window()                   #
-        self.MainWindow1.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow1.setWindowFlag(Qt.FramelessWindowHint)
         self.ui1.setupUi(self.MainWindow1)            #
         ###############################################
 
@@ -29,7 +30,7 @@ class ToolKit():
         self.app2=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow2=QtWidgets.QMainWindow()      #
         self.app2.setWindowIcon(QtGui.QIcon('./Icon/MainWindow/mmm.png'))
-        self.MainWindow2.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow2.setWindowFlag(Qt.FramelessWindowHint)
         self.ui2=Ui_Camera_Window()                   #
         self.ui2.setupUi(self.MainWindow2)            #
         ###############################################
@@ -38,7 +39,7 @@ class ToolKit():
         self.app3=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow3=QtWidgets.QMainWindow()      #
         self.ui3=Ui_Veri_Tabani_Window()              #
-        self.MainWindow3.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow3.setWindowFlag(Qt.FramelessWindowHint)
         self.ui3.setupUi(self.MainWindow3)            #
         ###############################################
 
@@ -46,7 +47,7 @@ class ToolKit():
         self.app4=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow4=QtWidgets.QMainWindow()      #
         self.ui4=Ui_Goster_Window()                   #
-        self.MainWindow4.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow4.setWindowFlag(Qt.FramelessWindowHint)
         self.ui4.setupUi(self.MainWindow4)            #
         ###############################################
 
@@ -54,7 +55,7 @@ class ToolKit():
         self.app5=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow5=QtWidgets.QMainWindow()      #
         self.ui5=Ui_MainWindow()                      #
-        self.MainWindow5.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow5.setWindowFlag(Qt.FramelessWindowHint)
         self.ui5.setupUi(self.MainWindow5)            #
         ###############################################
 
@@ -62,7 +63,7 @@ class ToolKit():
         self.app6=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow6=QtWidgets.QMainWindow()      #
         self.ui6=Ui_Port_Window()                     #
-        self.MainWindow6.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow6.setWindowFlag(Qt.FramelessWindowHint)
         self.ui6.setupUi(self.MainWindow6)            #
         ###############################################
 
@@ -70,8 +71,15 @@ class ToolKit():
         self.app7=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow7=QtWidgets.QMainWindow()      #
         self.ui7=Ui_Kayt_Ol()                         #
-        self.MainWindow7.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow7.setWindowFlag(Qt.FramelessWindowHint)
         self.ui7.setupUi(self.MainWindow7)            #
+        ###############################################
+
+        ################ Faulty Fabric #####################
+        self.app8 = QtWidgets.QApplication(sys.argv)    #
+        self.MainWindow8 = QtWidgets.QMainWindow()      #
+        self.ui8 = Ui_FaultyFabricWindow()                         #
+        self.ui8.setupUi(self.MainWindow8)            #
         ###############################################
         
 
@@ -155,6 +163,12 @@ class ToolKit():
         self.MainWindow7.show()                                  #
     ##############################################################
 
+    ############ Faulty Window >>>>>##############################
+    def QWindow_Kayit(self):                                     #
+        self.MainWindow8.close()                                 #
+        self.MainWindow8.show()                                  #
+    ##############################################################
+
     ########################################## FeedBacks ##########################################################################
     def FeedBack_SetupUi(self) : return self.ui1, self.ui2, self.ui3, self.ui4, self.ui5                                          #
     def FeedBack_Windows(self) : return self.MainWindow1, self.MainWindow2, self.MainWindow3, self.MainWindow4, self.MainWindow5  #
@@ -162,6 +176,7 @@ class ToolKit():
     def FeedBack_Zoom_Rate(self) : return self.zoom_impact_rate                                                                   #
     def FeedBack_Port_UI(self) : return self.ui6, self.MainWindow6, self.app6                                                     #
     def Feedback_Kayt_UI(self) : return self.ui7, self.MainWindow7, self.app7                                                     #
+    def Feedback_Faulty_UI(self): return self.ui8, self.MainWindow8, self.app8
     ########################################## FeedBacks ##########################################################################
 
     def Cam_out_file_folder(self):
@@ -276,7 +291,7 @@ class ToolKit():
             self.ui5.statusbar.showMessage(" " * 1 + "Kamera yükseklik paramatresi başarılı bir şekilde import edilmiştir..." , 1500)
 
         else:                                                                                           #
-            self.Camera_Height=256                                                                      #
+            self.Camera_Height= 256                                                                      #
             print("Başarısız... Default 256 olarak ayarlanmıştır...")                                   #
             self.ui5.statusbar.showMessage(" " * 1 + "Kamera yükseklik paramatresi yüklenirken bir hata oluştu. Özellik 256 olarak ayarlanmıştır..." , 1500)
 
@@ -290,7 +305,7 @@ class ToolKit():
             print(int(self.Camera_Width))                                                                                                                            #
             self.ui5.statusbar.showMessage(" " * 1 + "Kamera genişlik paramatresi başarılı bir şekilde import edilmiştir..." , 1500)
         else:                                                                                                                                                   #
-            self.Camera_Width = 2592                                                                                                                            #
+            self.Camera_Width = 4096                                                                                                                            #
             self.ui5.statusbar.showMessage(" " * 1 + "Kamera genişlik paramatresi yüklenirken bir hata oluştu. Özellik 2592 olarak ayarlanmıştır..." , 1500)
             print("Başarısız... Default 2592 olarak ayarlanmıştır...")                                                                                          #
     #############################################################################################################################################################

@@ -81,7 +81,6 @@ class PylonVideoStream:
     def read(self):
             frames = []
             for active_cam in self.Active_cameras:
-                
                 frames.append((active_cam.frame, active_cam.model_name))
 
             return frames
