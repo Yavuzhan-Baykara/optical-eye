@@ -75,14 +75,10 @@ class Veri_Tabani_Window():
         for satirIndeks, satirVeri in enumerate(curs):
             for sutunIndeks, sutunVeri in enumerate (satirVeri):
                 ui3.Veri_Tabani_Widget.setItem(satirIndeks,sutunIndeks,QTableWidgetItem(str(sutunVeri)))
-
             Veri_Tabani_Window.Button_Show(satirVeri[0], cnt)
             cnt+=1
             if cnt == 999:
                 return
-
-        
-                
     def Doldur():
         selected=ui3.Veri_Tabani_Widget.selectedItems()
         if selected:
@@ -93,7 +89,6 @@ class Veri_Tabani_Window():
             ui3.Sinifi_LineEdit.setText(selected[10].text())
             ui3.Gunclle_PushButton.setDisabled(False)
             ui3.Delete_PushButton.setDisabled(False)
-
 
     def Goster(Id):
         curs.execute("SELECT * FROM Hata_Sonuclari WHERE Id='%s'" %(Id))
@@ -113,7 +108,6 @@ class Veri_Tabani_Window():
                     img_Goster=cv2.imread(row[11])
                     img_Goster=cv2.resize(img_Goster, (320,320),interpolation=cv2.INTER_CUBIC)
                     image = QtGui.QImage(img_Goster.data, img_Goster.shape[1], img_Goster.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
-                    
                     ### Doldurma Göster Window
                     ui4.Goster_Label.setPixmap(QtGui.QPixmap.fromImage(image))
                     
@@ -121,14 +115,11 @@ class Veri_Tabani_Window():
                 except Exception as e:
                     print(e.__class__)
 
-                
-                
     # def Name_Bul(Id):
     #     curs.execute("SELECT * FROM Hata_Sonuclari WHERE Id='%s'" %(Id))
     #     conn.commit()
     #     Data = curs.fetchall()
     #     # print(Data)
-        
         
     def Id_Bul(name):
         curs.execute("SELECT * FROM Hata_Sonuclari WHERE Sonuc_Isım='%s'" %(name))
@@ -137,17 +128,12 @@ class Veri_Tabani_Window():
         for row in Data:
             print(row[0])
             
-            
-        
     def Button_Show(i, row):
         table=ui3.Veri_Tabani_Widget
-    
         button = QtWidgets.QPushButton('Goster', MainWindow3)
         button.clicked.connect(lambda _, x=i: Veri_Tabani_Window.Goster(x))
-        
         table.setCellWidget(row, 0, button)
              
-        
     def Ara():
         aranan1=""
         if ui3.Leke_radioButton.isChecked():
@@ -165,30 +151,25 @@ class Veri_Tabani_Window():
         if ui3.Kirik_RadioButton.isChecked():
             aranan1="Kirisik"
         
-    
         curs.execute("SELECT * FROM Hata_Sonuclari WHERE Hata_Sınıfı=?",(aranan1,))
         conn.commit()
         ui3.Veri_Tabani_Widget.clear()
         ui3.Veri_Tabani_Widget.setHorizontalHeaderLabels(('Id','Tarih','Dok_No','Kalite_No','Hatanin_Geldiği_Metre','Bez_Eni','Hatanin_Duvar_Tarafından_Mesafesi','Hata_Eni','Hata_Boyutu','Hata_Alanı','Hata_Sınıfı','Sonuc_Isım'))
-        
         cnt = 0
         for satirIndeks, satirVeri in enumerate(curs):
             for sutunIndeks, sutunVeri in enumerate (satirVeri):
                 ui3.Veri_Tabani_Widget.setItem(satirIndeks,sutunIndeks,QTableWidgetItem(str(sutunVeri)))
             Veri_Tabani_Window.Button_Show(satirVeri[0], cnt)
             cnt+=1    
-        
         if ui3.Tumu_RadioButton.isChecked():
             Veri_Tabani_Window.Listele()
        
-    
     def get_last_Heigt_Width():
         curs.execute("SELECT Camera_Height, Camera_Width, Camera_İmpact_Rate FROM  Cameras_Inf ORDER BY Id DESC LIMIT 1")
         conn.commit()
         path = curs.fetchone()
         _Height,_Width,_Camera_İmpact_Rate=path
         return _Height,_Width,_Camera_İmpact_Rate
-
 
     def get_last_path():
         curs.execute("SELECT path FROM  Son_Kullanilan ORDER BY Id DESC LIMIT 1")

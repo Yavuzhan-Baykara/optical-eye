@@ -42,7 +42,10 @@ class Arduino_Toolkits():
         except:
             print("Beklenmeyen Bir Hata Port Kapatırken Bir Sorun Oluştu...")
     def Feedback_src(self):
-        return sa.src
+        try:
+            return sa.src
+        except Exception as e:
+            print(f"Bir sorun oluştu: {e}")    
     def sari_led_ac(self):
         try:
             sa.ser.write(b'A')

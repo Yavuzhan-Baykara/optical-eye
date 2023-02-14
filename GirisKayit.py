@@ -17,8 +17,6 @@ class GirisVKayit():
         global name
         global password
         self.users=users
-        print(self.users)
-
     def Inf(self) -> list:
         name=self.ui1.Kullaniciadi_lineEdit.text()
         password=self.ui1.Sifre_lineEdit.text()

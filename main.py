@@ -23,7 +23,6 @@ from PyQt5.QtWidgets import (
     qApp
 )
 
-
 class Worker(QObject):
     finished = pyqtSignal()
     progress = pyqtSignal(int)
@@ -46,21 +45,17 @@ class MainWindow(QMainWindow):
         self.thread = QThread()
         self.worker = Worker()
         self.worker.moveToThread(self.thread)
-
         self.thread.started.connect(self.worker.run)
         self.worker.finished.connect(self.thread.quit)
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
         self.worker.progress.connect(self.update_progress)
-
         self.thread.start()
         main(self.worker, self)
         
     def update_progress(self, progress):
         self.ui_.progressBar.setValue(progress)
         qApp.processEvents()
-
-    
 
 def main(worker, window):
     def loadingbar(x):
@@ -99,7 +94,6 @@ def main(worker, window):
     loadingbar(80)
     import random
     global configs
-    
     configs =  {
         1: {
             'value1': 0,
@@ -143,6 +137,7 @@ def main(worker, window):
             MainWindow7.close()
             MainWindow9.showMaximized()
             Basler_Cameras()
+
     def record_cameras_data():
         ui2.logic_All = 1
         ui2.Ac_pushButton.setDisabled(True)
@@ -157,7 +152,6 @@ def main(worker, window):
             Arduino_Tools.port_ac(Tools)
             selected_item = ui2.comboBox_Kalite_No.currentText()
             brightnessValue = Veri_Tabani_Window.get_fabric_brightness(selected_item)
-            print(str(20))
             sleep(1./5)
             Arduino_Tools.setBrightness(str(brightnessValue))
             sleep(1./5)
@@ -165,26 +159,31 @@ def main(worker, window):
         except:
             time.sleep(0.1)
             ui2.statusbar.showMessage(" "*1 + " Port açılamadı !!!", 1500)
+
         detect_images = []
         detect_Hata_Eni = []
         detect_Hata_Boyu = []
         detect_Hata_Alan = []
         detect_Hata_Metre = []
         detect_Hata_Sinif = []
-        cnt=0
+        faulty_cnt = 0
+        theta_1_center, theta_2_center = [0, 0]
+        detect_threshold = 3
+        threshold = 200
+        start_time_faulty_cnt = 0
         detect_faulty_fabric = {"Flawed Hole": 0, "Flawed Spot": 0, "Flawed Crack": 0, "Other Errors": 0}
         Hata_Goster_labels = [ui9.label_Hata_Goster_1, ui9.label_Hata_Goster_2, ui9.label_Hata_Goster_3,
-                                              ui9.label_Hata_Goster_4, ui9.label_Hata_Goster_5, ui9.label_Hata_Goster_6]
-        Hata_Eni_labels = [ui9.text_Hata_Eni_1, ui9.text_Hata_Eni_2, ui9.text_Hata_Eni_3,
-                           ui9.text_Hata_Eni_4, ui9.text_Hata_Eni_5, ui9.text_Hata_Eni_6]
-        Hata_Boyu_labels = [ui9.text_Hata_Boyu_1, ui9.text_Hata_Boyu_2, ui9.text_Hata_Boyu_3,
-                            ui9.text_Hata_Boyu_4, ui9.text_Hata_Boyu_5, ui9.text_Hata_Boyu_6]
-        Hata_Alan_labels = [ui9.text_Hata_Alan_1, ui9.text_Hata_Alan_2, ui9.text_Hata_Alan_3,
-                                 ui9.text_Hata_Alan_4, ui9.text_Hata_Alan_5, ui9.text_Hata_Alan_6]
-        Hata_Metre_Labels = [ui9.Metre_Label_1, ui9.Metre_Label_2, ui9.Metre_Label_3,
-                             ui9.Metre_Label_4, ui9.Metre_Label_5, ui9.Metre_Label_6]
-        Hata_Sinif_labels = [ui9.text_Hata_Sinif_1, ui9.text_Hata_Sinif_2, ui9.text_Hata_Sinif_3,
-                                  ui9.text_Hata_Sinif_4, ui9.text_Hata_Sinif_5, ui9.text_Hata_Sinif_6]
+                              ui9.label_Hata_Goster_4, ui9.label_Hata_Goster_5, ui9.label_Hata_Goster_6]
+        Hata_Eni_labels =    [ui9.text_Hata_Eni_1, ui9.text_Hata_Eni_2, ui9.text_Hata_Eni_3,
+                              ui9.text_Hata_Eni_4, ui9.text_Hata_Eni_5, ui9.text_Hata_Eni_6]
+        Hata_Boyu_labels =   [ui9.text_Hata_Boyu_1, ui9.text_Hata_Boyu_2, ui9.text_Hata_Boyu_3,
+                              ui9.text_Hata_Boyu_4, ui9.text_Hata_Boyu_5, ui9.text_Hata_Boyu_6]
+        Hata_Alan_labels =   [ui9.text_Hata_Alan_1, ui9.text_Hata_Alan_2, ui9.text_Hata_Alan_3,
+                              ui9.text_Hata_Alan_4, ui9.text_Hata_Alan_5, ui9.text_Hata_Alan_6]
+        Hata_Metre_Labels =  [ui9.Metre_Label_1, ui9.Metre_Label_2, ui9.Metre_Label_3,
+                              ui9.Metre_Label_4, ui9.Metre_Label_5, ui9.Metre_Label_6]
+        Hata_Sinif_labels =  [ui9.text_Hata_Sinif_1, ui9.text_Hata_Sinif_2, ui9.text_Hata_Sinif_3,
+                              ui9.text_Hata_Sinif_4, ui9.text_Hata_Sinif_5, ui9.text_Hata_Sinif_6]
         myTime = 0
         recordcounter = 0
         prev_time = time.time()
@@ -204,7 +203,6 @@ def main(worker, window):
         if cameras.GetSize() == 0:
             print('No camera is detected!')
             ui2.statusbar.showMessage(" "*1 + " Pylon kamera bulunmamaktadır...", 1500)
-
             ui2.Off_pushButton.setDisabled(True)
             ui2.Ac_pushButton.setDisabled(False)
             return 
@@ -214,6 +212,7 @@ def main(worker, window):
         ui2.statusbar.showMessage( " " * 1 + f" Cuda GPU Durumu: {cuda.is_available()}", 1500)
         if cuda.is_available():
             tensor_temp = tensor_temp.to(device_temp)
+
         while 1:
             position = Arduino_Tools.Feedback_src()
             delta_time = time.time() - prev_time 
@@ -221,7 +220,11 @@ def main(worker, window):
             if delta_time == 0:
                 speed = 0
             else:
-                speed = int(abs((position - prev_position) / delta_time * 10))
+                try:
+                    speed = int(abs((position - prev_position) / delta_time * 10))
+                except TypeError as e:
+                    speed = 0
+                    print(f"Bir hata oluştu {e}")
             prev_position = position
             prev_time = time.time()
             if speed > 120:
@@ -250,6 +253,7 @@ def main(worker, window):
                     cam.grabResult.Release()
                 cameras.StopGrabbing()
                 break
+
             if len(frames) == 0:
                 print('No camera is detected!')
                 ui2.statusbar.showMessage(" "*1 + " Tanımlı kamera bulunmamaktadır. Lütfen kamera takılı ise admin panelinden ayarlayınız...", 1500)
@@ -257,6 +261,7 @@ def main(worker, window):
                 vs_pylon.stop()
                 ui2.Ac_pushButton.setDisabled(False)
                 return 
+
             if len(frames) == 1:
                 model_name = frames[0][1]
                 model_image =frames[0][0]
@@ -264,24 +269,21 @@ def main(worker, window):
                 zoom_value_5 = Tools.zoom_value_5()
                 zoom_value_3 = Tools.zoom_value_3()
                 zoom_value_1 = Tools.zoom_value_1()
-                    
                 if ui2.radioButton_Camera_I.isChecked()==True and model_name== Tools.Camera_Serial[0]:
                     model_image = model_image[zoom_value_5[1]+ zoom_value_3: -zoom_value_5[1]+height  + zoom_value_3, zoom_value_5[0]+zoom_value_1 : width - (zoom_value_5[0])+ zoom_value_1 ]
                 if ui2.radioButton_Camera_II.isChecked()==True and model_name==Tools.Camera_Serial[1]:
                     model_image = model_image[zoom_value_5[1]+ zoom_value_3: -zoom_value_5[1]+height  + zoom_value_3, zoom_value_5[0]+zoom_value_1 : width - (zoom_value_5[0])+ zoom_value_1 ]
-
                 single_frame = resize(model_image,  width=1400)
                 single_frame2  = resize(model_image, width=1400)
                 new_frame_time = time.time()
                 fps = 1/(new_frame_time-prev_frame_time)
                 prev_frame_time = new_frame_time
-                fps = int(fps)
-                fps = str(fps)
+                fps = str(int(fps))
                 results = model(single_frame)         
                 results.display(render=True) 
                 height, width, channel=results.imgs[0].shape
                 step=channel*width
-                out= cvtColor(results.imgs[0],COLOR_BGR2RGB)
+                out= cvtColor(results.imgs[0], COLOR_BGR2RGB)
                 outh1 = int((64*height)/256)
                 outh2 = int((192*height)/256)   
                 out[outh1,:] = 0           
@@ -307,95 +309,87 @@ def main(worker, window):
                         if yc>outh1 and  yc<outh2:
                             crop=single_frame2[y1-5:y2+5,x1-5:x2+5]
                             if Tools.Trigg_Port_Button == True:
-                                    try:
-                                        src = Arduino_Tools.Feedback_src()
-                                    except:
-                                        ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
-                                        src=0
+                                try:
+                                    src = Arduino_Tools.Feedback_src()
+                                except:
+                                    ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
+                                    src=0
                             if Tools.Trigg_Port_Button==False:
                                 src=0
                             x = abs(x2-x1)
                             y = abs(y2-y1)
                             xy = x * y
-                            if str(df.iloc[:]['name'][detect])=='Delik' or str(df.iloc[:]['name'][detect])=='Leke':
-                                cnt = cnt + 1
-                            if cnt >= 1: 
-                                cnt = 0
-                                if not helper.check_similarity(crop):
-                                    Arduino_Tools.kirmizi_led_ac()
-                                    crop = resize_cv2(crop, (320,320), interpolation = INTER_CUBIC)
-                                    image = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
-                                    ui6.Goster_Label.setPixmap(QtGui.QPixmap.fromImage(image))
-                                    detect_images.insert(0, image)
-                                    detect_Hata_Eni.insert(0, str(x))
-                                    detect_Hata_Boyu.insert(0, str(y))
-                                    detect_Hata_Alan.insert(0, str(xy))
-                                    detect_Hata_Metre.insert(0, str(src))
-                                    detect_Hata_Sinif.insert(0, str(df.iloc[:]['name'][detect]))
-                                    if len(detect_images) >= 7:
-                                        detect_images.pop(6)
-                                        detect_Hata_Eni.pop(6)
-                                        detect_Hata_Boyu.pop(6)
-                                        detect_Hata_Alan.pop(6)
-                                        detect_Hata_Metre.pop(6)
-                                        detect_Hata_Sinif.pop(6)
-                                    for index in range(len(detect_images)):
-                                        Hata_Goster_labels[index].setPixmap(QtGui.QPixmap.fromImage(detect_images[index]))
-                                        Hata_Eni_labels[index].setText(detect_Hata_Eni[index])
-                                        Hata_Boyu_labels[index].setText(detect_Hata_Boyu[index])
-                                        Hata_Alan_labels[index].setText(detect_Hata_Alan[index])
-                                        Hata_Metre_Labels[index].setText(detect_Hata_Metre[index])
-                                        Hata_Sinif_labels[index].setText(detect_Hata_Sinif[index])
-                                    if str(df.iloc[:]['name'][detect])=='Delik':
-                                        detect_faulty_fabric["Flawed Hole"] += 1
-                                    else:
-                                        detect_faulty_fabric["Flawed Spot"] += 1
-                                    waitKey(2)
-                                    postOut = cvtColor(crop, COLOR_BGR2RGB)
-                                    img = Image.fromarray(postOut, "RGB")
-                                    img_byte_arr = BytesIO()
-                                    img.save(img_byte_arr, format='PNG')
-                                    img_byte_arr = img_byte_arr.getvalue()
-                                    # url= "https://menderes-mobile-app.herokuapp.com/errors/add"
-                                    # headers = {'accept': 'application/json',
-                                    #                                 "Authorization":'Bearer eyJhbGciOiJSUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiI2MmZiMzVjYjY5YThiZDk5MTUwNjhiYTMiLCJpYXQiOjE2NjA4MzM3NTczNTIsImV4cCI6MTY2MDgzMzg0Mzc1Mn0.tfKjNRPlo7IvDN6Cp2K81Z0wfreNQkJtDsYZAxl4w7T3j4m4fcgVoephYxaUljoGKxli6OsnBvnf7BVoV994Mm_b-nvfp9srm-rqQdCOfsB_GI65GyHwpsnVbLo9uODhcbtcKXWE_x_rBBGphHcU12XXxsHrRTGUkhG5btn7f3JBt9uRrkXiuu_0G9cdFRrha8RwYNs6ZvJo3AuUit1iWGVyWSw7mI92wTBZJWt629ozc1Dd7fMR7j6z_twxLjT9mEKFAd7k4wJUTl4s3upKVZNfTOQP_DBJ9ci_FgpJYwxZqMwQbNF8ltTtyC3TFTZTqczL1dIuFaV44t7eu8FM6OcbklY3dQ-1aYtMMDBWmxUA3zDr7Z50f-ZC5n3YZJlE9hN8d7mcAqN47nbTBzkuofp2kSmhTPWwKce3LJWx9B8ZqWssTSKZegFh_Ldn-xrD8mB7IIDM48D-JgHvLTelIxnGkUDKbg8vL26VR-aJmceL89EYA2K-Kal2FBF18qN7I2icGcMp9k3CDZEeBaTqmVGkqmWGLLKCnxeaN2HVDSdD5bGoPFBVCL6TDgf53HYNRU7WafpL6Ln8MnIdr2n9gm6hKEtTUGam_MrEH54yHKTLi4XcxQbYOV4uavOXA0ICck_WfHbIRo6jLBf-eVmoQP5uHzK4mwhRz3C7NjfZOws'}
-                                    # data = {
-                                    #                             "class": str(df.iloc[:]['name'][detect]),
-                                    #                             "meterInFabric":  str(src),
-                                    #                             "width": str(x),
-                                    #                             "height": str(y),
-                                    # }
-                                    # multiple_files = [('photo', ('arda.jpg', img_byte_arr, 'image  /jpg')),]
-                                    # try:
-                                    #     post_reader.append_post_thread(headers, files=multiple_files, data=data, url=url)
-                                    # except:
-                                    #     print("Mobil app sorun oluştu...")
-                                    if len(helper.last_images)>=5:
-                                        del helper.last_images[0]
-                                        helper.last_images.append(crop)
-                                    else:
-                                        helper.last_images.append(crop)
-                                    imwrite(Save_image, model_image)
-                                    waitKey(1)
-                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
-                                if Tools.Trigg_Port_Button==True:
-                                    Arduino_Tools.kirmizi_led_ac()
-                                    try:
-                                        src=Arduino_Tools.Feedback_src()
-                                    except:
-                                        ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
-                                        src=0
-                            if not str(df.iloc[:]['name'][detect])=='Delik' or not str(df.iloc[:]['name'][detect])=='Leke':
-                                if not helper.check_similarity(crop):
-                                    if len(helper.last_images)>=5:
-                                        del helper.last_images[0]
-                                        helper.last_images.append(crop)
-                                    else:
-                                        helper.last_images.append(crop)
-                                    detect_faulty_fabric["Other Errors"] += 1
-                                    imwrite(Save_image, model_image)
-                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
-
+                            if (str(df.at[detect, 'name']) in ['Delik', 'Leke']):
+                                if faulty_cnt == 0:
+                                    start_time_faulty_cnt = time.time()     
+                                    theta_1_center = max(0, cx - threshold)
+                                    theta_2_center = min(model_image.shape[1], cx + threshold)
+                                    cv2.line(out, (int(theta_1_center), 0), (int(theta_1_center), height), (255, 0, 0), thickness=2)
+                                    cv2.line(out, (int(theta_2_center), 0), (int(theta_2_center), height), (255, 0, 0), thickness=2)
+                                crop = resize_cv2(crop, (320,320), interpolation = INTER_CUBIC)
+                                image = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
+                                ui6.Goster_Label.setPixmap(QtGui.QPixmap.fromImage(image))
+                                detect_images.insert(0, image)
+                                detect_Hata_Eni.insert(0, str(x))
+                                detect_Hata_Boyu.insert(0, str(y))
+                                detect_Hata_Alan.insert(0, str(xy))
+                                detect_Hata_Metre.insert(0, str(src))
+                                detect_Hata_Sinif.insert(0, str(df.iloc[:]['name'][detect]))
+                                if len(detect_images) >= 7:
+                                    detect_images.pop(6)
+                                    detect_Hata_Eni.pop(6)
+                                    detect_Hata_Boyu.pop(6)
+                                    detect_Hata_Alan.pop(6)
+                                    detect_Hata_Metre.pop(6)
+                                    detect_Hata_Sinif.pop(6)
+                                for index in range(len(detect_images)):
+                                    Hata_Goster_labels[index].setPixmap(QtGui.QPixmap.fromImage(detect_images[index]))
+                                    Hata_Eni_labels[index].setText(detect_Hata_Eni[index])
+                                    Hata_Boyu_labels[index].setText(detect_Hata_Boyu[index])
+                                    Hata_Alan_labels[index].setText(detect_Hata_Alan[index])
+                                    Hata_Metre_Labels[index].setText(detect_Hata_Metre[index])
+                                    Hata_Sinif_labels[index].setText(detect_Hata_Sinif[index])
+                                if str(df.iloc[:]['name'][detect])=='Delik':
+                                    detect_faulty_fabric["Flawed Hole"] += 1
+                                else:
+                                    detect_faulty_fabric["Flawed Spot"] += 1
+                                waitKey(2)
+                                postOut = cvtColor(crop, COLOR_BGR2RGB)
+                                img = Image.fromarray(postOut, "RGB")
+                                img_byte_arr = BytesIO()
+                                img.save(img_byte_arr, format='PNG')
+                                img_byte_arr = img_byte_arr.getvalue()
+                                if len(helper.last_images)>=5:
+                                    del helper.last_images[0]
+                                    helper.last_images.append(crop)
+                                else:
+                                    helper.last_images.append(crop)
+                                imwrite(Save_image, model_image)
+                                waitKey(1)
+                                helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
+                            if (str(df.at[detect, 'name']) in ['Delik', 'Leke']) and (theta_1_center <= cx <= theta_2_center):
+                                faulty_cnt += 1
+                            elif not (theta_1_center <= cx <= theta_2_center):
+                                faulty_cnt = 0
+                            if faulty_cnt >= detect_threshold:
+                                faulty_cnt = 0
+                                Arduino_Tools.kirmizi_led_ac()
+                            if Tools.Trigg_Port_Button==True:
+                                # Arduino_Tools.kirmizi_led_ac()
+                                try:
+                                    src=Arduino_Tools.Feedback_src()
+                                except:
+                                    ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
+                                    src=0
+                            if str(df.iloc[:]['name'][detect]) not in ['Delik', 'Leke']:
+                                if len(helper.last_images)>=5:
+                                    del helper.last_images[0]
+                                    helper.last_images.append(crop)
+                                else:
+                                    helper.last_images.append(crop)
+                                detect_faulty_fabric["Other Errors"] += 1
+                                imwrite(Save_image, model_image)
+                                helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
                 ui9.text_Detect_Delik.setText(str(detect_faulty_fabric["Flawed Hole"]))
                 ui9.text_Detect_Leke.setText(str(detect_faulty_fabric["Flawed Spot"]))
                 ui9.text_Detect_Diger.setText(str(detect_faulty_fabric["Other Errors"]))
@@ -403,6 +397,14 @@ def main(worker, window):
                     ui9.Ikaz_Durum.setText("KAPALI")
                 else:
                     ui9.Ikaz_Durum.setText("AÇIK")
+                ################################################################################################
+                cv2.line(out, (int(theta_1_center), 0), (int(theta_1_center), height), (255, 0, 0), thickness=2)
+                cv2.line(out, (int(theta_2_center), 0), (int(theta_2_center), height), (255, 0, 0), thickness=2)
+                current_time_faulty_cnt = time.time()
+                if current_time_faulty_cnt - start_time_faulty_cnt >= 60:
+                    faulty_cnt = 0
+                    start_time_faulty_cnt = current_time_faulty_cnt
+                ################################################################################################
                 if model_name == Tools.Camera_Serial[0]:
                     qImg=QImage(out,width,height,step,QImage.Format_RGB888)
                     ui2.Camera_1.setPixmap(QPixmap.fromImage(qImg))
@@ -429,7 +431,6 @@ def main(worker, window):
                 frame_model, frame2_model = frames[0][1], frames[1][1]
                 height, width, channel = frame.shape
                 height2, width2, channel2 = frame2.shape
-                
                 # Zoom
                 if ui2.radioButton_Camera_I.isChecked()==True and frame_model == Tools.Camera_Serial[0]:
                     configs[1]['value5'] = Tools.zoom_value_5()
@@ -444,11 +445,9 @@ def main(worker, window):
                 # Görüntünün yeniden boyutlandırılması
                 frame_1 = resize(frame, width=1400)
                 frame_2 = resize(frame2, width=1400)
-                
                 # Görüntünün cuda ile tensore dönüşümü
                 tensor1 = tensor(frame_1, device="cuda")
                 tensor2 = tensor(frame_2, device="cuda")
-
                 # Fps ölçümü
                 new_frame_time = time.time()
                 fps = 1/(new_frame_time-prev_frame_time)
@@ -456,7 +455,6 @@ def main(worker, window):
                 fps = int(fps)
                 fps = str(fps)
                 myTime+=1
-                
                 # Görüntülerin Birleştirilmesi
                 tensor_temp = cat([tensor1, tensor2], dim=0)
                 # Tensorlerin CPU'ya atanması
@@ -465,34 +463,26 @@ def main(worker, window):
                 h = results.imgs[0].shape[0] 
                 out1= cvtColor(results.imgs[0][0:int(h/2), :],COLOR_BGR2RGB)
                 out2= cvtColor(results.imgs[0][int(h/2):, :]  ,COLOR_BGR2RGB)
-                
                 # Kırpma işlemi için kullanılacak görüntünün kopyası
                 results_2 = tensor_temp.cpu().numpy()
-                
-                #
                 height, width, channel=out1.shape
                 height2, width2, channel2=out2.shape
                 step=channel*width
-                
                 # Benzerlik için y sınırlarının belirlenmesi
                 outh1 = int((64*height)/256)
                 outh2 = int((192*height)/256)
                 outh3 = int((64*height2)/256)
                 outh4 = int((192*height2)/256)
-                
                 # GUIde gözüken görüntünün sınırların çizilmesi
                 out1[outh1,:] = 0
                 out1[outh2,:] = 0
                 out2[outh3,:] = 0
                 out2[outh4,:] = 0
-                
                 #  Görüntü dizisinin oluşturulması
                 outs = [[out1, frame_model], [out2, frame2_model]]
-
                 # Hataların koordinatları
                 df=results.pandas().xyxy[0]
                 df=DataFrame(df)
-            
                 if len(df)!=0:  # Hata tespit edildiğinde
                     for detect in range(len(df.iloc[:]['name'])):
                         # Resimler için kayıt yolunun belirlenmesi
@@ -555,7 +545,6 @@ def main(worker, window):
                                 
                                     multiple_files = [
                                             ('photo', ('arda.jpg', img_byte_arr, 'image  /jpg')),
-                                            
                                     ]
         
                                     post_reader.append_post_thread(headers, files=multiple_files, data=data, url=url)
@@ -584,9 +573,7 @@ def main(worker, window):
                                         helper.last_images.append(crop)
                                     imwrite(Save_image, results_2)
                                     helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
-        
                 for out in outs:
-                    
                     if out[1] == Tools.Camera_Serial[0]:
                         out_1= cvtColor(out[0],COLOR_BGR2RGB)
                         qImg=QImage(out_1,width,height,step,QImage.Format_RGB888)
@@ -602,9 +589,7 @@ def main(worker, window):
                         ui2.Camera_4.setPixmap(QPixmap.fromImage(qImg))
                 waitKey(2)
                 ui2.label_8.setText(str(fps))
-                            
         destroyAllWindows()     
-
 
     def Video_Selected():
         ui2.Durum_Cam.setText("AÇIK")
@@ -632,6 +617,7 @@ def main(worker, window):
         ui2.Cam_IV_Record=0
         ui2.Durum_Cam.setText("KAPALI")
     ##Bütün Kameraların Kapatılması Buttonu
+
     def Click_Button_All_Stop():
         Arduino_Tools.hepsini_kapat()
         Arduino_Tools.port_kapat()
@@ -654,6 +640,7 @@ def main(worker, window):
 
     ########################################################################################################################
     def Close():
+        Arduino_Tools.hepsini_kapat()
         MainWindow1.close()
         MainWindow2.close()
         MainWindow3.close()
@@ -685,13 +672,16 @@ def main(worker, window):
         Show_Record_Time()
         timer.timeout.connect(Show_Record_Time)
         timer.start(10)
+
     def Show_Record_Time():
         if ui2.flag:
             ui2.count+= 1
         ui2.text = str(ui2.count / 20)
         ui2.label_9.setText(ui2.text)
+
     def Start():
         ui2.flag = True
+
     def Re_set():
         ui2.flag = False
         ui2.count = 0
@@ -840,14 +830,11 @@ def main(worker, window):
     ui8, MainWindow8, app8 = Tools.Feedback_Kayt_UI()
     ui9, MainWindow9, app9 = Tools.Feedback_Faulty_UI()
     #######################################################################################################
-
     worker.progress.emit(100)
     time.sleep(0.5)
     window.close()
     worker.finished.emit()
     helper.pdf_folder_create()
-    
-    
     MainWindow1.show()
     Tools.Cam_out_file_folder()
     New_Day_Folder()
@@ -855,7 +842,6 @@ def main(worker, window):
     Veri_Tabani_Window.get_last_path()
     Veri_Tabani_Window.get_last_Heigt_Width()
     ui2.logic_All = 0
-
     ui2.Off_pushButton.setDisabled(True)
     pixmap = QPixmap('./Icon/Label Img/CameraOFF.PNG')
     pixmap_detect_off = QPixmap('./Icon/Label Img/DetectOFF.PNG')
@@ -864,7 +850,6 @@ def main(worker, window):
     ui2.Camera_3.setPixmap(pixmap) 
     ui2.Camera_4.setPixmap(pixmap) 
     last_detect(pixmap_detect_off)
-
     starting_upload()
     default_model()
     timer = QTimer()
