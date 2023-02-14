@@ -7,8 +7,8 @@ Created on Wed Mar 13 11:58:46 2019
 
 from PyQt5 import uic
 
-with open('FaultyFabricWindow.py', 'w', encoding="utf-8") as fout:
-   uic.compileUi('FaultyFabricWindow.ui',fout)
+# with open('FaultyFabricWindow.py', 'w', encoding="utf-8") as fout:
+#    uic.compileUi('FaultyFabricWindow.ui',fout)
 
 # with open('Camera.py', 'w', encoding="utf-8") as fout:
 #    uic.compileUi('Camera.ui',fout)
@@ -25,8 +25,8 @@ with open('FaultyFabricWindow.py', 'w', encoding="utf-8") as fout:
 # with open('Port.py', 'w', encoding="utf-8") as fout:
 #    uic.compileUi('Port.ui',fout)
 
-# with open('Veri_Tabani.py', 'w', encoding="utf-8") as fout:
-#    uic.compileUi('Veri_Tabani.ui',fout)
+with open('Veri_Tabani.py', 'w', encoding="utf-8") as fout:
+   uic.compileUi('Veri_Tabani.ui',fout)
 
 # with open('Giris.py', 'w', encoding="utf-8") as fout:
 #    uic.compileUi('Giris.ui',fout)

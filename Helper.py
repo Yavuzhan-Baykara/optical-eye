@@ -31,26 +31,21 @@ class Helper():
 
         return self
 
-
     def get_time(self):
             self.now = datetime.now()
             Timer(0.01,self.get_time,args=()).start()
     
     def update_db(self):
-       
         while 1:
             time.sleep(0.0001)
             if len(self.db_queue) != 0:
-
                 task=self.db_queue.pop(0)
-                Veri_Tabani_Window.Ekle(self.Db_path_time(choice="Now-Day"),task['Dok_no'] , task['Kalite_no'], task['Metre'], 0, 0, task['En'], task['Boy'], task['Alan'],str(task['df'].iloc[:]['name'][task['detect']]), task['Save_image'])
+                Veri_Tabani_Window.Ekle(self.Db_path_time(choice="Now-Day"),task['Dok_no'] , task['Kalite_no'], task['Metre'], 0, 0, task['En'], task['Boy'], task['Alan'],str(task['df'].iloc[:]['name'][task['detect']]), task['Save_image'], task['Hata_Koordinant'])
                 self.db_queue.clear()
             else:
                 continue
             
     def check_similarity(self, img1):
-        
-       
         result = False
         # if len(self.last_images) >7:
         #     del self.last_images[:4]
@@ -60,7 +55,7 @@ class Helper():
         return result
             
     
-    def append_db(self, df, detect, Save_image, Metre, En, Boy, Alan, Dok_no, Kalite_no):
+    def append_db(self, df, detect, Save_image, Metre, En, Boy, Alan, Dok_no, Kalite_no, Hata_Koordinant):
         if len(self.db_queue) < 2:
             task ={
                 'df': df,
@@ -71,7 +66,8 @@ class Helper():
                 'Boy': Boy,
                 'Alan': Alan,
                 'Dok_no': Dok_no,
-                'Kalite_no': Kalite_no
+                'Kalite_no': Kalite_no,
+                'Hata_Koordinant': Hata_Koordinant,
                 }
             self.db_queue.append(task)
 
@@ -81,7 +77,6 @@ class Helper():
        
         if src==1:
             return  day_db_is_here, writer
-        
         
         if src==2:
             return day_db_is_here, writer
@@ -94,9 +89,7 @@ class Helper():
             return  day_db_is_here, writer
           
     def readImages(self,src=3):
-        
         img_save_cam_I, img_save_cam_II, img_save_cam_III, img_save_cam_IV = self.img_path_definer()
-        
         if src==1:
             return  img_save_cam_I
         
@@ -110,7 +103,6 @@ class Helper():
         
         if src==4:
             return  img_save_cam_IV
-        
        
     #WebCam sayısını bulmaya yarayan fonksiyon
     def get_cams(self):
@@ -128,20 +120,14 @@ class Helper():
     
     def video_path_definer(self):
         ##Zaman ve path uzantıları   
-      
         # String Dönüşümü
         path_time = self.now.strftime('%H:%M:%S')
-
         path_cam_I="Cam Out/Cam I/videos"
         path_cam_II="Cam Out/Cam II/videos"
         path_cam_III="Cam Out/Cam III/videos"
         path_cam_IV="Cam Out/Cam IV/videos"
-
-
-     
         #Database yolu
         day_db_is_here="./Database"
-
         ####CAPTURE
         fps = 25  # Hz
         time_to_record = 5  # seconds
@@ -156,15 +142,11 @@ class Helper():
        
         return (day_db_is_here, writer)
     def img_path_definer(self):
-        
-        
         path_time = self.now.strftime('%H:%M:%S')
-
         path_cam_I="Cam Out/Cam I/images"
         path_cam_II="Cam Out/Cam II/images"
         path_cam_III="Cam Out/Cam III/images"
         path_cam_IV="Cam Out/Cam IV/images"
-
         ## İmage Save Cams
         img_save_cam_I=path_cam_III+"Cam_I_"+path_time+".jpeg"
         img_save_cam_II=path_cam_III+"Cam_II_"+path_time+".jpeg"

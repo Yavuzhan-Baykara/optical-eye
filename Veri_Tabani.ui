@@ -2686,7 +2686,7 @@ PlotWidget {
         <number>1000</number>
        </property>
        <property name="columnCount">
-        <number>12</number>
+        <number>13</number>
        </property>
        <attribute name="horizontalHeaderDefaultSectionSize">
         <number>151</number>
@@ -3691,6 +3691,7 @@ PlotWidget {
        <row/>
        <row/>
        <row/>
+       <column/>
        <column/>
        <column/>
        <column/>

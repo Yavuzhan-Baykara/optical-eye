@@ -264,7 +264,8 @@ def main(worker, window):
 
             if len(frames) == 1:
                 model_name = frames[0][1]
-                model_image =frames[0][0]
+                model_image = frames[0][0]
+                copy_model_image = np.copy(model_image)
                 height, width, channel = model_image.shape
                 zoom_value_5 = Tools.zoom_value_5()
                 zoom_value_3 = Tools.zoom_value_3()
@@ -273,21 +274,20 @@ def main(worker, window):
                     model_image = model_image[zoom_value_5[1]+ zoom_value_3: -zoom_value_5[1]+height  + zoom_value_3, zoom_value_5[0]+zoom_value_1 : width - (zoom_value_5[0])+ zoom_value_1 ]
                 if ui2.radioButton_Camera_II.isChecked()==True and model_name==Tools.Camera_Serial[1]:
                     model_image = model_image[zoom_value_5[1]+ zoom_value_3: -zoom_value_5[1]+height  + zoom_value_3, zoom_value_5[0]+zoom_value_1 : width - (zoom_value_5[0])+ zoom_value_1 ]
-                single_frame = resize(model_image,  width=1400)
-                single_frame2  = resize(model_image, width=1400)
                 new_frame_time = time.time()
                 fps = 1/(new_frame_time-prev_frame_time)
                 prev_frame_time = new_frame_time
                 fps = str(int(fps))
-                results = model(single_frame)         
+                results = model(model_image)         
                 results.display(render=True) 
-                height, width, channel=results.imgs[0].shape
-                step=channel*width
                 out= cvtColor(results.imgs[0], COLOR_BGR2RGB)
                 outh1 = int((64*height)/256)
                 outh2 = int((192*height)/256)   
                 out[outh1,:] = 0           
-                out[outh2,:] = 0           
+                out[outh2,:] = 0
+                single_frame = resize(out,  width=1400)
+                height, width, channel = single_frame.shape
+                step = channel * width   
                 df=results.pandas().xyxy[0]
                 df=DataFrame(df)
                 myTime+=1
@@ -307,7 +307,7 @@ def main(worker, window):
                         if(y1<=6):y1=6
                         yc = (y1+y2)/2
                         if yc>outh1 and  yc<outh2:
-                            crop=single_frame2[y1-5:y2+5,x1-5:x2+5]
+                            crop = copy_model_image[y1-5:y2+5,x1-5:x2+5]
                             if Tools.Trigg_Port_Button == True:
                                 try:
                                     src = Arduino_Tools.Feedback_src()
@@ -364,9 +364,11 @@ def main(worker, window):
                                     helper.last_images.append(crop)
                                 else:
                                     helper.last_images.append(crop)
-                                imwrite(Save_image, model_image)
+                                imwrite(Save_image, copy_model_image)
                                 waitKey(1)
-                                helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
+                                Hata_Koordinant = [x1, x2, y1, y2]
+                                Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
+                                helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant)
                             if (str(df.at[detect, 'name']) in ['Delik', 'Leke']) and (theta_1_center <= cx <= theta_2_center):
                                 faulty_cnt += 1
                             elif not (theta_1_center <= cx <= theta_2_center):
@@ -388,8 +390,10 @@ def main(worker, window):
                                 else:
                                     helper.last_images.append(crop)
                                 detect_faulty_fabric["Other Errors"] += 1
-                                imwrite(Save_image, model_image)
-                                helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
+                                imwrite(Save_image, copy_model_image)
+                                Hata_Koordinant = [x1, x2, y1, y2]
+                                Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
+                                helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant)
                 ui9.text_Detect_Delik.setText(str(detect_faulty_fabric["Flawed Hole"]))
                 ui9.text_Detect_Leke.setText(str(detect_faulty_fabric["Flawed Spot"]))
                 ui9.text_Detect_Diger.setText(str(detect_faulty_fabric["Other Errors"]))
@@ -406,23 +410,23 @@ def main(worker, window):
                     start_time_faulty_cnt = current_time_faulty_cnt
                 ################################################################################################
                 if model_name == Tools.Camera_Serial[0]:
-                    qImg=QImage(out,width,height,step,QImage.Format_RGB888)
+                    qImg=QImage(single_frame,width,height,step,QImage.Format_RGB888)
                     ui2.Camera_1.setPixmap(QPixmap.fromImage(qImg))
                 elif model_name == Tools.Camera_Serial[1]:
-                    qImg=QImage(out,width,height,step,QImage.Format_RGB888)
+                    qImg=QImage(single_frame,width,height,step,QImage.Format_RGB888)
                     ui2.Camera_2.setPixmap(QPixmap.fromImage(qImg))
                 elif model_name == Tools.Camera_Serial[2]:
-                    qImg=QImage(out,width,height,step,QImage.Format_RGB888)
+                    qImg=QImage(single_frame,width,height,step,QImage.Format_RGB888)
                     ui2.Camera_2.setPixmap(QPixmap.fromImage(qImg))
                 elif model_name == Tools.Camera_Serial[3]:
-                    qImg=QImage(out,width,height,step,QImage.Format_RGB888)
+                    qImg=QImage(single_frame,width,height,step,QImage.Format_RGB888)
                     ui2.Camera_2.setPixmap(QPixmap.fromImage(qImg))
                 ui2.label_8.setText(str(fps))
                 if choise == "Record":
                     ui2.Kayit_pushButton_2.setDisabled(True)
                     record_now_day = helper.Db_path_time(choice="Now-Day")
                     save_image_record_path = "D:/Line_scan_veri_toplamaca" + "/" + record_now_day + str(recordcounter) + ".jpg"
-                    imwrite(save_image_record_path, model_image)
+                    imwrite(save_image_record_path, copy_model_image)
                 waitKey(2)
                 
             if len(frames) == 2:

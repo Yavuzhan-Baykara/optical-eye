@@ -105,12 +105,13 @@ class Veri_Tabani_Window():
                     ui4.Alan_Label.setText(str(row[9]))
                     ui4.Metre_Label.setText(str(row[4]))
                     ui4.Sinif_Label.setText(str(row[10]))
-                    img_Goster=cv2.imread(row[11])
+                    x1, x2, y1, y2 = [int(coord) for coord in row[12].split(", ")]
+                    img_Goster = cv2.imread(row[11])
+                    img_Goster = img_Goster[y1-5:y2+5,x1-5:x2+5]
                     img_Goster=cv2.resize(img_Goster, (320,320),interpolation=cv2.INTER_CUBIC)
                     image = QtGui.QImage(img_Goster.data, img_Goster.shape[1], img_Goster.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
                     ### Doldurma Göster Window
                     ui4.Goster_Label.setPixmap(QtGui.QPixmap.fromImage(image))
-                    
                     return str(row[11])
                 except Exception as e:
                     print(e.__class__)
@@ -209,9 +210,9 @@ class Veri_Tabani_Window():
 
     def Last_Cameras_Info_Add(Camera_Height, Camera_Width, Camera_Impact_Rate, Camera_Serial, Camera_Exposure_Time, Camera_Cut_Off, Camera_Type):
         print(str(Camera_Serial[0]))
-        Camera_Serials=Camera_Serial[0]+','+Camera_Serial[1]+','+Camera_Serial[2]+','+Camera_Serial[3]
-        Cameras_Type=Camera_Type[0]+','+Camera_Type[1]+','+Camera_Type[2]+','+Camera_Type[3]
-        Camera_Exposure_Times=Camera_Exposure_Time[0]+','+Camera_Exposure_Time[1]+','+Camera_Exposure_Time[2]+','+Camera_Exposure_Time[3]
+        Camera_Serials = Camera_Serial[0]+','+Camera_Serial[1]+','+Camera_Serial[2]+','+Camera_Serial[3]
+        Cameras_Type = Camera_Type[0]+','+Camera_Type[1]+','+Camera_Type[2]+','+Camera_Type[3]
+        Camera_Exposure_Times = Camera_Exposure_Time[0]+','+Camera_Exposure_Time[1]+','+Camera_Exposure_Time[2]+','+Camera_Exposure_Time[3]
         curs.execute("""
         INSERT INTO Cameras_Inf
         (Camera_Height, Camera_Width, Camera_İmpact_Rate, Camera_Serial, Camera_Exposure_Time, Camera_Cut_Off, Camera_Type)
@@ -239,13 +240,12 @@ class Veri_Tabani_Window():
         ui3.Veri_Tabani_Widget.setHorizontalHeaderLabels(('Id','Tarih','Dok_No','Kalite_No','Hatanin_Geldiği_Metre','Bez_Eni','Hatanin_Duvar_Tarafından_Mesafesi','Hata_Eni','Hata_Boyutu','Hata_Alanı','Hata_Sınıfı','Sonuc_Isım'))
         MainWindow3.show()
     
-    def Ekle(Tarih,Dok_No,Kalite_No,Hatanın_Geldiği_Metre,Bez_Eni,Hatanin_Duvar_Tarafından_Mesafesi,Hata_Eni,Hata_Boyutu,Hata_Alanı,Hata_Sınıfı,Sonuc_Isım):
+    def Ekle(Tarih,Dok_No,Kalite_No,Hatanın_Geldiği_Metre,Bez_Eni,Hatanin_Duvar_Tarafından_Mesafesi,Hata_Eni,Hata_Boyutu,Hata_Alanı,Hata_Sınıfı,Sonuc_Isım, Hata_Koordinant):
         curs.execute("""INSERT INTO Hata_Sonuclari
-                     (Tarih,Dok_No,Kalite_No,Hatanin_Geldiği_Metre,Bez_Eni,Hatanin_Duvar_Tarafından_Mesafesi,Hata_Eni,Hata_Boyutu,Hata_Alanı,Hata_Sınıfı,Sonuc_Isım)
+                     (Tarih,Dok_No,Kalite_No,Hatanin_Geldiği_Metre,Bez_Eni,Hatanin_Duvar_Tarafından_Mesafesi,Hata_Eni,Hata_Boyutu,Hata_Alanı,Hata_Sınıfı,Sonuc_Isım, Hata_Koordinant)
                      VALUES
-                     (?,?,?,?,?,?,?,?,?,?,?)""",
-                     (Tarih,Dok_No,Kalite_No,Hatanın_Geldiği_Metre,Bez_Eni,Hatanin_Duvar_Tarafından_Mesafesi,Hata_Eni,Hata_Boyutu,Hata_Alanı,Hata_Sınıfı,Sonuc_Isım))
-            
+                     (?,?,?,?,?,?,?,?,?,?,?,?)""",
+                     (Tarih, Dok_No, Kalite_No, Hatanın_Geldiği_Metre, Bez_Eni, Hatanin_Duvar_Tarafından_Mesafesi, Hata_Eni, Hata_Boyutu, Hata_Alanı, Hata_Sınıfı, Sonuc_Isım, Hata_Koordinant))
         conn.commit()
     
     def Update():

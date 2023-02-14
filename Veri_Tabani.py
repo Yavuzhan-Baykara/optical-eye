@@ -2312,7 +2312,7 @@ class Ui_Veri_Tabani_Window(object):
         self.Veri_Tabani_Widget.setGeometry(QtCore.QRect(20, 30, 1871, 531))
         self.Veri_Tabani_Widget.setStyleSheet("")
         self.Veri_Tabani_Widget.setRowCount(1000)
-        self.Veri_Tabani_Widget.setColumnCount(12)
+        self.Veri_Tabani_Widget.setColumnCount(13)
         self.Veri_Tabani_Widget.setObjectName("Veri_Tabani_Widget")
         self.Veri_Tabani_Widget.horizontalHeader().setDefaultSectionSize(151)
         self.gridLayout.addWidget(self.details_groupBox_3, 1, 0, 1, 3)
