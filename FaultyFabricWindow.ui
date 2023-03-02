@@ -2421,7 +2421,7 @@ PlotWidget {
          </rect>
         </property>
         <property name="text">
-         <string>Kapat</string>
+         <string>ALARMI KAPAT</string>
         </property>
        </widget>
       </widget>
@@ -2473,7 +2473,7 @@ PlotWidget {
          </rect>
         </property>
         <property name="text">
-         <string>Dok Hızı</string>
+         <string>Makine Hızı</string>
         </property>
        </widget>
        <widget class="QLabel" name="text_Dok_Hizi">
@@ -2624,12 +2624,12 @@ PlotWidget {
          <rect>
           <x>183</x>
           <y>30</y>
-          <width>131</width>
+          <width>161</width>
           <height>41</height>
          </rect>
         </property>
         <property name="text">
-         <string>Kapat</string>
+         <string>DURDUR</string>
         </property>
        </widget>
        <widget class="QLabel" name="label">

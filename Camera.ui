@@ -2363,7 +2363,7 @@ PlotWidget {
       <widget class="QComboBox" name="comboBox_Kalite_No">
        <property name="geometry">
         <rect>
-         <x>200</x>
+         <x>20</x>
          <y>100</y>
          <width>171</width>
          <height>38</height>
@@ -2373,7 +2373,7 @@ PlotWidget {
       <widget class="QLineEdit" name="lineEdit_Dok_No">
        <property name="geometry">
         <rect>
-         <x>20</x>
+         <x>210</x>
          <y>101</y>
          <width>161</width>
          <height>38</height>
@@ -2383,27 +2383,27 @@ PlotWidget {
       <widget class="QLabel" name="label_Dok_No">
        <property name="geometry">
         <rect>
-         <x>20</x>
+         <x>210</x>
          <y>50</y>
          <width>161</width>
          <height>41</height>
         </rect>
        </property>
        <property name="text">
-        <string>DOK NO</string>
+        <string>ÇIKIŞ DOK NO</string>
        </property>
       </widget>
       <widget class="QLabel" name="label_Dok_No_2">
        <property name="geometry">
         <rect>
-         <x>200</x>
+         <x>20</x>
          <y>50</y>
          <width>171</width>
          <height>41</height>
         </rect>
        </property>
        <property name="text">
-        <string>KALİTE NO</string>
+        <string>KALİTE KODU</string>
        </property>
       </widget>
      </widget>
@@ -2814,7 +2814,7 @@ PlotWidget {
         <string notr="true"/>
        </property>
        <property name="text">
-        <string>KAPAT</string>
+        <string>DURDUR</string>
        </property>
       </widget>
       <widget class="QPushButton" name="Close_pushButton">
@@ -2846,7 +2846,7 @@ PlotWidget {
         <string notr="true"/>
        </property>
        <property name="text">
-        <string>AÇ</string>
+        <string>BAŞLAT</string>
        </property>
       </widget>
       <widget class="QPushButton" name="Kayit_pushButton_2">

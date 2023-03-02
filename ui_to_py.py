@@ -13,8 +13,8 @@ from PyQt5 import uic
 # with open('Camera.py', 'w', encoding="utf-8") as fout:
 #    uic.compileUi('Camera.ui',fout)
 
-with open('admin_page.py', 'w', encoding="utf-8") as fout:
-   uic.compileUi('admin_page.ui',fout)
+# with open('admin_page.py', 'w', encoding="utf-8") as fout:
+#    uic.compileUi('admin_page.ui',fout)
 
 # with open('Goster.py', 'w', encoding="utf-8") as fout:
 #    uic.compileUi('Goster.ui',fout)
