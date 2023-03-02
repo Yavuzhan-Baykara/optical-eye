@@ -61,6 +61,7 @@ class Arduino_Toolkits():
         try:
             self.warning_status = False
             sa.ser.write(b'B')
+            sa.ser.write(b'D')
         except:
             print("Beklenmeyen Bir Hata Lambaların Kapatılması")
         self.MainWindow.close()

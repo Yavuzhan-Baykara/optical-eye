@@ -13,6 +13,7 @@ from Giris import *
 from admin_page import * 
 from Camera import*
 from Yukleniyor import *
+from whitedetect import *
 
 import time
 import sys
@@ -28,7 +29,7 @@ class Worker(QObject):
     progress = pyqtSignal(int)
 
     def run(self):
-        while 1: 
+        while 1:
             time.sleep(0.01)
 
 class MainWindow(QMainWindow):
@@ -159,18 +160,24 @@ def main(worker, window):
         except:
             time.sleep(0.1)
             ui2.statusbar.showMessage(" "*1 + " Port açılamadı !!!", 1500)
-
-        detect_images = []
-        detect_Hata_Eni = []
-        detect_Hata_Boyu = []
-        detect_Hata_Alan = []
+        detect_images     = []
+        detect_Hata_Eni   = []
+        detect_Hata_Boyu  = []
+        detect_Hata_Alan  = []
         detect_Hata_Metre = []
         detect_Hata_Sinif = []
         faulty_cnt = 0
+        faulty_cnt_100 = 0
         theta_1_center, theta_2_center = [0, 0]
         detect_threshold = 3
+        detect_threshold_100 = 10
+        detect_cam = 0
         threshold = 200
+        wDetect = False
         start_time_faulty_cnt = 0
+        start_time_faulty_cnt_100 = 0
+        limited_time_faulty = 5
+        limited_time_faulty_100 = 90
         detect_faulty_fabric = {"Flawed Hole": 0, "Flawed Spot": 0, "Flawed Crack": 0, "Other Errors": 0}
         Hata_Goster_labels = [ui9.label_Hata_Goster_1, ui9.label_Hata_Goster_2, ui9.label_Hata_Goster_3,
                               ui9.label_Hata_Goster_4, ui9.label_Hata_Goster_5, ui9.label_Hata_Goster_6]
@@ -212,7 +219,6 @@ def main(worker, window):
         ui2.statusbar.showMessage( " " * 1 + f" Cuda GPU Durumu: {cuda.is_available()}", 1500)
         if cuda.is_available():
             tensor_temp = tensor_temp.to(device_temp)
-
         while 1:
             position = Arduino_Tools.Feedback_src()
             delta_time = time.time() - prev_time 
@@ -265,6 +271,8 @@ def main(worker, window):
             if len(frames) == 1:
                 model_name = frames[0][1]
                 model_image = frames[0][0]
+                model_image = model_image[:-1, :-1, :] 
+                model_image, wDetect = ImageProcessor(image=model_image, trim_size=65).process()
                 copy_model_image = np.copy(model_image)
                 height, width, channel = model_image.shape
                 zoom_value_5 = Tools.zoom_value_5()
@@ -279,18 +287,24 @@ def main(worker, window):
                 prev_frame_time = new_frame_time
                 fps = str(int(fps))
                 results = model(model_image)         
-                results.display(render=True) 
-                out= cvtColor(results.imgs[0], COLOR_BGR2RGB)
-                outh1 = int((64*height)/256)
-                outh2 = int((192*height)/256)   
+                results.render()
+                out = cvtColor(results.ims[0], COLOR_BGR2RGB)
+                outh1 = int((43*height)/256)
+                outh2 = int((213*height)/256)
                 out[outh1,:] = 0           
                 out[outh2,:] = 0
-                single_frame = resize(out,  width=1400)
-                height, width, channel = single_frame.shape
-                step = channel * width   
                 df=results.pandas().xyxy[0]
                 df=DataFrame(df)
                 myTime+=1
+                print(faulty_cnt)
+                def y_detect(cy):
+                    if 0 <= cy <= model_image.shape[0] * 1:
+                        detect_cam = 1
+                    elif model_image.shape[0] * 1 < cy <= model_image.shape[0] * 2:
+                        detect_cam = 2
+                    elif model_image.shape[0] * 2 < cy <= model_image.shape[0] * 3:
+                        detect_cam = 3
+                    return detect_cam
                 if len(df)!=0:
                     for detect in range(len(df.iloc[:]['name'])):
                         Save_image="./Database"+"/"+helper.Db_path_time(choice="Now-Day")+"/"+"Cam"+"/"+"images"+"/"+df.iloc[:]['name'][detect]+"-"+helper.Db_path_time(choice="Now-Time")+"-"+".jpg"
@@ -324,8 +338,12 @@ def main(worker, window):
                                     start_time_faulty_cnt = time.time()     
                                     theta_1_center = max(0, cx - threshold)
                                     theta_2_center = min(model_image.shape[1], cx + threshold)
-                                    cv2.line(out, (int(theta_1_center), 0), (int(theta_1_center), height), (255, 0, 0), thickness=2)
-                                    cv2.line(out, (int(theta_2_center), 0), (int(theta_2_center), height), (255, 0, 0), thickness=2)
+                                    y_detect_1 = y_detect(cy)
+                                    cv2.line(out, (int(theta_1_center), 0), (int(theta_1_center), height), (0, 255, 0), thickness=2)
+                                    cv2.line(out, (int(theta_2_center), 0), (int(theta_2_center), height), (0, 255, 0), thickness=2)                                    
+                                y_detect_2 = y_detect(cy)
+                                if faulty_cnt_100 == 0:
+                                    start_time_faulty_cnt_100 = time.time()
                                 crop = resize_cv2(crop, (320,320), interpolation = INTER_CUBIC)
                                 image = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
                                 ui6.Goster_Label.setPixmap(QtGui.QPixmap.fromImage(image))
@@ -369,15 +387,21 @@ def main(worker, window):
                                 Hata_Koordinant = [x1, x2, y1, y2]
                                 Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
                                 helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant)
-                            if (str(df.at[detect, 'name']) in ['Delik', 'Leke']) and (theta_1_center <= cx <= theta_2_center):
+                            if (str(df.at[detect, 'name']) in ['Delik', 'Leke']) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2):
                                 faulty_cnt += 1
+                            if (str(df.at[detect, 'name']) in ['Delik', 'Leke']):
+                                faulty_cnt_100 +=1
                             elif not (theta_1_center <= cx <= theta_2_center):
                                 faulty_cnt = 0
                             if faulty_cnt >= detect_threshold:
                                 faulty_cnt = 0
-                                Arduino_Tools.kirmizi_led_ac()
-                            if Tools.Trigg_Port_Button==True:
                                 # Arduino_Tools.kirmizi_led_ac()
+                                print("Kırmızı Led Aktif")
+                            if faulty_cnt_100 >= detect_threshold_100:
+                                faulty_cnt_100 = 0
+                                print("Sari Led Aktif")
+                                # Arduino_Tools.sari_led_ac()
+                            if Tools.Trigg_Port_Button==True:
                                 try:
                                     src=Arduino_Tools.Feedback_src()
                                 except:
@@ -405,10 +429,17 @@ def main(worker, window):
                 cv2.line(out, (int(theta_1_center), 0), (int(theta_1_center), height), (255, 0, 0), thickness=2)
                 cv2.line(out, (int(theta_2_center), 0), (int(theta_2_center), height), (255, 0, 0), thickness=2)
                 current_time_faulty_cnt = time.time()
-                if current_time_faulty_cnt - start_time_faulty_cnt >= 60:
+                current_time_faulty_cnt_100 = time.time()
+                if current_time_faulty_cnt - start_time_faulty_cnt >= limited_time_faulty:
                     faulty_cnt = 0
                     start_time_faulty_cnt = current_time_faulty_cnt
+                if current_time_faulty_cnt_100 - start_time_faulty_cnt_100 >= limited_time_faulty_100:
+                    faulty_cnt_100 = 0
+                    start_time_faulty_cnt_100 = current_time_faulty_cnt_100
                 ################################################################################################
+                single_frame = resize(out,  width=1400)
+                height, width, channel = single_frame.shape
+                step = channel * width   
                 if model_name == Tools.Camera_Serial[0]:
                     qImg=QImage(single_frame,width,height,step,QImage.Format_RGB888)
                     ui2.Camera_1.setPixmap(QPixmap.fromImage(qImg))
@@ -428,7 +459,6 @@ def main(worker, window):
                     save_image_record_path = "D:/Line_scan_veri_toplamaca" + "/" + record_now_day + str(recordcounter) + ".jpg"
                     imwrite(save_image_record_path, copy_model_image)
                 waitKey(2)
-                
             if len(frames) == 2:
                 # Kameraların serial ve görüntü alınması
                 frame, frame2 = frames[0][0], frames[1][0]
@@ -464,9 +494,9 @@ def main(worker, window):
                 # Tensorlerin CPU'ya atanması
                 results = model(tensor_temp.cpu().numpy())
                 results.display(render=True)
-                h = results.imgs[0].shape[0] 
-                out1= cvtColor(results.imgs[0][0:int(h/2), :],COLOR_BGR2RGB)
-                out2= cvtColor(results.imgs[0][int(h/2):, :]  ,COLOR_BGR2RGB)
+                h = results.ims[0].shape[0] 
+                out1= cvtColor(results.ims[0][0:int(h/2), :],COLOR_BGR2RGB)
+                out2= cvtColor(results.ims[0][int(h/2):, :]  ,COLOR_BGR2RGB)
                 # Kırpma işlemi için kullanılacak görüntünün kopyası
                 results_2 = tensor_temp.cpu().numpy()
                 height, width, channel=out1.shape
@@ -505,7 +535,7 @@ def main(worker, window):
                         if (yc>outh1 and  yc<outh2) or (yc>outh3+175 and yc<outh4+175) :  # Hata merkezinin istenilen aralıkta olması
                             crop=results_2[y1-5:y2+5,x1-5:x2+5]   # Hata görüntüsünün kırpılması
                             if Tools.Trigg_Port_Button==True:   # Serial Portun açılması durumunda 
-                                Arduino_Tools.kirmizi_led_ac()
+                                # Arduino_Tools.kirmizi_led_ac()
                                 try:
                                     src=Arduino_Tools.Feedback_src()
                                 except:
@@ -561,7 +591,7 @@ def main(worker, window):
                                     helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
                                         
                                 if Tools.Trigg_Port_Button==True:
-                                    Arduino_Tools.kirmizi_led_ac()
+                                    # Arduino_Tools.kirmizi_led_ac()
                                     try:
                                         src=Arduino_Tools.Feedback_src()
                                     except:

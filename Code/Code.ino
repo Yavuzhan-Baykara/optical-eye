@@ -16,7 +16,7 @@ const char son2='D'; //red
 
 void setup() {
   
-  Serial.begin (9600);
+  Serial.begin(9600);
 
   pinMode(RotaryL, INPUT_PULLUP); // internal pullup input pin 2 
   pinMode(RotaryR, INPUT_PULLUP); // internalเป็น pullup input pin 3

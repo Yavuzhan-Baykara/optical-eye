@@ -16,7 +16,7 @@ global Tarih
 global Month
 
 Month=[]
-LastVer=40
+LastVer=500
 conn=sqlite3.connect('./Database/Tespit_Edilen_Veriler.db',timeout=1, check_same_thread=False)
 curs=conn.cursor()
 sorguVeri=("""CREATE TABLE IF NOT EXISTS Hata_Sonuclari(
@@ -33,12 +33,31 @@ sorguVeri=("""CREATE TABLE IF NOT EXISTS Hata_Sonuclari(
                  Hata_Sınıfı TEXT NOT NULL,
                  Sonuc_Isım INTEGER NOT NULL)
                  """)
-                 
+sorguTablo = '''SELECT Tarih, Dok_No, Kalite_No, 
+                SUM(CASE WHEN Hata_Sınıfı = 'Leke' THEN 1 ELSE 0 END) AS Leke, 
+                SUM(CASE WHEN Hata_Sınıfı = 'Delik' THEN 1 ELSE 0 END) AS Delik
+                FROM Hata_Sonuclari
+                GROUP BY Tarih, Dok_No, Kalite_No
+                ORDER BY Id ASC'''
+datas = curs.execute(sorguTablo).fetchall()
+harfler = ['ğ', 'ı', 'ö', 'ü', 'ş']
+degistirilecekler = ['g', 'i', 'o', 'u', 's']
+eslesmeler = str.maketrans("".join(harfler), "".join(degistirilecekler))
+
 curs.execute(sorguVeri)
 conn.commit()
 Data = curs.fetchall()
 class Data_Pre_Process:
     class CustomPDF(FPDF):
+        def Line(self, HEIGHT, WIDTH):
+            self.line(10, 10, 10, HEIGHT-10)
+            self.line(HEIGHT-150, 10, WIDTH-63, HEIGHT-255)
+            self.line(HEIGHT-245, 10, WIDTH-158, HEIGHT-255)
+            self.line(HEIGHT-150, HEIGHT-270, WIDTH-10, HEIGHT-270)
+            self.line(10, 10, WIDTH-10, 10)
+            self.line(WIDTH-10, 10, 200, HEIGHT-10)
+            self.line(10, HEIGHT-10, WIDTH-10, HEIGHT-10)
+            self.line(10, HEIGHT-255, WIDTH-10, HEIGHT-255)
         def header(self):
             self.image('./Icon/PDF/MenderesLogo.png', 15, 22, 33)
             self.set_font('Arial', 'B', 15)
@@ -53,8 +72,15 @@ class Data_Pre_Process:
             self.cell(0, 5, "Hatalari", ln=1,link='C')
             self.set_y(15)
             self.cell(140)
-
             self.ln(20)
+            self.set_line_width(0.5)
+            WIDTH=210
+            HEIGHT=297
+            self.Line(HEIGHT, WIDTH)
+            self.set_y(15)
+            self.cell(140)
+            self.set_xy(WIDTH/5, HEIGHT/5)
+            
         def footer(self):
             self.set_y(-10)
             self.set_font('Arial',size=12)
@@ -70,7 +96,7 @@ class Data_Pre_Process:
             'Tarih_Splited' : [],
             'Konum' : [[], [], [], []],
             'Konum_Array' : [],
-            'Hata_Türleri': ["Delik","Leke","Yag","Iplik"],
+            'Hata_Türleri': ["Delik","Leke","Yag", "Dikey", "Yatay"],
             'Hata_Sayac' : [[0], [0], [0], [0]],
             'Hata_Array' : [[] , [] , [], []],
             'Hata_Konum' : [[], [], [], []],
@@ -94,14 +120,9 @@ class Data_Pre_Process:
                     self.Data['Hata_Sayac'][1][0] = int(self.Data['Hata_Sayac'][1][0]+1)
                 if satirVeri[10] == self.Data['Hata_Türleri'][2]:
                     self.Data['Tarih_Array'][2].append(satirVeri[1])
-                    self.Data['Hata_Array'][2].append(self.Data['Hata_Türleri'][2])    
+                    self.Data['Hata_Array'][2].append(self.Data['Hata_Türleri'][2] + self.Data['Hata_Türleri'][3] + self.Data['Hata_Türleri'][4])
                     self.Data['Hata_Konum'][2].append(satirIndex)
                     self.Data['Hata_Sayac'][2][0] = int(self.Data['Hata_Sayac'][2][0]+1)
-                if satirVeri[10] == self.Data['Hata_Türleri'][3]:
-                    self.Data['Tarih_Array'][3].append(satirVeri[1])
-                    self.Data['Hata_Array'][3].append(self.Data['Hata_Türleri'][3])    
-                    self.Data['Hata_Konum'][3].append(satirIndex)
-                    self.Data['Hata_Sayac'][3][0] = int(self.Data['Hata_Sayac'][3][0]+1)
             elif self.Tarih=="All":
                 self.Data['Tarih_All'].append(satirVeri[1])
         return self.Data
@@ -119,19 +140,16 @@ class Data_Pre_Process:
         def Week_Datas(Datas):
             Toplam_Delik=0
             Toplam_Leke=0
-            Toplam_Yag=0
-            Toplam_Iplik=0
+            Toplam_Diger=0
             Toplam=[]
             for gün in range(0,len(Datas),1):
                 L=Data_Pre_Process().positioning(str(Datas[gün]))['Hata_Sayac']
                 Toplam_Delik= Toplam_Delik+L[0][0]
                 Toplam_Leke= Toplam_Leke+L[1][0]
-                Toplam_Yag= Toplam_Yag+L[2][0]
-                Toplam_Iplik= Toplam_Iplik+L[3][0]
+                Toplam_Diger= Toplam_Diger + L[2][0] 
             Toplam.append(Toplam_Delik)
             Toplam.append(Toplam_Leke)
-            Toplam.append(Toplam_Yag)
-            Toplam.append(Toplam_Iplik)
+            Toplam.append(Toplam_Diger)
             return Toplam
         for Week in range(len(Tarih_Splited)):
             Toplam=Week_Datas(Tarih_Splited[Week])
@@ -153,8 +171,7 @@ class Data_Pre_Process:
             df2['Question']=['1. Hafta']
             df['Delik'] = [Month[1][0]]
             df['Leke'] = [Month[1][1]]
-            df['Yag'] = [Month[1][2]]
-            df['Iplik'] = [Month[1][3]]
+            df['Diger'] = [Month[1][2]]
             d = [2.0]
             h= [1.5]
         elif len(Tarih_Splited)==2:
@@ -164,8 +181,7 @@ class Data_Pre_Process:
             df2['Question']=['1. Hafta','2. Hafta']
             df['Delik'] = [Month[1][0], Month[3][0]]
             df['Leke'] = [Month[1][1], Month[3][1]]
-            df['Yag'] = [Month[1][2], Month[3][2]]
-            df['Iplik'] = [Month[1][3], Month[3][3]]
+            df['Diger'] = [Month[1][2], Month[3][2]]
             d = [2.0, 4.0]
             h= [1.5, 3.5]
             print("Er *")
@@ -177,43 +193,36 @@ class Data_Pre_Process:
             df2['Question']=['1. Hafta', '2. Hafta', '3. Hafta']
             df['Delik'] = [Month[1][0], Month[3][0], Month[5][0]]
             df['Leke'] = [Month[1][1], Month[3][1], Month[5][1]]
-            df['Yag'] = [Month[1][2], Month[3][2], Month[5][2]]
-            df['Iplik'] = [Month[1][3], Month[3][3], Month[5][3]]
+            df['Diger'] = [Month[1][2], Month[3][2], Month[5][2]]
             d = [2.0, 4.0, 6.0]
             h= [1.5, 3.5, 5.5]
-        elif len(Tarih_Splited)==4:
-            df['Question'] = [f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}",
-                              f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}",
-                              f"{Tarih_Splited[2][0]}-{Tarih_Splited[2][-1]}",
-                              f"{Tarih_Splited[3][0]}-{Tarih_Splited[3][-1]}"
+        else:
+            df['Question'] = [f"{Tarih_Splited[-4][0]}-{Tarih_Splited[-4][-1]}",
+                              f"{Tarih_Splited[-3][0]}-{Tarih_Splited[-3][-1]}",
+                              f"{Tarih_Splited[-2][0]}-{Tarih_Splited[-2][-1]}",
+                              f"{Tarih_Splited[-1][0]}-{Tarih_Splited[-1][-1]}"
                              ]
-            
             df2['Question']=['1. Hafta', '2. Hafta', '3. Hafta', '4. Hafta']
-            df['Delik'] = [Month[1][0], Month[3][0], Month[5][0], Month[7][0]]
-            df['Leke'] = [Month[1][1], Month[3][1], Month[5][1], Month[7][1]]
-            df['Yag'] = [Month[1][2], Month[3][2], Month[5][2], Month[7][2]]
-            df['Iplik'] = [Month[1][3], Month[3][3], Month[5][3], Month[7][3]]
-            d = [2.0, 4.0, 6.0, 8.0]
+            df['Delik'] = [Month[-7][0], Month[-5][0], Month[-3][0], Month[-1][0]]
+            df['Leke'] = [Month[-7][1], Month[-5][1], Month[-3][1], Month[-1][1]]
+            df['Diger'] = [Month[-7][2], Month[-5][2], Month[-3][2], Month[-1][2]]
+            d = [2.0, 5.0, 8.0, 11.0]
             h= [1.5, 3.5, 5.5, 7.5]
-        listx=df.loc[:,'Delik'].tolist()
-        listy=df.loc[:,'Leke'].tolist()
         title("Hata Barı", fontsize=15, fontname='Arial')
         xlabel('Tarih', fontsize=12, fontname='Arial')
         ylabel('Adet', fontsize=12, fontname='Arial')
-        axis([0, 12, 0, LastVer])
+        axis([0, 16, 0, LastVer])
         m = [x - 0.5 for x in d]
         y = [x - 0.5 for x in m]
         I = [x - 0.5 for x in y]
         xticks(d, df2['Question'])
-        # plt.plot(h, listx, label='Delik')
-        # plt.plot(d, listy, '-r', label='Leke')
         plt.bar(m, df['Delik'], width=0.5, color="#521B1D", label="Delik")
         plt.bar(d, df['Leke'], width=0.5, color="#39521B", label="Leke")
-        plt.bar(y, df['Yag'], width=0.5, color="#1B5250", label="Yag")
-        plt.bar(I, df['Iplik'], width=0.5, color="#341B52", label="Iplik")
+        plt.bar(y, df['Diger'], width=0.5, color="#1B5250", label="Diger")
         plt.legend()
         savefig('barchart.png')
         plt.cla()
+        plt.clf()
         WIDTH=210
         HEIGHT=297
         pdf = self.CustomPDF(orientation = 'P', unit = 'mm', format='A4')
@@ -236,7 +245,7 @@ class Data_Pre_Process:
             pdf.cell(40, 10, '%s' % (str(df.Delik.iloc[i])), 1, 0, 'C')
             pdf.cell(40, 10, '%s' % (str(df.Leke.iloc[i])), 1, 2, 'C')
             pdf.cell(-90)
-        pdf.set_y(100)
+        pdf.set_y(110)
         pdf.cell(30,10,link = 'C')
         pdf.image('barchart.png', w = 136, h = 80, type = '', link = 'C')
         pdf.set_y(190)
@@ -247,18 +256,71 @@ class Data_Pre_Process:
         pdf.set_font('Arial',size=12)
         if len(Tarih_Splited)==1:
             pdf.cell(0, 10, f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[1][0]}-{Month[1][1]} (Adet)",ln=0.5, align="")
-        if len(Tarih_Splited)==2:
+        elif len(Tarih_Splited)==2:
             pdf.cell(0, 10, f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[1][0]}-{Month[1][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[3][0]}-{Month[3][1]} (Adet)",ln=0.5, align="")
-        if len(Tarih_Splited)==3:
-            pdf.cell(0, 10, f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[1][0]}-{Month[1][1]} (Adet)",ln=0.5, align="")
-            pdf.cell(0, 10, f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[3][0]}-{Month[3][1]} (Adet)",ln=0.5, align="")
-            pdf.cell(0, 10, f"{Tarih_Splited[2][0]}-{Tarih_Splited[2][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[5][0]}-{Month[5][1]} (Adet)",ln=0.5, align="")
-        if len(Tarih_Splited)==4:
+        elif len(Tarih_Splited)==3:
             pdf.cell(0, 10, f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[1][0]}-{Month[1][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[3][0]}-{Month[3][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[2][0]}-{Tarih_Splited[2][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[5][0]}-{Month[5][1]} (Adet)",ln=0.5, align="")
-            pdf.cell(0, 10, f"{Tarih_Splited[3][0]}-{Tarih_Splited[3][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[7][0]}-{Month[7][1]} (Adet)",ln=0.5, align="")
+        else:
+            pdf.cell(0, 10, f"{Tarih_Splited[-4][0]}-{Tarih_Splited[-4][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[-7][0]}-{Month[-7][1]} (Adet)",ln=0.5, align="")
+            pdf.cell(0, 10, f"{Tarih_Splited[-3][0]}-{Tarih_Splited[-3][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[-5][0]}-{Month[-5][1]} (Adet)",ln=0.5, align="")
+            pdf.cell(0, 10, f"{Tarih_Splited[-2][0]}-{Tarih_Splited[-2][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[-3][0]}-{Month[-3][1]} (Adet)",ln=0.5, align="")
+            pdf.cell(0, 10, f"{Tarih_Splited[-1][0]}-{Tarih_Splited[-1][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[-1][0]}-{Month[-1][1]} (Adet)",ln=0.5, align="")
+        pdf.add_page()
+        pdf.set_line_width(0.5)
+        Line(HEIGHT, WIDTH, pdf)
+        pdf.set_y(15)
+        pdf.cell(140)
+        pdf.cell(0, 5, f'Tarih: {Res_Tarih_Splited[-1]}', ln=1)
+        pdf.set_font('Arial',size=12)
+        pdf.set_xy(WIDTH/6, HEIGHT/5)
+        
+        pdf.set_font('Arial', 'B', 12)
+        pdf.cell(30, 10, 'Tarih', 1)
+        pdf.cell(30, 10, 'Dok No', 1)
+        pdf.cell(30, 10, 'Kalite No', 1)
+        pdf.cell(30, 10, 'Delik Sayisi', 1)
+        pdf.cell(30, 10, 'Leke Sayisi', 1)
+        pdf.ln()
+        # Tablo verileri
+        pdf.set_font('Arial', '', 12)
+        tarih_listesi = []
+        delik_listesi = []
+        leke_listesi = []
+        for row in datas:
+            tarih, dok_no, kalite_no, delik_sayisi, leke_sayisi = row
+            pdf.set_x(WIDTH/6)
+            pdf.cell(30, 10, str(tarih), 1)
+            pdf.cell(30, 10, str(dok_no), 1)
+            pdf.cell(30, 10, str(kalite_no).translate(eslesmeler), 1)
+            pdf.cell(30, 10, str(delik_sayisi), 1)
+            pdf.cell(30, 10, str(leke_sayisi), 1)
+            tarih_listesi.append(str(tarih))
+            delik_listesi.append(int(delik_sayisi))
+            leke_listesi.append(int(leke_sayisi))
+            pdf.ln()
+        pdf.add_page()
+        pdf.set_xy(WIDTH/9, HEIGHT/7)
+        tarih_listesi_bar = [tarih.split(".")[0] + "." + tarih.split(".")[1] for tarih in tarih_listesi]
+        plt.title("Tarihe Göre Delik Hatası Dağılım Grafiği")
+        plt.bar(tarih_listesi_bar, leke_listesi)
+        plt.tick_params(axis='x', labelsize=8, rotation=90)
+        plt.ylabel('Leke Sayısı')
+        plt.savefig('lekeler.png')
+        pdf.image('lekeler.png', w = 170, h = 100, type = '', link = 'C')
+        plt.clf()
+        plt.cla()
+        pdf.set_xy(WIDTH/9, HEIGHT/2+10)
+        plt.title("Tarihe Göre Leke Hatası Dağılım Grafiği")
+        plt.bar(tarih_listesi_bar, delik_listesi)
+        plt.tick_params(axis='x', labelsize=8, rotation=90)
+        plt.ylabel('Delik Sayısı')
+        plt.savefig('delikler.png')
+        pdf.image('delikler.png', w = 170, h = 100, type = '', link = 'C')
+        plt.clf()
+        plt.cla()
         main_path = getcwd()
         main_path = main_path.replace('\\' , "/")
         main_path = main_path +'/' + "PDF" + "/" + str(self.Tarih) + '-aylık-rapor.pdf'
