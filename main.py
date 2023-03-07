@@ -306,7 +306,6 @@ def main(worker, window):
                 df=results.pandas().xyxy[0]
                 df=DataFrame(df)
                 myTime+=1
-                print(faulty_cnt)
                 def y_detect(cy):
                     if 0 <= cy <= model_image.shape[0] * 1:
                         detect_cam = 1
@@ -348,12 +347,13 @@ def main(worker, window):
                             xy = x * y
                             if (str(df.at[detect, 'name']) in ['Delik', 'Leke']):
                                 if faulty_cnt == 0:
-                                    start_time_faulty_cnt = time.time()     
+                                    start_time_faulty_cnt = time.time()
                                     theta_1_center = max(0, cx - threshold)
                                     theta_2_center = min(model_image.shape[1], cx + threshold)
                                     y_detect_1 = y_detect(cy)
+                                    print(f"yakalanan kamera: {y_detect_1}")
                                     cv2.line(out, (int(theta_1_center), 0), (int(theta_1_center), height), (0, 255, 0), thickness=2)
-                                    cv2.line(out, (int(theta_2_center), 0), (int(theta_2_center), height), (0, 255, 0), thickness=2)                                    
+                                    cv2.line(out, (int(theta_2_center), 0), (int(theta_2_center), height), (0, 255, 0), thickness=2)                             
                                 y_detect_2 = y_detect(cy)
                                 if faulty_cnt_100 == 0:
                                     start_time_faulty_cnt_100 = time.time()
@@ -452,7 +452,9 @@ def main(worker, window):
                     faulty_cnt_100 = 0
                     start_time_faulty_cnt_100 = current_time_faulty_cnt_100
                 ################################################################################################
-                
+                single_frame = resize(out,  width=1400)
+                height_s, width_s, channel_s = single_frame.shape
+                step_s = channel_s * width_s 
                 if model_name == Tools.Camera_Serial[0]:
                     qImg=QImage(single_frame,width_s,height_s,step_s,QImage.Format_RGB888)
                     ui2.Camera_1.setPixmap(QPixmap.fromImage(qImg))
