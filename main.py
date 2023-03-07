@@ -453,8 +453,6 @@ def main(worker, window):
                     start_time_faulty_cnt_100 = current_time_faulty_cnt_100
                 ################################################################################################
                 single_frame = resize(out,  width=1400)
-                height_s, width_s, channel_s = single_frame.shape
-                step_s = channel_s * width_s 
                 if model_name == Tools.Camera_Serial[0]:
                     qImg=QImage(single_frame,width_s,height_s,step_s,QImage.Format_RGB888)
                     ui2.Camera_1.setPixmap(QPixmap.fromImage(qImg))
