@@ -2417,7 +2417,7 @@ PlotWidget {
           <x>20</x>
           <y>100</y>
           <width>311</width>
-          <height>51</height>
+          <height>41</height>
          </rect>
         </property>
         <property name="text">

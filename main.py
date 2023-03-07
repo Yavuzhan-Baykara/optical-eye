@@ -59,9 +59,18 @@ class MainWindow(QMainWindow):
         qApp.processEvents()
 
 def main(worker, window):
+    black_image = np.zeros((256, 1400), dtype=np.uint8)
+    show_images       = [black_image, black_image, black_image, black_image, black_image, black_image]
+    detect_images     = []
+    detect_Hata_Eni   = []
+    detect_Hata_Boyu  = []
+    detect_Hata_Alan  = []
+    detect_Hata_Metre = []
+    detect_Hata_Sinif = []
+    
     def loadingbar(x):
-            worker.progress.emit(x)
-            sleep(1./120)
+        worker.progress.emit(x)
+        sleep(1./120)
     loadingbar(5)
     import Db_Con as DC
     loadingbar(10)
@@ -94,6 +103,7 @@ def main(worker, window):
     from pypylon import pylon
     loadingbar(80)
     import random
+    
     global configs
     configs =  {
         1: {
@@ -160,12 +170,7 @@ def main(worker, window):
         except:
             time.sleep(0.1)
             ui2.statusbar.showMessage(" "*1 + " Port açılamadı !!!", 1500)
-        detect_images     = []
-        detect_Hata_Eni   = []
-        detect_Hata_Boyu  = []
-        detect_Hata_Alan  = []
-        detect_Hata_Metre = []
-        detect_Hata_Sinif = []
+        
         faulty_cnt = 0
         faulty_cnt_100 = 0
         theta_1_center, theta_2_center = [0, 0]
@@ -254,6 +259,11 @@ def main(worker, window):
                 return Basler_Cameras()
             frames = vs_pylon.read()
             if ui2.logic_All == 0:
+                detect_Hata_Eni.clear()
+                detect_Hata_Boyu.clear()
+                detect_Hata_Alan.clear()
+                detect_Hata_Metre.clear()
+                detect_Hata_Sinif.clear()
                 vs_pylon.stop()
                 for cam in vs_pylon.Active_cameras:
                     cam.grabResult.Release()
@@ -272,7 +282,7 @@ def main(worker, window):
                 model_name = frames[0][1]
                 model_image = frames[0][0]
                 model_image = model_image[:-1, :-1, :] 
-                model_image, wDetect = ImageProcessor(image=model_image, trim_size=65).process()
+                model_image = ImageProcessor(image=model_image, trim_size=65).process()
                 copy_model_image = np.copy(model_image)
                 height, width, channel = model_image.shape
                 zoom_value_5 = Tools.zoom_value_5()
@@ -305,6 +315,9 @@ def main(worker, window):
                     elif model_image.shape[0] * 2 < cy <= model_image.shape[0] * 3:
                         detect_cam = 3
                     return detect_cam
+                single_frame = resize(out,  width=1400)
+                height_s, width_s, channel_s = single_frame.shape
+                step_s = channel_s * width_s 
                 if len(df)!=0:
                     for detect in range(len(df.iloc[:]['name'])):
                         Save_image="./Database"+"/"+helper.Db_path_time(choice="Now-Day")+"/"+"Cam"+"/"+"images"+"/"+df.iloc[:]['name'][detect]+"-"+helper.Db_path_time(choice="Now-Time")+"-"+".jpg"
@@ -348,6 +361,7 @@ def main(worker, window):
                                 image = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
                                 ui6.Goster_Label.setPixmap(QtGui.QPixmap.fromImage(image))
                                 detect_images.insert(0, image)
+                                show_images.insert(0, single_frame)
                                 detect_Hata_Eni.insert(0, str(x))
                                 detect_Hata_Boyu.insert(0, str(y))
                                 detect_Hata_Alan.insert(0, str(xy))
@@ -355,6 +369,7 @@ def main(worker, window):
                                 detect_Hata_Sinif.insert(0, str(df.iloc[:]['name'][detect]))
                                 if len(detect_images) >= 7:
                                     detect_images.pop(6)
+                                    show_images.pop(6)
                                     detect_Hata_Eni.pop(6)
                                     detect_Hata_Boyu.pop(6)
                                     detect_Hata_Alan.pop(6)
@@ -437,20 +452,18 @@ def main(worker, window):
                     faulty_cnt_100 = 0
                     start_time_faulty_cnt_100 = current_time_faulty_cnt_100
                 ################################################################################################
-                single_frame = resize(out,  width=1400)
-                height, width, channel = single_frame.shape
-                step = channel * width   
+                
                 if model_name == Tools.Camera_Serial[0]:
-                    qImg=QImage(single_frame,width,height,step,QImage.Format_RGB888)
+                    qImg=QImage(single_frame,width_s,height_s,step_s,QImage.Format_RGB888)
                     ui2.Camera_1.setPixmap(QPixmap.fromImage(qImg))
                 elif model_name == Tools.Camera_Serial[1]:
-                    qImg=QImage(single_frame,width,height,step,QImage.Format_RGB888)
+                    qImg=QImage(single_frame,width_s,height_s,step_s,QImage.Format_RGB888)
                     ui2.Camera_2.setPixmap(QPixmap.fromImage(qImg))
                 elif model_name == Tools.Camera_Serial[2]:
-                    qImg=QImage(single_frame,width,height,step,QImage.Format_RGB888)
+                    qImg=QImage(single_frame,width_s,height_s,step_s,QImage.Format_RGB888)
                     ui2.Camera_2.setPixmap(QPixmap.fromImage(qImg))
                 elif model_name == Tools.Camera_Serial[3]:
-                    qImg=QImage(single_frame,width,height,step,QImage.Format_RGB888)
+                    qImg=QImage(single_frame,width_s,height_s,step_s,QImage.Format_RGB888)
                     ui2.Camera_2.setPixmap(QPixmap.fromImage(qImg))
                 ui2.label_8.setText(str(fps))
                 if choise == "Record":
@@ -624,7 +637,7 @@ def main(worker, window):
                 waitKey(2)
                 ui2.label_8.setText(str(fps))
         destroyAllWindows()     
-
+        
     def Video_Selected():
         ui2.Durum_Cam.setText("AÇIK")
         if ui2.Camera_comboBox.currentText()=="I. Kamera":
@@ -834,7 +847,11 @@ def main(worker, window):
     def warning_status_inf():
         Arduino_Tools.hepsini_kapat()
         Arduino_Tools.warning_status = False
-        
+    def show_faulty(name:str = None, arr:np.ndarray = None):
+        cv2.destroyAllWindows()
+        cv2.imshow(name, arr)
+        cv2.waitKey(1)
+    
     print("Arayüzlerin Yüklenmesi")
     worker.progress.emit(83)
     Arduino_Tools=Arduino_Toolkits()
@@ -946,7 +963,13 @@ def main(worker, window):
     ui9.actionKameralar.triggered.connect(Tools.QWindow_Camera)
     ui9.actionVeri_Taban.triggered.connect(Tools.QWindow_DataBase)
     ui9.actionAdmin_Paneli.triggered.connect(Tools.QWindow_Admin)
-    
+    ui9.label_Hata_Goster_1.mousePressEvent = lambda event: show_faulty(name="Hata - 1", arr=show_images[0])
+    ui9.label_Hata_Goster_2.mousePressEvent = lambda event: show_faulty(name="Hata - 2", arr=show_images[1])
+    ui9.label_Hata_Goster_3.mousePressEvent = lambda event: show_faulty(name="Hata - 3", arr=show_images[2])
+    ui9.label_Hata_Goster_4.mousePressEvent = lambda event: show_faulty(name="Hata - 4", arr=show_images[3])
+    ui9.label_Hata_Goster_5.mousePressEvent = lambda event: show_faulty(name="Hata - 5", arr=show_images[4])
+    ui9.label_Hata_Goster_6.mousePressEvent = lambda event: show_faulty(name="Hata - 6", arr=show_images[5])
+
 if __name__ == '__main__':
     app1 = QApplication(sys.argv)
     window = MainWindow()

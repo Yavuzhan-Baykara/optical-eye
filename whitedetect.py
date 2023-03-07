@@ -5,7 +5,11 @@ class ImageProcessor:
         self.wDetect = False
 
     def process(self):
-        return self.trim_image()
+        result = self.trim_image()
+        if self.wDetect:
+            return result
+        else:
+            return result
         
     def trim_image(self):
         if self.image is None:
@@ -25,12 +29,33 @@ class ImageProcessor:
                 break
 
         if left_white > 20 and right_white > 20:
-            self.wDetect = True
-            self.image = self.image[:, left_white+self.trim_size:w-right_white-self.trim_size, :]
+            new_w = w - (left_white + right_white + self.trim_size*2)
+            if new_w < w/3:
+                self.image = self.image.copy()  # make a copy of the original image
+                self.wDetect = False
+            else:
+                self.wDetect = True
+                self.image = self.image[:, left_white+self.trim_size:w-right_white-self.trim_size, :]
         elif left_white > 20:
-            self.wDetect = True
-            self.image = self.image[:, left_white+self.trim_size:, :]
+            new_w = w - (left_white + self.trim_size)
+            if new_w < w/3:
+                self.image = self.image.copy()
+                self.wDetect = False
+            else:
+                self.wDetect = True
+                self.image = self.image[:, left_white+self.trim_size:, :]
         elif right_white > self.trim_size:
-            self.wDetect = True
-            self.image = self.image[:, :w-right_white-self.trim_size, :]
-        return self.image, self.wDetect
+            new_w = w - (right_white + self.trim_size)
+            if new_w < w/3:
+                self.image = self.image.copy()
+                self.wDetect = False
+            else:
+                self.wDetect = True
+                self.image = self.image[:, :w-right_white-self.trim_size, :]
+        else:
+            self.wDetect = False
+
+        if not self.wDetect:
+            return self.image
+        else:
+            return self.image
