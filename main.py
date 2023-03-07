@@ -59,15 +59,6 @@ class MainWindow(QMainWindow):
         qApp.processEvents()
 
 def main(worker, window):
-    black_image = np.zeros((256, 1400), dtype=np.uint8)
-    show_images       = [black_image, black_image, black_image, black_image, black_image, black_image]
-    detect_images     = []
-    detect_Hata_Eni   = []
-    detect_Hata_Boyu  = []
-    detect_Hata_Alan  = []
-    detect_Hata_Metre = []
-    detect_Hata_Sinif = []
-    
     def loadingbar(x):
         worker.progress.emit(x)
         sleep(1./120)
@@ -184,18 +175,7 @@ def main(worker, window):
         limited_time_faulty = 5
         limited_time_faulty_100 = 90
         detect_faulty_fabric = {"Flawed Hole": 0, "Flawed Spot": 0, "Flawed Crack": 0, "Other Errors": 0}
-        Hata_Goster_labels = [ui9.label_Hata_Goster_1, ui9.label_Hata_Goster_2, ui9.label_Hata_Goster_3,
-                              ui9.label_Hata_Goster_4, ui9.label_Hata_Goster_5, ui9.label_Hata_Goster_6]
-        Hata_Eni_labels =    [ui9.text_Hata_Eni_1, ui9.text_Hata_Eni_2, ui9.text_Hata_Eni_3,
-                              ui9.text_Hata_Eni_4, ui9.text_Hata_Eni_5, ui9.text_Hata_Eni_6]
-        Hata_Boyu_labels =   [ui9.text_Hata_Boyu_1, ui9.text_Hata_Boyu_2, ui9.text_Hata_Boyu_3,
-                              ui9.text_Hata_Boyu_4, ui9.text_Hata_Boyu_5, ui9.text_Hata_Boyu_6]
-        Hata_Alan_labels =   [ui9.text_Hata_Alan_1, ui9.text_Hata_Alan_2, ui9.text_Hata_Alan_3,
-                              ui9.text_Hata_Alan_4, ui9.text_Hata_Alan_5, ui9.text_Hata_Alan_6]
-        Hata_Metre_Labels =  [ui9.Metre_Label_1, ui9.Metre_Label_2, ui9.Metre_Label_3,
-                              ui9.Metre_Label_4, ui9.Metre_Label_5, ui9.Metre_Label_6]
-        Hata_Sinif_labels =  [ui9.text_Hata_Sinif_1, ui9.text_Hata_Sinif_2, ui9.text_Hata_Sinif_3,
-                              ui9.text_Hata_Sinif_4, ui9.text_Hata_Sinif_5, ui9.text_Hata_Sinif_6]
+        
         myTime = 0
         recordcounter = 0
         prev_time = time.time()
@@ -259,11 +239,6 @@ def main(worker, window):
                 return Basler_Cameras()
             frames = vs_pylon.read()
             if ui2.logic_All == 0:
-                detect_Hata_Eni.clear()
-                detect_Hata_Boyu.clear()
-                detect_Hata_Alan.clear()
-                detect_Hata_Metre.clear()
-                detect_Hata_Sinif.clear()
                 vs_pylon.stop()
                 for cam in vs_pylon.Active_cameras:
                     cam.grabResult.Release()
@@ -683,6 +658,13 @@ def main(worker, window):
         Tools.Trigg_Port_Button=False
         ui2.label_9.setText(str(0))
         MainWindow9.close()
+        for index in range(len(detect_images)):
+            Hata_Goster_labels[index].setPixmap(QtGui.QPixmap.fromImage(detect_images[index]))
+            Hata_Eni_labels[index].setText(detect_Hata_Eni[index])
+            Hata_Boyu_labels[index].setText(detect_Hata_Boyu[index])
+            Hata_Alan_labels[index].setText(detect_Hata_Alan[index])
+            Hata_Metre_Labels[index].setText(detect_Hata_Metre[index])
+            Hata_Sinif_labels[index].setText(detect_Hata_Sinif[index])
     ## Çıkış Buttonu
 
     ########################################################################################################################
@@ -881,6 +863,28 @@ def main(worker, window):
     ui8, MainWindow8, app8 = Tools.Feedback_Kayt_UI()
     ui9, MainWindow9, app9 = Tools.Feedback_Faulty_UI()
     #######################################################################################################
+    black_image = np.zeros((256, 1400), dtype=np.uint8)
+    show_images       = [black_image, black_image, black_image, black_image, black_image, black_image]
+    detect_images     = []
+    detect_Hata_Eni   = []
+    detect_Hata_Boyu  = []
+    detect_Hata_Alan  = []
+    detect_Hata_Metre = []
+    detect_Hata_Sinif = []
+    Hata_Goster_labels = [ui9.label_Hata_Goster_1, ui9.label_Hata_Goster_2, ui9.label_Hata_Goster_3,
+                              ui9.label_Hata_Goster_4, ui9.label_Hata_Goster_5, ui9.label_Hata_Goster_6]
+    Hata_Eni_labels =    [ui9.text_Hata_Eni_1, ui9.text_Hata_Eni_2, ui9.text_Hata_Eni_3,
+                            ui9.text_Hata_Eni_4, ui9.text_Hata_Eni_5, ui9.text_Hata_Eni_6]
+    Hata_Boyu_labels =   [ui9.text_Hata_Boyu_1, ui9.text_Hata_Boyu_2, ui9.text_Hata_Boyu_3,
+                            ui9.text_Hata_Boyu_4, ui9.text_Hata_Boyu_5, ui9.text_Hata_Boyu_6]
+    Hata_Alan_labels =   [ui9.text_Hata_Alan_1, ui9.text_Hata_Alan_2, ui9.text_Hata_Alan_3,
+                            ui9.text_Hata_Alan_4, ui9.text_Hata_Alan_5, ui9.text_Hata_Alan_6]
+    Hata_Metre_Labels =  [ui9.Metre_Label_1, ui9.Metre_Label_2, ui9.Metre_Label_3,
+                            ui9.Metre_Label_4, ui9.Metre_Label_5, ui9.Metre_Label_6]
+    Hata_Sinif_labels =  [ui9.text_Hata_Sinif_1, ui9.text_Hata_Sinif_2, ui9.text_Hata_Sinif_3,
+                            ui9.text_Hata_Sinif_4, ui9.text_Hata_Sinif_5, ui9.text_Hata_Sinif_6]
+    #######################################################################################################
+    
     worker.progress.emit(100)
     time.sleep(0.5)
     window.close()
