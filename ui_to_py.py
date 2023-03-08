@@ -33,3 +33,6 @@ from PyQt5 import uic
 
 # with open('Kayit_Ol.py', 'w', encoding="utf-8") as fout:
 #    uic.compileUi('Kayit_Ol.ui',fout)
+
+# with open('Warning_window.py', 'w', encoding="utf-8") as fout:
+#    uic.compileUi('Warning_window.ui',fout)

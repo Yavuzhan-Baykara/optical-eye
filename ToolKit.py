@@ -14,6 +14,8 @@ from Port import*
 from Kayit_Ol import*
 import json
 from FaultyFabricWindow import *
+from Warning_window import *
+from PyQt5.QtGui import QPixmap
 
 class ToolKit():
     def Windows(self):
@@ -75,12 +77,21 @@ class ToolKit():
         self.ui7.setupUi(self.MainWindow7)            #
         ###############################################
 
-        ################ Faulty Fabric #####################
+        ################ Faulty Fabric ##################
         self.app8 = QtWidgets.QApplication(sys.argv)    #
         self.MainWindow8 = QtWidgets.QMainWindow()      #
-        self.ui8 = Ui_FaultyFabricWindow()                         #
-        self.ui8.setupUi(self.MainWindow8)            #
-        ###############################################
+        self.ui8 = Ui_FaultyFabricWindow()              #
+        self.ui8.setupUi(self.MainWindow8)              #
+        #################################################
+
+        ################ Warning Window #################
+        self.app9 = QtWidgets.QApplication(sys.argv)    #
+        self.MainWindow9 = QtWidgets.QMainWindow()      #
+        self.ui9 = Ui_Warning_window()                  #
+        self.ui9.setupUi(self.MainWindow9)              #
+        icon_warning = QPixmap("./Icon/MainWindow/warning.png")
+        self.ui9.warning_icon.setPixmap(icon_warning)
+        #################################################
         
 
         
@@ -169,6 +180,12 @@ class ToolKit():
         self.MainWindow8.show()                                  #
     ##############################################################
 
+    ############ Warning Window >>>>>##############################
+    def QWarning_Window(self):                                     #
+        self.MainWindow9.close()                                 #
+        self.MainWindow9.show()                                  #
+    ##############################################################
+
     ########################################## FeedBacks ##########################################################################
     def FeedBack_SetupUi(self) : return self.ui1, self.ui2, self.ui3, self.ui4, self.ui5                                          #
     def FeedBack_Windows(self) : return self.MainWindow1, self.MainWindow2, self.MainWindow3, self.MainWindow4, self.MainWindow5  #
@@ -177,6 +194,7 @@ class ToolKit():
     def FeedBack_Port_UI(self) : return self.ui6, self.MainWindow6, self.app6                                                     #
     def Feedback_Kayt_UI(self) : return self.ui7, self.MainWindow7, self.app7                                                     #
     def Feedback_Faulty_UI(self): return self.ui8, self.MainWindow8, self.app8
+    def FeedBack_Warning_UI(self): return self.ui9, self.MainWindow9, self.app9
     ########################################## FeedBacks ##########################################################################
 
     def Cam_out_file_folder(self):
