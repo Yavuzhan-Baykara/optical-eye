@@ -47,7 +47,10 @@ class Active_Camera:
 class PylonVideoStream:
     def __init__(self, cameras,Tools):
           self.cameras = cameras 
-          self.cameras.Open()
+          try:
+            self.cameras.Open()
+          except:
+              return
           self.num_of_cam = cameras.GetSize()
           self.Active_cameras = []
           self.converter = pylon.ImageFormatConverter()
@@ -74,10 +77,12 @@ class PylonVideoStream:
         return self
         
     def update(self):
-        while self.stopped == False:
-            for active_cam in self.Active_cameras:
-                active_cam.calculate()
-
+        try:
+            while self.stopped == False:
+                for active_cam in self.Active_cameras:
+                    active_cam.calculate()
+        except:
+            return
     def read(self):
             frames = []
             for active_cam in self.Active_cameras:

@@ -195,21 +195,26 @@ def main(worker, window):
         tlFactory = pylon.TlFactory.GetInstance()
         devices = tlFactory.EnumerateDevices()
         cameras = pylon.InstantCameraArray(min(len(devices), 3))
+        device_indices = []
+        for serial in Tools.Camera_Serial:
+            for i, devic in enumerate(devices):
+                if devic.GetSerialNumber() == serial:
+                    device_indices.append(i)
+                    break
+            else:
+                device_indices.append(None)
         for i, cam in enumerate(cameras):
-            cam.Attach(tlFactory.CreateDevice(devices[i]))
-            serial_cam = cam.GetDeviceInfo().GetSerialNumber()
-            print("Using device ", cam.GetDeviceInfo().GetSerialNumber())
-            ui2.statusbar.showMessage(" "*1 + f" Tanımlı kamera: {serial_cam}", 1500)
-        if cameras.GetSize() == 0:
-            print('No camera is detected!')
-            ui2.statusbar.showMessage(" "*1 + " Pylon kamera bulunmamaktadır...", 1500)
-            ui2.Off_pushButton.setDisabled(True)
-            ui2.Ac_pushButton.setDisabled(False)
-            return 
+            device_index = device_indices[i]
+            if device_index is not None:
+                cam.Attach(tlFactory.CreateDevice(devices[device_index]))
+                serial_cam = cam.GetDeviceInfo().GetSerialNumber()
+                print("Using device ", serial_cam)
+                ui2.statusbar.showMessage(" "*1 + f" Tanımlı kamera: {serial_cam}", 1500)
+        
         vs_pylon = PylonVideoStream(cameras, Tools).start()
         tensor_temp = tensor([1.0,2.0], device="cuda")
         device_temp = device('cuda' if cuda.is_available() else 'cpu')
-        ui2.statusbar.showMessage( " " * 1 + f" Cuda GPU Durumu: {cuda.is_available()}", 1500)
+        ui2.statusbar.showMessage( " " * 1 + f" Cuda GPU Durumu: {cuda  .is_available()}", 1500)
         if cuda.is_available():
             tensor_temp = tensor_temp.to(device_temp)
         while 1:
@@ -231,8 +236,8 @@ def main(worker, window):
             else:
                 ui9.text_Dok_Hizi.setText(str(speed))
             ui9.text_Metre_Durumu.setText(str(position))
-            Dok_no= ui3.Dok_No_LineEdit.text()
-            Kalite_no= ui3.Kalite_No_LineEdit.text()
+            Dok_no= ui2.lineEdit_Dok_No.text()
+            Kalite_no= ui2.comboBox_Kalite_No.currentText()
             if not ui3.Kalite_No_LineEdit.text():
                 Kalite_no=0
             if not ui3.Dok_No_LineEdit.text():
@@ -245,7 +250,10 @@ def main(worker, window):
                 ui2.Camera_3.setPixmap(pixmap) 
                 ui2.Camera_4.setPixmap(pixmap) 
                 return Basler_Cameras()
-            frames = vs_pylon.read()
+            try:
+                frames = vs_pylon.read()
+            except:
+                return
             if ui2.logic_All == 0:
                 vs_pylon.stop()
                 for cam in vs_pylon.Active_cameras:
