@@ -241,12 +241,15 @@ class Veri_Tabani_Window():
         MainWindow3.show()
     
     def Ekle(Tarih,Dok_No,Kalite_No,Hatanın_Geldiği_Metre,Bez_Eni,Hatanin_Duvar_Tarafından_Mesafesi,Hata_Eni,Hata_Boyutu,Hata_Alanı,Hata_Sınıfı,Sonuc_Isım, Hata_Koordinant):
-        curs.execute("""INSERT INTO Hata_Sonuclari
-                     (Tarih,Dok_No,Kalite_No,Hatanin_Geldiği_Metre,Bez_Eni,Hatanin_Duvar_Tarafından_Mesafesi,Hata_Eni,Hata_Boyutu,Hata_Alanı,Hata_Sınıfı,Sonuc_Isım, Hata_Koordinant)
-                     VALUES
-                     (?,?,?,?,?,?,?,?,?,?,?,?)""",
-                     (Tarih, Dok_No, Kalite_No, Hatanın_Geldiği_Metre, Bez_Eni, Hatanin_Duvar_Tarafından_Mesafesi, Hata_Eni, Hata_Boyutu, Hata_Alanı, Hata_Sınıfı, Sonuc_Isım, Hata_Koordinant))
-        conn.commit()
+        with sqlite3.connect("./Database/Tespit_Edilen_Veriler.db") as conn:
+            curs = conn.cursor()
+            curs.execute("""INSERT INTO Hata_Sonuclari
+                        (Tarih,Dok_No,Kalite_No,Hatanin_Geldiği_Metre,Bez_Eni,Hatanin_Duvar_Tarafından_Mesafesi,Hata_Eni,Hata_Boyutu,Hata_Alanı,Hata_Sınıfı,Sonuc_Isım, Hata_Koordinant)
+                        VALUES
+                        (?,?,?,?,?,?,?,?,?,?,?,?)""",
+                        (Tarih, Dok_No, Kalite_No, Hatanın_Geldiği_Metre, Bez_Eni, Hatanin_Duvar_Tarafından_Mesafesi, Hata_Eni, Hata_Boyutu, Hata_Alanı, Hata_Sınıfı, Sonuc_Isım, Hata_Koordinant))
+            conn.commit()
+        
     
     def Update():
         selected = ui3.Veri_Tabani_Widget.selectedItems()

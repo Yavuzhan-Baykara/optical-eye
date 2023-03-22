@@ -34,8 +34,8 @@ sorguVeri=("""CREATE TABLE IF NOT EXISTS Hata_Sonuclari(
                  Sonuc_Isım INTEGER NOT NULL)
                  """)
 sorguTablo = '''SELECT Tarih, Dok_No, Kalite_No, 
-                SUM(CASE WHEN Hata_Sınıfı = 'Leke' THEN 1 ELSE 0 END) AS Leke, 
-                SUM(CASE WHEN Hata_Sınıfı = 'Delik' THEN 1 ELSE 0 END) AS Delik
+                SUM(CASE WHEN Hata_Sınıfı = 'leke' THEN 1 ELSE 0 END) AS leke, 
+                SUM(CASE WHEN Hata_Sınıfı = 'delik' THEN 1 ELSE 0 END) AS delik
                 FROM Hata_Sonuclari
                 GROUP BY Tarih, Dok_No, Kalite_No
                 ORDER BY Id ASC'''
@@ -43,10 +43,10 @@ datas = curs.execute(sorguTablo).fetchall()
 harfler = ['ğ', 'ı', 'ö', 'ü', 'ş']
 degistirilecekler = ['g', 'i', 'o', 'u', 's']
 eslesmeler = str.maketrans("".join(harfler), "".join(degistirilecekler))
-
 curs.execute(sorguVeri)
 conn.commit()
 Data = curs.fetchall()
+
 class Data_Pre_Process:
     class CustomPDF(FPDF):
         def Line(self, HEIGHT, WIDTH):
@@ -96,16 +96,19 @@ class Data_Pre_Process:
             'Tarih_Splited' : [],
             'Konum' : [[], [], [], []],
             'Konum_Array' : [],
-            'Hata_Türleri': ["Delik","Leke","Yag", "Dikey", "Yatay"],
+            'Hata_Türleri': ["delik","leke","kirik", "dikis", "iplik"],
             'Hata_Sayac' : [[0], [0], [0], [0]],
             'Hata_Array' : [[] , [] , [], []],
             'Hata_Konum' : [[], [], [], []],
             'Tarih_All':[]
                 }
-        curs.execute("SELECT * FROM Hata_Sonuclari")
+        
 
     def positioning(self, Tarih):
         self.Tarih=Tarih
+        conn=sqlite3.connect('./Database/Tespit_Edilen_Veriler.db',timeout=1, check_same_thread=False)
+        curs=conn.cursor()
+        curs.execute("SELECT * FROM Hata_Sonuclari")
         for satirIndex, satirVeri in enumerate(curs):
             if self.Tarih == satirVeri[1]:
                 if satirVeri[10] == self.Data['Hata_Türleri'][0]:
@@ -169,8 +172,8 @@ class Data_Pre_Process:
         if len(Tarih_Splited)==1:
             df['Question'] = [f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}"]
             df2['Question']=['1. Hafta']
-            df['Delik'] = [Month[1][0]]
-            df['Leke'] = [Month[1][1]]
+            df['delik'] = [Month[1][0]]
+            df['leke'] = [Month[1][1]]
             df['Diger'] = [Month[1][2]]
             d = [2.0]
             h= [1.5]
@@ -179,8 +182,8 @@ class Data_Pre_Process:
                                f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}"
                              ]
             df2['Question']=['1. Hafta','2. Hafta']
-            df['Delik'] = [Month[1][0], Month[3][0]]
-            df['Leke'] = [Month[1][1], Month[3][1]]
+            df['delik'] = [Month[1][0], Month[3][0]]
+            df['leke'] = [Month[1][1], Month[3][1]]
             df['Diger'] = [Month[1][2], Month[3][2]]
             d = [2.0, 4.0]
             h= [1.5, 3.5]
@@ -191,8 +194,8 @@ class Data_Pre_Process:
                                f"{Tarih_Splited[2][0]}-{Tarih_Splited[2][-1]}"
                              ]
             df2['Question']=['1. Hafta', '2. Hafta', '3. Hafta']
-            df['Delik'] = [Month[1][0], Month[3][0], Month[5][0]]
-            df['Leke'] = [Month[1][1], Month[3][1], Month[5][1]]
+            df['delik'] = [Month[1][0], Month[3][0], Month[5][0]]
+            df['leke'] = [Month[1][1], Month[3][1], Month[5][1]]
             df['Diger'] = [Month[1][2], Month[3][2], Month[5][2]]
             d = [2.0, 4.0, 6.0]
             h= [1.5, 3.5, 5.5]
@@ -203,8 +206,8 @@ class Data_Pre_Process:
                               f"{Tarih_Splited[-1][0]}-{Tarih_Splited[-1][-1]}"
                              ]
             df2['Question']=['1. Hafta', '2. Hafta', '3. Hafta', '4. Hafta']
-            df['Delik'] = [Month[-7][0], Month[-5][0], Month[-3][0], Month[-1][0]]
-            df['Leke'] = [Month[-7][1], Month[-5][1], Month[-3][1], Month[-1][1]]
+            df['delik'] = [Month[-7][0], Month[-5][0], Month[-3][0], Month[-1][0]]
+            df['leke'] = [Month[-7][1], Month[-5][1], Month[-3][1], Month[-1][1]]
             df['Diger'] = [Month[-7][2], Month[-5][2], Month[-3][2], Month[-1][2]]
             d = [2.0, 5.0, 8.0, 11.0]
             h= [1.5, 3.5, 5.5, 7.5]
@@ -216,8 +219,8 @@ class Data_Pre_Process:
         y = [x - 0.5 for x in m]
         I = [x - 0.5 for x in y]
         xticks(d, df2['Question'])
-        plt.bar(m, df['Delik'], width=0.5, color="#521B1D", label="Delik")
-        plt.bar(d, df['Leke'], width=0.5, color="#39521B", label="Leke")
+        plt.bar(m, df['delik'], width=0.5, color="#521B1D", label="delik")
+        plt.bar(d, df['leke'], width=0.5, color="#39521B", label="leke")
         plt.bar(y, df['Diger'], width=0.5, color="#1B5250", label="Diger")
         plt.legend()
         savefig('barchart.png')
@@ -236,14 +239,14 @@ class Data_Pre_Process:
         pdf.set_font('Arial',size=12)
         pdf.set_xy(WIDTH/5, HEIGHT/5)
         pdf.cell(50, 10, 'Hafta', 1, 0, 'C')
-        pdf.cell(40, 10, 'Delik', 1, 0, 'C')
-        pdf.cell(40, 10, 'Leke', 1, 2, 'C')
+        pdf.cell(40, 10, 'delik', 1, 0, 'C')
+        pdf.cell(40, 10, 'leke', 1, 2, 'C')
         pdf.cell(-90)
         pdf.set_font('Arial',size=12)
         for i in range(0, len(df)):
             pdf.cell(50, 10, '%s' % (df['Question'].iloc[i]), 1, 0, 'C')
-            pdf.cell(40, 10, '%s' % (str(df.Delik.iloc[i])), 1, 0, 'C')
-            pdf.cell(40, 10, '%s' % (str(df.Leke.iloc[i])), 1, 2, 'C')
+            pdf.cell(40, 10, '%s' % (str(df.delik.iloc[i])), 1, 0, 'C')
+            pdf.cell(40, 10, '%s' % (str(df.leke.iloc[i])), 1, 2, 'C')
             pdf.cell(-90)
         pdf.set_y(110)
         pdf.cell(30,10,link = 'C')
@@ -325,5 +328,8 @@ class Data_Pre_Process:
         main_path = main_path.replace('\\' , "/")
         main_path = main_path +'/' + "PDF" + "/" + str(self.Tarih) + '-aylık-rapor.pdf'
         print(main_path)
+        
+        conn.close()
         pdf.output(main_path, 'F')
         os.system(main_path)
+        

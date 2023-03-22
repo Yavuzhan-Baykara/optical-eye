@@ -25,8 +25,8 @@ from PyQt5 import uic
 # with open('Port.py', 'w', encoding="utf-8") as fout:
 #    uic.compileUi('Port.ui',fout)
 
-# with open('Veri_Tabani.py', 'w', encoding="utf-8") as fout:
-#    uic.compileUi('Veri_Tabani.ui',fout)
+with open('Veri_Tabani.py', 'w', encoding="utf-8") as fout:
+   uic.compileUi('Veri_Tabani.ui',fout)
 
 # with open('Giris.py', 'w', encoding="utf-8") as fout:
 #    uic.compileUi('Giris.ui',fout)
@@ -36,3 +36,6 @@ from PyQt5 import uic
 
 # with open('Warning_window.py', 'w', encoding="utf-8") as fout:
 #    uic.compileUi('Warning_window.ui',fout)
+
+# with open('faultys_window.py', 'w', encoding="utf-8") as fout:
+#    uic.compileUi('faultys_window.ui',fout)

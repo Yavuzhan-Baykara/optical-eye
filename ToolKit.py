@@ -16,6 +16,7 @@ import json
 from FaultyFabricWindow import *
 from Warning_window import *
 from PyQt5.QtGui import QPixmap
+from faultys_window import *
 
 class ToolKit():
     def Windows(self):
@@ -91,6 +92,16 @@ class ToolKit():
         self.ui9.setupUi(self.MainWindow9)              #
         icon_warning = QPixmap("./Icon/MainWindow/warning.png")
         self.ui9.warning_icon.setPixmap(icon_warning)
+        #################################################
+        
+        ################ Faultys Window #################
+        self.app10 = QtWidgets.QApplication(sys.argv)    #
+        self.MainWindow10 = QtWidgets.QMainWindow()      #
+        self.ui10 = Ui_ikaz_MainWindow()                  #
+        self.ui10.setupUi(self.MainWindow10)              #
+        icon_warning = QPixmap("./Icon/MainWindow/warning 150x150.png")
+        self.ui10.warning_label_2.setPixmap(icon_warning)
+        self.ui10.warning_label_3.setPixmap(icon_warning)
         #################################################
         
 
@@ -175,16 +186,20 @@ class ToolKit():
     ##############################################################
 
     ############ Faulty Window >>>>>##############################
-    def QWindow_Kayit(self):                                     #
+    def QWindow_Faulty(self):                                     #
         self.MainWindow8.close()                                 #
         self.MainWindow8.show()                                  #
     ##############################################################
 
-    ############ Warning Window >>>>>##############################
-    def QWarning_Window(self):                                     #
+    ############ Warning Window >>>>>#############################
+    def QWarning_Window(self):                                   #
         self.MainWindow9.close()                                 #
         self.MainWindow9.show()                                  #
     ##############################################################
+
+    def QFaultys_Window(self):
+        self.MainWindow10.close()
+        self.MainWindow10.show()
 
     ########################################## FeedBacks ##########################################################################
     def FeedBack_SetupUi(self) : return self.ui1, self.ui2, self.ui3, self.ui4, self.ui5                                          #
@@ -193,8 +208,9 @@ class ToolKit():
     def FeedBack_Zoom_Rate(self) : return self.zoom_impact_rate                                                                   #
     def FeedBack_Port_UI(self) : return self.ui6, self.MainWindow6, self.app6                                                     #
     def Feedback_Kayt_UI(self) : return self.ui7, self.MainWindow7, self.app7                                                     #
-    def Feedback_Faulty_UI(self): return self.ui8, self.MainWindow8, self.app8
-    def FeedBack_Warning_UI(self): return self.ui9, self.MainWindow9, self.app9
+    def Feedback_Faulty_UI(self): return self.ui8, self.MainWindow8, self.app8                                                    #
+    def FeedBack_Warning_UI(self): return self.ui9, self.MainWindow9, self.app9                                                   #
+    def FeedBack_Faultys_UI(self): return self.ui10, self.MainWindow10, self.app10                                                #
     ########################################## FeedBacks ##########################################################################
 
     def Cam_out_file_folder(self):

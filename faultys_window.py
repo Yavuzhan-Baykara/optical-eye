@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Veri_Tabani.ui'
+# Form implementation generated from reading ui file 'faultys_window.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -8,12 +8,13 @@
 
 from PyQt5 import QtCore, QtGui, QtWidgets
 
-class Ui_Veri_Tabani_Window(object):
-    def setupUi(self, Veri_Tabani_Window):
-        Veri_Tabani_Window.setObjectName("Veri_Tabani_Window")
-        Veri_Tabani_Window.resize(1940, 1010)
-        Veri_Tabani_Window.setMaximumSize(QtCore.QSize(1940, 1010))
-        Veri_Tabani_Window.setStyleSheet("/* ---------------------------------------------------------------------------\n"
+class Ui_ikaz_MainWindow(object):
+    def setupUi(self, ikaz_MainWindow):
+        ikaz_MainWindow.setObjectName("ikaz_MainWindow")
+        ikaz_MainWindow.resize(1300, 820)
+        ikaz_MainWindow.setMinimumSize(QtCore.QSize(1300, 820))
+        ikaz_MainWindow.setMaximumSize(QtCore.QSize(1300, 820))
+        ikaz_MainWindow.setStyleSheet("/* ---------------------------------------------------------------------------\n"
 "\n"
 "    WARNING! File created programmatically. All changes made in this file will be lost!\n"
 "\n"
@@ -44,7 +45,7 @@ class Ui_Veri_Tabani_Window(object):
 "  border-style: none;\n"
 "  border-image: none;\n"
 "  outline: 0;\n"
-"  font-size: 20px;\n"
+"  font-size: 30px;\n"
 "}\n"
 "\n"
 "/* specific reset for elements inside QToolBar */\n"
@@ -297,6 +298,7 @@ class Ui_Veri_Tabani_Window(object):
 "  border: 1px solid #19232D;\n"
 "  color: #E0E1E3;\n"
 "  selection-background-color: #1A72BB;\n"
+"\n"
 "}\n"
 "\n"
 "QMenuBar:focus {\n"
@@ -307,6 +309,7 @@ class Ui_Veri_Tabani_Window(object):
 "  background: transparent;\n"
 "  padding: 4px;\n"
 "  margin-right: 8px;\n"
+"\n"
 "}\n"
 "\n"
 "QMenuBar::item:selected {\n"
@@ -323,8 +326,8 @@ class Ui_Veri_Tabani_Window(object):
 "  color: #E0E1E3;\n"
 "  margin-bottom: 0px;\n"
 "  padding-bottom: 0px;\n"
-"}\n"
 "\n"
+"}\n"
 "/* QMenu ------------------------------------------------------------------\n"
 "\n"
 "https://doc.qt.io/qt-5/stylesheet-examples.html#customizing-qmenu\n"
@@ -832,6 +835,8 @@ class Ui_Veri_Tabani_Window(object):
 "  margin: 0px;\n"
 "  color: #E0E1E3;\n"
 "  font-size: 20px;\n"
+"  border: 2px solid #455364;\n"
+"  border-radius: 4px;\n"
 "}\n"
 "\n"
 "QLabel:disabled {\n"
@@ -1371,6 +1376,7 @@ class Ui_Veri_Tabani_Window(object):
 "  border: 1px solid #455364;\n"
 "  border-radius: 4px;\n"
 "  color: #E0E1E3;\n"
+"  \n"
 "}\n"
 "\n"
 "QLineEdit:disabled {\n"
@@ -2160,238 +2166,79 @@ class Ui_Veri_Tabani_Window(object):
 "  /* Fix cut labels in plots #134 */\n"
 "  padding: 0px;\n"
 "}")
-        self.centralwidget = QtWidgets.QWidget(Veri_Tabani_Window)
+        self.centralwidget = QtWidgets.QWidget(ikaz_MainWindow)
         self.centralwidget.setObjectName("centralwidget")
-        self.gridLayout = QtWidgets.QGridLayout(self.centralwidget)
+        self.warning_label_2 = QtWidgets.QLabel(self.centralwidget)
+        self.warning_label_2.setGeometry(QtCore.QRect(30, 30, 151, 111))
+        self.warning_label_2.setStyleSheet("image: url(:/Logos/Icon/MainWindow/warning 250x150.png);")
+        self.warning_label_2.setText("")
+        self.warning_label_2.setAlignment(QtCore.Qt.AlignCenter)
+        self.warning_label_2.setWordWrap(True)
+        self.warning_label_2.setObjectName("warning_label_2")
+        self.inf_label = QtWidgets.QLabel(self.centralwidget)
+        self.inf_label.setGeometry(QtCore.QRect(190, 30, 931, 111))
+        font = QtGui.QFont()
+        font.setPointSize(-1)
+        self.inf_label.setFont(font)
+        self.inf_label.setAlignment(QtCore.Qt.AlignCenter)
+        self.inf_label.setWordWrap(True)
+        self.inf_label.setObjectName("inf_label")
+        self.groupBox = QtWidgets.QGroupBox(self.centralwidget)
+        self.groupBox.setGeometry(QtCore.QRect(30, 150, 1251, 581))
+        self.groupBox.setObjectName("groupBox")
+        self.gridLayout = QtWidgets.QGridLayout(self.groupBox)
         self.gridLayout.setObjectName("gridLayout")
-        self.details_groupBox_2 = QtWidgets.QGroupBox(self.centralwidget)
-        self.details_groupBox_2.setMaximumSize(QtCore.QSize(560, 330))
-        self.details_groupBox_2.setStyleSheet("")
-        self.details_groupBox_2.setObjectName("details_groupBox_2")
-        self.Goster_pushButton = QtWidgets.QPushButton(self.details_groupBox_2)
-        self.Goster_pushButton.setGeometry(QtCore.QRect(40, 240, 130, 50))
-        self.Goster_pushButton.setStyleSheet("")
-        self.Goster_pushButton.setObjectName("Goster_pushButton")
-        self.Temiz_pushButton = QtWidgets.QPushButton(self.details_groupBox_2)
-        self.Temiz_pushButton.setGeometry(QtCore.QRect(200, 240, 130, 50))
-        self.Temiz_pushButton.setStyleSheet("")
-        self.Temiz_pushButton.setObjectName("Temiz_pushButton")
-        self.Leke_radioButton = QtWidgets.QRadioButton(self.details_groupBox_2)
-        self.Leke_radioButton.setGeometry(QtCore.QRect(40, 70, 91, 31))
-        self.Leke_radioButton.setObjectName("Leke_radioButton")
-        self.Delik_RadioButton = QtWidgets.QRadioButton(self.details_groupBox_2)
-        self.Delik_RadioButton.setGeometry(QtCore.QRect(200, 70, 91, 31))
-        self.Delik_RadioButton.setObjectName("Delik_RadioButton")
-        self.Iplik_RadioButton = QtWidgets.QRadioButton(self.details_groupBox_2)
-        self.Iplik_RadioButton.setGeometry(QtCore.QRect(40, 110, 91, 31))
-        self.Iplik_RadioButton.setObjectName("Iplik_RadioButton")
-        self.Yag_RadioButton = QtWidgets.QRadioButton(self.details_groupBox_2)
-        self.Yag_RadioButton.setGeometry(QtCore.QRect(200, 110, 91, 31))
-        self.Yag_RadioButton.setObjectName("Yag_RadioButton")
-        self.Yatay_RadioButton = QtWidgets.QRadioButton(self.details_groupBox_2)
-        self.Yatay_RadioButton.setGeometry(QtCore.QRect(40, 150, 91, 31))
-        self.Yatay_RadioButton.setObjectName("Yatay_RadioButton")
-        self.Dikey_RadioButton = QtWidgets.QRadioButton(self.details_groupBox_2)
-        self.Dikey_RadioButton.setGeometry(QtCore.QRect(200, 150, 91, 31))
-        self.Dikey_RadioButton.setObjectName("Dikey_RadioButton")
-        self.Tumu_RadioButton = QtWidgets.QRadioButton(self.details_groupBox_2)
-        self.Tumu_RadioButton.setGeometry(QtCore.QRect(40, 190, 91, 31))
-        self.Tumu_RadioButton.setObjectName("Tumu_RadioButton")
-        self.Kirik_RadioButton = QtWidgets.QRadioButton(self.details_groupBox_2)
-        self.Kirik_RadioButton.setGeometry(QtCore.QRect(200, 190, 91, 31))
-        self.Kirik_RadioButton.setObjectName("Kirik_RadioButton")
-        self.gridLayout.addWidget(self.details_groupBox_2, 0, 0, 1, 1)
-        self.details_groupBox = QtWidgets.QGroupBox(self.centralwidget)
-        self.details_groupBox.setMaximumSize(QtCore.QSize(711, 330))
-        self.details_groupBox.setStyleSheet("")
-        self.details_groupBox.setObjectName("details_groupBox")
-        self.Baslangic_dateEdit = QtWidgets.QDateEdit(self.details_groupBox)
-        self.Baslangic_dateEdit.setGeometry(QtCore.QRect(240, 60, 231, 41))
-        self.Baslangic_dateEdit.setStyleSheet("")
-        self.Baslangic_dateEdit.setObjectName("Baslangic_dateEdit")
-        self.Bitis_dateEdit = QtWidgets.QDateEdit(self.details_groupBox)
-        self.Bitis_dateEdit.setGeometry(QtCore.QRect(240, 120, 231, 41))
-        self.Bitis_dateEdit.setStyleSheet("")
-        self.Bitis_dateEdit.setObjectName("Bitis_dateEdit")
-        self.label_3 = QtWidgets.QLabel(self.details_groupBox)
-        self.label_3.setGeometry(QtCore.QRect(40, 70, 171, 37))
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        self.label_3.setFont(font)
-        self.label_3.setStyleSheet("color:white;")
-        self.label_3.setObjectName("label_3")
-        self.label_4 = QtWidgets.QLabel(self.details_groupBox)
-        self.label_4.setGeometry(QtCore.QRect(40, 120, 171, 37))
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        self.label_4.setFont(font)
-        self.label_4.setStyleSheet("color:white;")
-        self.label_4.setObjectName("label_4")
-        self.Listele_pushButton = QtWidgets.QPushButton(self.details_groupBox)
-        self.Listele_pushButton.setGeometry(QtCore.QRect(510, 60, 161, 80))
-        self.Listele_pushButton.setStyleSheet("")
-        self.Listele_pushButton.setObjectName("Listele_pushButton")
-        self.Raporla_PushButton = QtWidgets.QPushButton(self.details_groupBox)
-        self.Raporla_PushButton.setGeometry(QtCore.QRect(510, 210, 161, 80))
-        self.Raporla_PushButton.setStyleSheet("")
-        self.Raporla_PushButton.setObjectName("Raporla_PushButton")
-        self.label_Dok_No = QtWidgets.QLabel(self.details_groupBox)
-        self.label_Dok_No.setGeometry(QtCore.QRect(40, 190, 171, 37))
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        self.label_Dok_No.setFont(font)
-        self.label_Dok_No.setStyleSheet("color:white;")
-        self.label_Dok_No.setObjectName("label_Dok_No")
-        self.Dok_No_LineEdit = QtWidgets.QLineEdit(self.details_groupBox)
-        self.Dok_No_LineEdit.setGeometry(QtCore.QRect(240, 190, 230, 40))
-        self.Dok_No_LineEdit.setStyleSheet("")
-        self.Dok_No_LineEdit.setObjectName("Dok_No_LineEdit")
-        self.label_Kalite_No = QtWidgets.QLabel(self.details_groupBox)
-        self.label_Kalite_No.setGeometry(QtCore.QRect(40, 250, 171, 37))
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        self.label_Kalite_No.setFont(font)
-        self.label_Kalite_No.setStyleSheet("color:white;")
-        self.label_Kalite_No.setObjectName("label_Kalite_No")
-        self.Kalite_No_LineEdit = QtWidgets.QLineEdit(self.details_groupBox)
-        self.Kalite_No_LineEdit.setGeometry(QtCore.QRect(240, 250, 230, 40))
-        self.Kalite_No_LineEdit.setStyleSheet("")
-        self.Kalite_No_LineEdit.setObjectName("Kalite_No_LineEdit")
-        self.gridLayout.addWidget(self.details_groupBox, 0, 1, 1, 1)
-        self.details_groupBox_4 = QtWidgets.QGroupBox(self.centralwidget)
-        self.details_groupBox_4.setMaximumSize(QtCore.QSize(590, 330))
-        self.details_groupBox_4.setStyleSheet("")
-        self.details_groupBox_4.setObjectName("details_groupBox_4")
-        self.label_9 = QtWidgets.QLabel(self.details_groupBox_4)
-        self.label_9.setGeometry(QtCore.QRect(30, 60, 321, 37))
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        self.label_9.setFont(font)
-        self.label_9.setStyleSheet("color:white;")
-        self.label_9.setObjectName("label_9")
-        self.label_10 = QtWidgets.QLabel(self.details_groupBox_4)
-        self.label_10.setGeometry(QtCore.QRect(30, 120, 321, 37))
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        self.label_10.setFont(font)
-        self.label_10.setStyleSheet("color:white;")
-        self.label_10.setObjectName("label_10")
-        self.Hata_Alani_LineEdit = QtWidgets.QLineEdit(self.details_groupBox_4)
-        self.Hata_Alani_LineEdit.setGeometry(QtCore.QRect(360, 60, 201, 40))
-        self.Hata_Alani_LineEdit.setStyleSheet("")
-        self.Hata_Alani_LineEdit.setObjectName("Hata_Alani_LineEdit")
-        self.Metre_LineEdit = QtWidgets.QLineEdit(self.details_groupBox_4)
-        self.Metre_LineEdit.setGeometry(QtCore.QRect(360, 120, 201, 40))
-        self.Metre_LineEdit.setStyleSheet("")
-        self.Metre_LineEdit.setObjectName("Metre_LineEdit")
-        self.Sinifi_LineEdit = QtWidgets.QLineEdit(self.details_groupBox_4)
-        self.Sinifi_LineEdit.setGeometry(QtCore.QRect(360, 180, 201, 40))
-        self.Sinifi_LineEdit.setStyleSheet("")
-        self.Sinifi_LineEdit.setObjectName("Sinifi_LineEdit")
-        self.label_11 = QtWidgets.QLabel(self.details_groupBox_4)
-        self.label_11.setGeometry(QtCore.QRect(30, 180, 321, 37))
-        font = QtGui.QFont()
-        font.setPointSize(-1)
-        self.label_11.setFont(font)
-        self.label_11.setStyleSheet("color:white;")
-        self.label_11.setObjectName("label_11")
-        self.Gunclle_PushButton = QtWidgets.QPushButton(self.details_groupBox_4)
-        self.Gunclle_PushButton.setGeometry(QtCore.QRect(359, 250, 201, 51))
-        self.Gunclle_PushButton.setStyleSheet("")
-        self.Gunclle_PushButton.setObjectName("Gunclle_PushButton")
-        self.Delete_PushButton = QtWidgets.QPushButton(self.details_groupBox_4)
-        self.Delete_PushButton.setGeometry(QtCore.QRect(40, 250, 201, 51))
-        self.Delete_PushButton.setStyleSheet("")
-        self.Delete_PushButton.setObjectName("Delete_PushButton")
-        self.gridLayout.addWidget(self.details_groupBox_4, 0, 2, 1, 1)
-        self.details_groupBox_3 = QtWidgets.QGroupBox(self.centralwidget)
-        self.details_groupBox_3.setMaximumSize(QtCore.QSize(1901, 581))
-        self.details_groupBox_3.setStyleSheet("")
-        self.details_groupBox_3.setObjectName("details_groupBox_3")
-        self.Veri_Tabani_Widget = QtWidgets.QTableWidget(self.details_groupBox_3)
-        self.Veri_Tabani_Widget.setGeometry(QtCore.QRect(20, 30, 1871, 531))
-        self.Veri_Tabani_Widget.setStyleSheet("")
-        self.Veri_Tabani_Widget.setRowCount(100000)
-        self.Veri_Tabani_Widget.setColumnCount(13)
-        self.Veri_Tabani_Widget.setObjectName("Veri_Tabani_Widget")
-        self.Veri_Tabani_Widget.horizontalHeader().setDefaultSectionSize(151)
-        self.gridLayout.addWidget(self.details_groupBox_3, 1, 0, 1, 3)
-        Veri_Tabani_Window.setCentralWidget(self.centralwidget)
-        self.menubar = QtWidgets.QMenuBar(Veri_Tabani_Window)
-        self.menubar.setGeometry(QtCore.QRect(0, 0, 1940, 43))
-        self.menubar.setObjectName("menubar")
-        self.menuCamera = QtWidgets.QMenu(self.menubar)
-        self.menuCamera.setObjectName("menuCamera")
-        self.menuHakk_nda = QtWidgets.QMenu(self.menubar)
-        self.menuHakk_nda.setObjectName("menuHakk_nda")
-        self.menuAdmin_Paneli = QtWidgets.QMenu(self.menubar)
-        self.menuAdmin_Paneli.setObjectName("menuAdmin_Paneli")
-        self.menuKapat = QtWidgets.QMenu(self.menubar)
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("Icon/MainWindow/mmm.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.menuKapat.setIcon(icon)
-        self.menuKapat.setObjectName("menuKapat")
-        Veri_Tabani_Window.setMenuBar(self.menubar)
-        self.statusbar = QtWidgets.QStatusBar(Veri_Tabani_Window)
-        self.statusbar.setObjectName("statusbar")
-        Veri_Tabani_Window.setStatusBar(self.statusbar)
-        self.actionKameralar = QtWidgets.QAction(Veri_Tabani_Window)
-        self.actionKameralar.setObjectName("actionKameralar")
-        self.actionAdmin_Paneli = QtWidgets.QAction(Veri_Tabani_Window)
-        self.actionAdmin_Paneli.setObjectName("actionAdmin_Paneli")
-        self.actionHakk_nda = QtWidgets.QAction(Veri_Tabani_Window)
-        self.actionHakk_nda.setObjectName("actionHakk_nda")
-        self.action_k = QtWidgets.QAction(Veri_Tabani_Window)
-        icon1 = QtGui.QIcon()
-        icon1.addPixmap(QtGui.QPixmap("Icon/MainWindow/close.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.action_k.setIcon(icon1)
-        self.action_k.setObjectName("action_k")
-        self.menuCamera.addAction(self.actionKameralar)
-        self.menuHakk_nda.addAction(self.actionHakk_nda)
-        self.menuAdmin_Paneli.addAction(self.actionAdmin_Paneli)
-        self.menuKapat.addAction(self.action_k)
-        self.menubar.addAction(self.menuKapat.menuAction())
-        self.menubar.addAction(self.menuCamera.menuAction())
-        self.menubar.addAction(self.menuAdmin_Paneli.menuAction())
-        self.menubar.addAction(self.menuHakk_nda.menuAction())
+        spacerItem = QtWidgets.QSpacerItem(1000, 20, QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Minimum)
+        self.gridLayout.addItem(spacerItem, 1, 1, 1, 1)
+        self.fault_2_label = QtWidgets.QLabel(self.groupBox)
+        self.fault_2_label.setObjectName("fault_2_label")
+        self.gridLayout.addWidget(self.fault_2_label, 4, 0, 1, 2)
+        self.label_6 = QtWidgets.QLabel(self.groupBox)
+        self.label_6.setMaximumSize(QtCore.QSize(16777215, 35))
+        self.label_6.setObjectName("label_6")
+        self.gridLayout.addWidget(self.label_6, 1, 0, 1, 1)
+        self.label_7 = QtWidgets.QLabel(self.groupBox)
+        self.label_7.setMaximumSize(QtCore.QSize(16777215, 35))
+        self.label_7.setObjectName("label_7")
+        self.gridLayout.addWidget(self.label_7, 3, 0, 1, 1)
+        self.label_8 = QtWidgets.QLabel(self.groupBox)
+        self.label_8.setMaximumSize(QtCore.QSize(16777215, 35))
+        self.label_8.setObjectName("label_8")
+        self.gridLayout.addWidget(self.label_8, 5, 0, 1, 1)
+        spacerItem1 = QtWidgets.QSpacerItem(20, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        self.gridLayout.addItem(spacerItem1, 0, 0, 1, 1)
+        self.fault_3_label = QtWidgets.QLabel(self.groupBox)
+        self.fault_3_label.setObjectName("fault_3_label")
+        self.gridLayout.addWidget(self.fault_3_label, 6, 0, 1, 2)
+        self.fault_1_label = QtWidgets.QLabel(self.groupBox)
+        self.fault_1_label.setObjectName("fault_1_label")
+        self.gridLayout.addWidget(self.fault_1_label, 2, 0, 1, 2)
+        self.close_pushButton = QtWidgets.QPushButton(self.centralwidget)
+        self.close_pushButton.setGeometry(QtCore.QRect(30, 740, 1251, 61))
+        self.close_pushButton.setObjectName("close_pushButton")
+        self.warning_label_3 = QtWidgets.QLabel(self.centralwidget)
+        self.warning_label_3.setGeometry(QtCore.QRect(1130, 30, 151, 111))
+        self.warning_label_3.setStyleSheet("image: url(:/Logos/Icon/MainWindow/warning 250x150.png);")
+        self.warning_label_3.setText("")
+        self.warning_label_3.setAlignment(QtCore.Qt.AlignCenter)
+        self.warning_label_3.setWordWrap(True)
+        self.warning_label_3.setObjectName("warning_label_3")
+        ikaz_MainWindow.setCentralWidget(self.centralwidget)
 
-        self.retranslateUi(Veri_Tabani_Window)
-        QtCore.QMetaObject.connectSlotsByName(Veri_Tabani_Window)
+        self.retranslateUi(ikaz_MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(ikaz_MainWindow)
 
-    def retranslateUi(self, Veri_Tabani_Window):
+    def retranslateUi(self, ikaz_MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        Veri_Tabani_Window.setWindowTitle(_translate("Veri_Tabani_Window", "Veri Tabanı"))
-        self.details_groupBox_2.setTitle(_translate("Veri_Tabani_Window", "Filtre"))
-        self.Goster_pushButton.setText(_translate("Veri_Tabani_Window", "Göster"))
-        self.Temiz_pushButton.setText(_translate("Veri_Tabani_Window", "Temizle"))
-        self.Leke_radioButton.setText(_translate("Veri_Tabani_Window", "Leke"))
-        self.Delik_RadioButton.setText(_translate("Veri_Tabani_Window", "Delik"))
-        self.Iplik_RadioButton.setText(_translate("Veri_Tabani_Window", "Iplik"))
-        self.Yag_RadioButton.setText(_translate("Veri_Tabani_Window", "Yağ"))
-        self.Yatay_RadioButton.setText(_translate("Veri_Tabani_Window", "Yatay"))
-        self.Dikey_RadioButton.setText(_translate("Veri_Tabani_Window", "Dikey"))
-        self.Tumu_RadioButton.setText(_translate("Veri_Tabani_Window", "Tumu"))
-        self.Kirik_RadioButton.setText(_translate("Veri_Tabani_Window", "Kırık"))
-        self.details_groupBox.setTitle(_translate("Veri_Tabani_Window", "KONTROL"))
-        self.label_3.setText(_translate("Veri_Tabani_Window", "Başlangıç Tarihi:"))
-        self.label_4.setText(_translate("Veri_Tabani_Window", "Bitiş Tarihi"))
-        self.Listele_pushButton.setText(_translate("Veri_Tabani_Window", "Listele"))
-        self.Raporla_PushButton.setText(_translate("Veri_Tabani_Window", "Raporla"))
-        self.label_Dok_No.setText(_translate("Veri_Tabani_Window", "Dok No"))
-        self.label_Kalite_No.setText(_translate("Veri_Tabani_Window", "Kalite No"))
-        self.details_groupBox_4.setTitle(_translate("Veri_Tabani_Window", "KONTROL"))
-        self.label_9.setText(_translate("Veri_Tabani_Window", "Hata Alanı(mm2)"))
-        self.label_10.setText(_translate("Veri_Tabani_Window", "Hatanın Geldiği Metre(m)"))
-        self.label_11.setText(_translate("Veri_Tabani_Window", "Hatanın Sınıfı"))
-        self.Gunclle_PushButton.setText(_translate("Veri_Tabani_Window", "Güncelle"))
-        self.Delete_PushButton.setText(_translate("Veri_Tabani_Window", "Sil"))
-        self.details_groupBox_3.setTitle(_translate("Veri_Tabani_Window", "Veri Tabanı"))
-        self.menuCamera.setTitle(_translate("Veri_Tabani_Window", "Kameralar"))
-        self.menuHakk_nda.setTitle(_translate("Veri_Tabani_Window", "Hakkında"))
-        self.menuAdmin_Paneli.setTitle(_translate("Veri_Tabani_Window", "Admin Paneli"))
-        self.menuKapat.setTitle(_translate("Veri_Tabani_Window", "Kapat"))
-        self.actionKameralar.setText(_translate("Veri_Tabani_Window", "Kameralar"))
-        self.actionAdmin_Paneli.setText(_translate("Veri_Tabani_Window", "Admin Paneli"))
-        self.actionHakk_nda.setText(_translate("Veri_Tabani_Window", "Hakkında"))
-        self.action_k.setText(_translate("Veri_Tabani_Window", "Çıkış"))
+        ikaz_MainWindow.setWindowTitle(_translate("ikaz_MainWindow", "İKAZ UYARI"))
+        self.inf_label.setText(_translate("ikaz_MainWindow", "SARI İKAZ UYARISI BULUNMAKTADIR! UYARIYI KAPATMAK İÇİN LÜTFEN KAPAT SEÇENEĞİNE TIKLAYINIZ."))
+        self.groupBox.setTitle(_translate("ikaz_MainWindow", "HATALAR"))
+        self.fault_2_label.setText(_translate("ikaz_MainWindow", "2. Hata Görüntüsü"))
+        self.label_6.setText(_translate("ikaz_MainWindow", "1. Hata"))
+        self.label_7.setText(_translate("ikaz_MainWindow", "2. Hata"))
+        self.label_8.setText(_translate("ikaz_MainWindow", "3. Hata"))
+        self.fault_3_label.setText(_translate("ikaz_MainWindow", "3. Hata Görüntüsü"))
+        self.fault_1_label.setText(_translate("ikaz_MainWindow", "1. Hata Görüntüsü"))
+        self.close_pushButton.setText(_translate("ikaz_MainWindow", "KAPAT"))
 
+import source_rc

@@ -45,7 +45,8 @@ class Arduino_Toolkits():
         try:
             return sa.src
         except Exception as e:
-            print(f"Bir sorun oluştu: {e}")    
+            pass
+            # print(f"Bir sorun oluştu: {e}")    
     def sari_led_ac(self):
         try:
             sa.ser.write(b'A')

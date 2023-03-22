@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="Logos">
+    <file>Icon/MainWindow/warning 250x150.png</file>
     <file>Icon/MainWindow/warning.png</file>
     <file>Icon/MainWindow/Menderes_Tekstil_Logo.png</file>
     <file>Icon/MainWindow/mmm.png</file>

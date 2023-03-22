@@ -15,7 +15,6 @@ class PDFThread:
         try:
             while self._stop == False:
                 Data_Pre_Process().PDF_W()
-                Data_Pre_Process().plt.cla()
                 sleep(1./120)
                 self._stop =True
         except:
