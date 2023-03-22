@@ -126,7 +126,7 @@ class ToolKit():
         self.camera_3 = False                                               
         self.camera_4 = False                                               
         self.upload_path = './configs/13.46.55.txt'                         
-        self.Serial_port="COM4"                                             
+        self.Serial_port="COM3"                                             
         self.Baud_Rate="9600"                                               
         self.Windows()                                                      
         self.Trigg_Port_Button=False                                        

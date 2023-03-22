@@ -53,6 +53,10 @@ class Data_Pre_Process_Lister:
             self.line(10, HEIGHT-10, WIDTH-10, HEIGHT-10)
             self.line(10, HEIGHT-255, WIDTH-10, HEIGHT-255)
         def header(self):
+            self.set_font('Arial', 'B', 15)
+            self.cell(self.w / 2)
+            self.ln(20)
+            #Menderes Header
             self.image('./Icon/PDF/MenderesLogo.png', 15, 22, 33)
             self.set_font('Arial', 'B', 15)
             self.set_y(20)
@@ -74,7 +78,88 @@ class Data_Pre_Process_Lister:
             self.set_y(15)
             self.cell(140)
             self.set_xy(WIDTH/5, HEIGHT/5)
-            
+        def table_details(self, row):
+            # Tablo başlıkları
+            self.set_font('Arial', 'B', 12)
+            self.set_fill_color(240, 240, 240)
+            self.set_text_color(0, 0, 0)
+            self.set_x(28)
+            self.cell(60, 5, f'Dok No:{row[2]}', 1, 0, 'C', True)
+            self.cell(60, 5, f'Kalite No:{row[3]}', 1, 1, 'C', True)
+            self.set_x(28)
+            self.set_fill_color(144, 144, 144)
+            self.set_text_color(0, 0, 0)
+            self.cell(60, 5, 'Hata Eni', 1, 0, 'C', True, 'C')
+            self.set_fill_color(240, 240, 240)
+            self.set_fill_color(144, 144, 144)
+            self.cell(60, 5, str(row[7]), 1, 1, 'C', True)
+            self.set_fill_color(240, 240, 240)
+            self.set_text_color(0, 0, 0)
+            self.set_x(28)
+            self.cell(60, 5, 'Hata Boyu', 1, 0, 'C', True)
+            self.set_fill_color(240, 240, 240)
+            self.set_text_color(0, 0, 0)
+            self.cell(60, 5, str(row[8]), 1, 1, 'C', True)
+            self.set_fill_color(144, 144, 144)
+            self.set_text_color(0, 0, 0)
+            self.set_x(28)
+            self.cell(60, 5, 'Hata Alani', 1, 0, 'C', True)
+            self.set_fill_color(240, 240, 240)
+            self.set_fill_color(144, 144, 144)
+            self.cell(60, 5, str(row[9]), 1, 1, 'C', True)
+            self.set_fill_color(240, 240, 240)
+            self.set_text_color(0, 0, 0)
+            self.set_x(28)
+            self.cell(60, 5, 'Hata Sinifi', 1, 0, 'C', True)
+            self.set_fill_color(240, 240, 240)
+            self.set_text_color(0, 0, 0)
+            self.cell(60, 5, str(row[10]), 1, 1, 'C', True)
+            self.set_fill_color(144, 144, 144)
+            self.set_text_color(0, 0, 0)
+            self.set_x(28)
+            self.cell(60, 5, 'Tarih', 1, 0, 'C', True)
+            self.set_fill_color(144, 144, 144)
+            self.set_text_color(0, 0, 0)
+            self.cell(60, 5, str(row[1]), 1, 1, 'C', True)
+            self.set_text_color(0, 0, 0)
+            # Hata görseli
+            img_path = row[11]
+            file_parts = img_path.split("/")
+            file_parts[-2] = "images/cropped"
+            new_file_path = "/".join(file_parts)
+            try:
+                self.image(new_file_path, 210 - 57, self.y - 25.5, 26, 26)
+            except:
+                self.set_draw_color(0, 0, 0)  # Çerçeve rengi
+                self.rect(210 - 75, self.y - 25, 25, 25, 'D')
+                self.set_fill_color(192, 192, 192)  # Dikdörtgen rengi
+                self.rect(210 - 74.5, self.y - 24.5, 24, 24, 'F')
+        def create_pdf_details(self):
+            dok_no = 0
+            leke_hatası = 0
+            delik_hatası = 0
+            # Tablodan verileri çekme
+            curs.execute("SELECT * FROM Hata_Sonuclari ORDER BY Id")
+            rows = curs.fetchall()
+            # Tüm kayıtlar için tablo oluşturma
+            for i, row in enumerate(rows):
+                delik_hatası += 1 if row[10] == "delik" else 0
+                leke_hatası += 1 if row[10] == "leke" else 0
+                if row[2] != dok_no:
+                    if i != 0:
+                        self.cell(190, 10, txt=f"Toplam Delik: {delik_hatası}, Toplam Leke: {leke_hatası}", ln=1, align='C')
+                        self.add_page()
+                if i % 5 == 0:
+                    self.add_page()
+                    delik_hatası = 0
+                    leke_hatası = 0
+                # Tablo başlığı
+                self.set_font('Arial', 'B', 12)
+                self.ln()
+                # Tablo içeriği
+                self.table_details(row)
+                self.ln()
+                dok_no = row[2]
         def footer(self):
             self.set_y(-10)
             self.set_font('Arial',size=12)
@@ -353,6 +438,7 @@ class Data_Pre_Process_Lister:
         pdf.image('delikler.png', w = 170, h = 100, type = '', link = 'C')
         plt.clf()
         plt.cla()
+        pdf.create_pdf_details()
         main_path = getcwd()
         main_path = main_path.replace('\\' , "/")
         main_path = main_path +'/' + "PDF" + "/" + str(Re_Tarih_Splited[0]) +str(Re_Tarih_Splited[-1]) + '-aylık-rapor.pdf'
