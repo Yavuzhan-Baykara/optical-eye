@@ -785,7 +785,6 @@ def main(worker, window):
                                         y_detect_1, single_frame = y_detect(cy, theta_1_center, theta_2_center)
                                         print(f"yakalanan kamera: {y_detect_1}")
                                     y_detect_2, single_frame = y_detect(cy, theta_1_center, theta_2_center)
-                                    print(cy)
                                     if faulty_cnt_100 == 0:
                                         start_time_faulty_cnt_100 = time.time()
                                     crop = resize_cv2(crop, (320,320), interpolation = INTER_CUBIC)
@@ -848,6 +847,7 @@ def main(worker, window):
                                 elif not (theta_1_center <= cx <= theta_2_center):
                                     faulty_cnt = 0
                                 if faulty_cnt >= detect_threshold:
+                                    MainWindow11.show()
                                     faulty_cnt = 0
                                     Arduino_Tools.kirmizi_led_ac()
                                     sleep(1./5)
@@ -856,6 +856,7 @@ def main(worker, window):
                                     Arduino_Tools.setBrightness(str(brightnessValue))
                                     print("Kırmızı Led Aktif")
                                 if faulty_cnt_100 >= detect_threshold_100:
+                                    MainWindow11.show()
                                     faulty_cnt_100 = 0
                                     print("Sari Led Aktif")
                                     Arduino_Tools.sari_led_ac()
@@ -1160,8 +1161,7 @@ def main(worker, window):
             elif event == cv2.EVENT_MBUTTONDOWN:
                 zoom_reset(x, y)
 
-        cv2.namedWindow(name)
-        cv2.imshow(name, res)
+        cv2.imshow(name, arr)
         cv2.setMouseCallback(name, mouse_callback)
         cv2.waitKey(1)
 
