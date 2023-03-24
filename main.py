@@ -58,6 +58,7 @@ class MainWindow(QMainWindow):
         self.ui_.progressBar.setValue(progress)
         qApp.processEvents()
 
+
 def main(worker, window):
     def loadingbar(x):
         worker.progress.emit(x)
@@ -306,7 +307,7 @@ def main(worker, window):
                 fps = 1/(new_frame_time-prev_frame_time)
                 prev_frame_time = new_frame_time
                 fps = str(int(fps))
-                results = model(model_image)         
+                results = model(model_image, size=2048)         
                 results.render()
                 out = cvtColor(results.ims[0], COLOR_BGR2RGB)
                 outh1 = int((43*height)/256)
@@ -496,7 +497,7 @@ def main(worker, window):
                 if choise == "Record":
                     ui2.Kayit_pushButton_2.setDisabled(True)
                     record_now_day = helper.Db_path_time(choice="Now-Day")
-                    save_image_record_path = "D:/Line_scan_veri_toplamaca" + "/" + record_now_day + str(recordcounter) + ".jpg"
+                    save_image_record_path = "./Database"+"/"+helper.Db_path_time(choice="Now-Day")+"/"+"Cam"+"/"+"images"+"/"+ "ss"+ "/" + df.iloc[:]['name'][detect]+"-"+helper.Db_path_time(choice="Now-Time")+"-"+".jpg"
                     imwrite(save_image_record_path, copy_model_image)
                     imwrite(Save_crop_image, crop)
 
@@ -675,7 +676,9 @@ def main(worker, window):
                 frame2 = frame2[:-1, :-1, :]
                 frame3 = frame3[:-1, :-1, :]
                 frame = ImageProcessor(image=frame, trim_size=75).process()
+                frame = ImageProcessor(image=frame, trim_size=65).paint_left_gray()
                 frame3 = ImageProcessor(image=frame3, trim_size=75).process()
+                frame = ImageProcessor(image=frame3, trim_size=65).paint_right_gray()
                 frame_model, frame2_model, frame3_model = frames[0][1], frames[1][1], frames[2][1]
                 height, width, channel = frame.shape
                 height2, width2, channel2 = frame2.shape
@@ -705,7 +708,7 @@ def main(worker, window):
                 fps = str(fps)
                 myTime+=1
                 tensor_temp = cat([tensor1, tensor2, tensor3], dim=0)
-                results = model(tensor_temp.cpu().numpy())
+                results = model(tensor_temp.cpu().numpy(), size=2048)
                 df=results.pandas().xyxy[0]
                 df=DataFrame(df)
                 obj_df = []
@@ -908,6 +911,12 @@ def main(worker, window):
                     if out[1] == Tools.Camera_Serial[2]:
                         qImg=QImage(out[0],width_s,height_s,step_s,QImage.Format_RGB888)
                         ui2.Camera_3.setPixmap(QPixmap.fromImage(qImg))
+
+                if choise == "Record":
+                    ui2.Kayit_pushButton_2.setDisabled(True)
+                    record_now_day = helper.Db_path_time(choice="Now-Day")
+                    save_image_record_path = "./Database"+"/"+helper.Db_path_time(choice="Now-Day")+"/"+"Cam"+"/"+"images"+"/"+ "ss"+ "/" + df.iloc[:]['name'][detect]+"-"+helper.Db_path_time(choice="Now-Time")+"-"+".jpg"
+                    imwrite(save_image_record_path, results_2)
                 waitKey(2)
                 ui2.label_8.setText(str(fps))
         destroyAllWindows()     
@@ -1041,13 +1050,13 @@ def main(worker, window):
                         mkdir(day_db_is_here+"/"+now+"/"+"Cam")
                         mkdir(day_db_is_here+"/"+now+"/"+"Cam"+"/"+"images")
                         mkdir(day_db_is_here+"/"+now+"/"+"Cam"+"/"+"images"+"/"+"cropped")
+                        mkdir(day_db_is_here+"/"+now+"/"+"Cam"+"/"+"images"+"/"+"ss")
                         mkdir(day_db_is_here+"/"+now+"/"+"Cam"+"/"+"videos")
                         break
                     except:
                         print("Klasör Zaten var")
                         ui2.statusbar.showMessage(" "*1 + " Yerel veri tabanı klasörü zaten bulunmaktadır...", 1500)
                         break
-                    
     ########################################################################################################################
     def starting_upload():
         Tools.default_upload()
@@ -1072,7 +1081,6 @@ def main(worker, window):
             configs[2] = Tools.feedback_js()['2']
             configs[3] = Tools.feedback_js()['3']
             configs[4] = Tools.feedback_js()['4']
-
             if ui2.radioButton_Camera_I.isChecked():
                 Tools.handle_change(configs[1])
             if ui2.radioButton_Camera_II.isChecked():
@@ -1168,6 +1176,15 @@ def main(worker, window):
     def faulty_close():
         MainWindow11.close()
         warning_status_inf()
+
+    def closeEvent(event, choice):
+            reply = QMessageBox.question(choice, 'Pencere Kapatma', 'Pencereyi kapatmak istediğinize emin misiniz?',
+                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No)
+            if reply == QMessageBox.Yes:
+                event.accept()
+                _exit(0)
+            else:
+                event.ignore()
     
     print("Arayüzlerin Yüklenmesi")
     worker.progress.emit(83)
@@ -1257,7 +1274,7 @@ def main(worker, window):
     ui1.actionClose.triggered.connect(Close)
     ui1.Giris_pushButton.clicked.connect(lambda : get_log_reg.Giris("Camera"))
     ui1.Kayit_pushButton.clicked.connect(lambda : get_log_reg.Giris("Kayit"))
-    ui2.Start_pushButton.clicked.connect(Video_Selected)
+    # ui2.Start_pushButton.clicked.connect(Video_Selected)
     ui2.Stop_pushButton.clicked.connect(Click_Button_Stop)
     ui2.Off_pushButton.clicked.connect(Click_Button_All_Stop)
     ui2.Close_pushButton.clicked.connect(Close)
@@ -1314,8 +1331,11 @@ def main(worker, window):
     ui9.label_Hata_Goster_6.mousePressEvent = lambda event: show_faulty(name="Hata - 6", arr=show_images[5])
     ui10.Kapat_pushButton.clicked.connect(lambda: MainWindow10.close())
     ui11.close_pushButton.clicked.connect(faulty_close)
+    MainWindow2.closeEvent = lambda event: closeEvent(event=event, choice=MainWindow2)
+
 
 if __name__ == '__main__':
     app1 = QApplication(sys.argv)
     window = MainWindow()
     app1.exec_()
+

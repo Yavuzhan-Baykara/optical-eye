@@ -61,5 +61,13 @@ class ImageProcessor:
             return self.image
         else:
             return self.image
+    def paint_left_gray(self):
+        h, w, c = self.image.shape
+        self.image[:, :self.trim_size] = 150
+        return self.image
+    def paint_right_gray(self):
+        h, w, c = self.image.shape
+        self.image[:, w-self.trim_size:] = 150
+        return self.image
 
     

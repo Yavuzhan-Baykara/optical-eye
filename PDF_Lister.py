@@ -20,7 +20,6 @@ LastVer=500
 harfler = ['ğ', 'ı', 'ö', 'ü', 'ş']
 degistirilecekler = ['g', 'i', 'o', 'u', 's']
 eslesmeler = str.maketrans("".join(harfler), "".join(degistirilecekler))
-
 conn=sqlite3.connect('./Database/Tespit_Edilen_Veriler.db',timeout=1, check_same_thread=False)
 curs=conn.cursor()
 sorguVeri=("""CREATE TABLE IF NOT EXISTS Hata_Sonuclari(
@@ -37,7 +36,6 @@ sorguVeri=("""CREATE TABLE IF NOT EXISTS Hata_Sonuclari(
                  Hata_Sınıfı TEXT NOT NULL,
                  Sonuc_Isım INTEGER NOT NULL)
                  """)
-                 
 curs.execute(sorguVeri)
 conn.commit()
 Data = curs.fetchall()
@@ -89,21 +87,21 @@ class Data_Pre_Process_Lister:
             self.set_x(28)
             self.set_fill_color(144, 144, 144)
             self.set_text_color(0, 0, 0)
-            self.cell(60, 5, 'Hata Eni', 1, 0, 'C', True, 'C')
+            self.cell(60, 5, 'Hata Eni(mm)', 1, 0, 'C', True, 'C')
             self.set_fill_color(240, 240, 240)
             self.set_fill_color(144, 144, 144)
             self.cell(60, 5, str(row[7]), 1, 1, 'C', True)
             self.set_fill_color(240, 240, 240)
             self.set_text_color(0, 0, 0)
             self.set_x(28)
-            self.cell(60, 5, 'Hata Boyu', 1, 0, 'C', True)
+            self.cell(60, 5, 'Hata Boyu(mm)', 1, 0, 'C', True)
             self.set_fill_color(240, 240, 240)
             self.set_text_color(0, 0, 0)
             self.cell(60, 5, str(row[8]), 1, 1, 'C', True)
             self.set_fill_color(144, 144, 144)
             self.set_text_color(0, 0, 0)
             self.set_x(28)
-            self.cell(60, 5, 'Hata Alani', 1, 0, 'C', True)
+            self.cell(60, 5, 'Hata Alani(mm2)', 1, 0, 'C', True)
             self.set_fill_color(240, 240, 240)
             self.set_fill_color(144, 144, 144)
             self.cell(60, 5, str(row[9]), 1, 1, 'C', True)
@@ -444,8 +442,3 @@ class Data_Pre_Process_Lister:
         main_path = main_path +'/' + "PDF" + "/" + str(Re_Tarih_Splited[0]) +str(Re_Tarih_Splited[-1]) + '-aylık-rapor.pdf'
         pdf.output(main_path, 'F')
         os.system(main_path)
-        
-        
-        
-
-        
