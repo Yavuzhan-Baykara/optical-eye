@@ -84,6 +84,23 @@ class Data_Pre_Process_Lister:
             self.set_x(28)
             self.cell(60, 5, f'Dok No:{row[2]}', 1, 0, 'C', True)
             self.cell(60, 5, f'Kalite No:{row[3]}', 1, 1, 'C', True)
+
+            self.set_x(28)
+            self.set_fill_color(144, 144, 144)
+            self.set_text_color(0, 0, 0)
+            self.cell(60, 5, 'Hatanin Yatay Konumu(cm)', 1, 0, 'C', True, 'C')
+            self.set_fill_color(240, 240, 240)
+            self.set_fill_color(144, 144, 144)
+            self.cell(60, 5, str(row[6]), 1, 1, 'C', True)
+
+            self.set_x(28)
+            self.set_fill_color(240, 240, 240)
+            self.set_text_color(0, 0, 0)
+            self.cell(60, 5, 'Hatanin Geldigi Metre(m)', 1, 0, 'C', True, 'C')
+            self.set_fill_color(240, 240, 240)
+            self.set_text_color(0, 0, 0)
+            self.cell(60, 5, str(row[4]), 1, 1, 'C', True)
+
             self.set_x(28)
             self.set_fill_color(144, 144, 144)
             self.set_text_color(0, 0, 0)
@@ -115,7 +132,7 @@ class Data_Pre_Process_Lister:
             self.set_fill_color(144, 144, 144)
             self.set_text_color(0, 0, 0)
             self.set_x(28)
-            self.cell(60, 5, 'Tarih', 1, 0, 'C', True)
+            self.cell(60, 5, 'Hatanin Geldigi Tarih', 1, 0, 'C', True)
             self.set_fill_color(144, 144, 144)
             self.set_text_color(0, 0, 0)
             self.cell(60, 5, str(row[1]), 1, 1, 'C', True)
@@ -126,7 +143,7 @@ class Data_Pre_Process_Lister:
             file_parts[-2] = "images/cropped"
             new_file_path = "/".join(file_parts)
             try:
-                self.image(new_file_path, 210 - 57, self.y - 25.5, 26, 26)
+                self.image(new_file_path, 210 - 57, self.y - 40.5, 41, 41)
             except:
                 self.set_draw_color(0, 0, 0)  # Çerçeve rengi
                 self.rect(210 - 75, self.y - 25, 25, 25, 'D')
@@ -147,7 +164,7 @@ class Data_Pre_Process_Lister:
                     if i != 0:
                         self.cell(190, 10, txt=f"Toplam Delik: {delik_hatası}, Toplam Leke: {leke_hatası}", ln=1, align='C')
                         self.add_page()
-                if i % 5 == 0:
+                if i % 4 == 0:
                     self.add_page()
                     delik_hatası = 0
                     leke_hatası = 0

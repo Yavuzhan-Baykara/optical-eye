@@ -33,7 +33,6 @@ class ImageProcessor:
             new_w = w - (left_white + right_white + self.trim_size*2)
             if new_w < w/6:
                 self.image = self.image.copy()  # make a copy of the original image
-                self.wDetect = False
             else:
                 self.wDetect = True
                 self.image[:, :left_white+self.trim_size] = 150  # paint the left area with gray
@@ -42,7 +41,6 @@ class ImageProcessor:
             new_w = w - (left_white + self.trim_size)
             if new_w < w/6:
                 self.image = self.image.copy()
-                self.wDetect = False
             else:
                 self.wDetect = True
                 self.image[:, :left_white+self.trim_size] = 150  # paint the left area with gray
@@ -50,17 +48,13 @@ class ImageProcessor:
             new_w = w - (right_white + self.trim_size)
             if new_w < w/6:
                 self.image = self.image.copy()
-                self.wDetect = False
             else:
                 self.wDetect = True
                 self.image[:, w-right_white-self.trim_size:] = 150  # paint the right area with gray
-        else:
-            self.wDetect = False
-    
         if not self.wDetect:
-            return self.image
+            return self.image, w
         else:
-            return self.image
+            return self.image, new_w
     def paint_left_gray(self):
         h, w, c = self.image.shape
         self.image[:, :self.trim_size] = 150

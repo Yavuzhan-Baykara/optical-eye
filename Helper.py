@@ -40,7 +40,7 @@ class Helper():
             time.sleep(0.0001)
             if len(self.db_queue) != 0:
                 task=self.db_queue.pop(0)
-                Veri_Tabani_Window.Ekle(self.Db_path_time(choice="Now-Day"),task['Dok_no'] , task['Kalite_no'], task['Metre'], 0, 0, task['En'], task['Boy'], task['Alan'],str(task['df'].iloc[:]['name'][task['detect']]), task['Save_image'], task['Hata_Koordinant'])
+                Veri_Tabani_Window.Ekle(self.Db_path_time(choice="Now-Day"),task['Dok_no'] , task['Kalite_no'], task['Metre'], task['Bez_eni'], task['Duvar_metre'], task['En'], task['Boy'], task['Alan'],str(task['df'].iloc[:]['name'][task['detect']]), task['Save_image'], task['Hata_Koordinant'])
                 self.db_queue.clear()
             else:
                 continue
@@ -55,7 +55,7 @@ class Helper():
         return result
             
     
-    def append_db(self, df, detect, Save_image, Metre, En, Boy, Alan, Dok_no, Kalite_no, Hata_Koordinant):
+    def append_db(self, df, detect, Save_image, Metre, En, Boy, Alan, Dok_no, Kalite_no, Hata_Koordinant, bez_eni, Duvar_metre):
         if len(self.db_queue) < 2:
             task ={
                 'df': df,
@@ -68,6 +68,8 @@ class Helper():
                 'Dok_no': Dok_no,
                 'Kalite_no': Kalite_no,
                 'Hata_Koordinant': Hata_Koordinant,
+                'Bez_eni': bez_eni,
+                'Duvar_metre': Duvar_metre,
                 }
             self.db_queue.append(task)
 

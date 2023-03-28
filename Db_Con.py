@@ -317,3 +317,24 @@ class Veri_Tabani_Window():
                 print("Bu isimde bir kumaş verisi bulunamadı.")
         except sqlite3.Error as error:
             print("Veri çekilirken hata oluştu:", error)
+    
+    def set_Camera_Local_Settings(local_height, vision_weight, vision_height, vision_angle):
+        try:
+            curs.execute("INSERT INTO Camera_local_inf (Camera_local_height, Camera_vision_weight, Camera_vision_height, Camera_vision_angle) VALUES (?,?,?,?)", (local_height, vision_weight, vision_height, vision_angle))
+            conn.commit()
+            print("Veri başarıyla eklendi")
+        except:
+            print("Veri güncellenirken hata oluştu.")
+    def get_Camera_Local_Settings():
+        try:
+            curs.execute("SELECT * FROM Camera_local_inf ORDER BY Camera_local_height DESC LIMIT 1")
+            result = curs.fetchone()
+            print(result)
+            local_height = result[1]
+            vision_weight = result[2]
+            vision_height = result[3]
+            vision_angle = result[4]
+            return local_height, vision_weight, vision_height, vision_angle
+        except:
+            print("Veriler alınırken hata oluştu.")
+            return 200, 200, 200, 200

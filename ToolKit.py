@@ -61,6 +61,11 @@ class ToolKit():
         self.ui5=Ui_MainWindow()                      #
         #self.MainWindow5.setWindowFlag(Qt.FramelessWindowHint)
         self.ui5.setupUi(self.MainWindow5)            #
+        validator = QtGui.QIntValidator(0, 10000)
+        self.ui5.lineEdit_Kamera_Yuksekligi.setValidator(validator)
+        self.ui5.lineEdit_Kamera_Gorus_Genisligi.setValidator(validator)
+        self.ui5.lineEdit_Kamera_Gorus_Yuksekligi.setValidator(validator)
+        self.ui5.lineEdit_Kamera_Gorus_Acisi.setValidator(validator)
         ###############################################
 
         ############ Port Sorgula #####################

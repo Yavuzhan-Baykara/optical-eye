@@ -32,7 +32,6 @@ class Active_Camera:
                 if Tools.Cameras_Type[index] == "Çizgi Kamera":
                     try:
                         self.camera.ExposureTimeRaw.SetValue(int(Tools.feedback_Import_Exposure_Time(index)))
-                        print(int(Tools.feedback_Import_Exposure_Time(index)))
                     except:
                         print("Çizgi Kameraların Exposure Timlerı düzgün ayarlanamamaştır...")    
                             

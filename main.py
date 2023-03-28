@@ -14,7 +14,8 @@ from admin_page import *
 from Camera import*
 from Yukleniyor import *
 from whitedetect import *
-
+from image_dimension_converter import *
+from threshold import *
 import time
 import sys
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
@@ -121,6 +122,7 @@ def main(worker, window):
     }
     
     def displayImage():
+            Tools.Port_Op()
             quality = ui2.comboBox_Kalite_No.currentText()
             dok_num = ui2.lineEdit_Dok_No.text()
             if not quality or quality == "Kalite seçiniz":
@@ -165,9 +167,9 @@ def main(worker, window):
 
     def Basler_Cameras(choise: str = "Detection"):
         New_Day_Folder()
+        selected_item = ui2.comboBox_Kalite_No.currentText()
         try:
             Arduino_Tools.port_ac(Tools)
-            selected_item = ui2.comboBox_Kalite_No.currentText()
             brightnessValue = Veri_Tabani_Window.get_fabric_brightness(selected_item)
             sleep(1./5)
             Arduino_Tools.setBrightness(str(brightnessValue))
@@ -200,6 +202,12 @@ def main(worker, window):
         prev_frame_time = 0
         new_frame_time = 0
         ########################################################################################################################
+        #Pixel to mm
+        local_height, vision_weight, vision_height, vision_angle = Veri_Tabani_Window.get_Camera_Local_Settings()
+        resolution_pixels_height, resolution_pixels_width, _ = Veri_Tabani_Window.get_last_Heigt_Width()
+        width_converter = WidthConverter(vision_weight, resolution_pixels_width)
+
+        ########################################################################################################################
         tlFactory = pylon.TlFactory.GetInstance()
         devices = tlFactory.EnumerateDevices()
         cameras = pylon.InstantCameraArray(min(len(devices), 3))
@@ -225,16 +233,10 @@ def main(worker, window):
         ui2.statusbar.showMessage( " " * 1 + f" Cuda GPU Durumu: {cuda  .is_available()}", 1500)
         if cuda.is_available():
             tensor_temp = tensor_temp.to(device_temp)
+        class_thresholds = selected_Fabric(selected_item)
+        print(class_thresholds)
         while 1:
-            class_thresholds = {
-                'delik': 0.4,
-                'leke': 0.4,
-                'kirik': 0.4,
-                'iplik': 0.4,
-                'dikis': 0.4
-            }
             position = Arduino_Tools.Feedback_src()
-            
             delta_time = time.time() - prev_time 
             recordcounter = recordcounter + 1
             if delta_time == 0:
@@ -290,10 +292,13 @@ def main(worker, window):
                 return 
 
             if len(frames) == 1:
+                Dok_no= ui2.lineEdit_Dok_No.text()
+                Kalite_no= ui2.comboBox_Kalite_No.currentText()
                 model_name = frames[0][1]
                 model_image = frames[0][0]
                 model_image = model_image[:-1, :-1, :] 
-                model_image = ImageProcessor(image=model_image, trim_size=65).process()
+                model_image, cloth_width = ImageProcessor(image=model_image, trim_size=75).process()
+                cloth_width = round(width_converter.convert(cloth_width) / 10, 2)
                 copy_model_image = np.copy(model_image)
                 height, width, channel = model_image.shape
                 zoom_value_5 = Tools.zoom_value_5()
@@ -356,7 +361,9 @@ def main(worker, window):
                                 src=0
                             x = abs(x2-x1)
                             y = abs(y2-y1)
-                            xy = x * y
+                            x = round(width_converter.convert(x), 2)
+                            y = round(width_converter.convert(y), 2)
+                            xy = round(x * y, 2)
                             if (str(df.at[detect, 'name']) in ['delik', 'leke']):
                                 if faulty_cnt == 0:
                                     start_time_faulty_cnt = time.time()
@@ -418,7 +425,8 @@ def main(worker, window):
                                 waitKey(1)
                                 Hata_Koordinant = [x1, x2, y1, y2]
                                 Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
-                                helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant)
+                                faulty_meter = round(width_converter.convert(cx) / 10, 2) 
+                                helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
                             if (str(df.at[detect, 'name']) in ['delik', 'leke']) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2):
                                 faulty_cnt += 1
                             if (str(df.at[detect, 'name']) in ['delik', 'leke']):
@@ -460,7 +468,8 @@ def main(worker, window):
                                 imwrite(Save_crop_image, crop)
                                 Hata_Koordinant = [x1, x2, y1, y2]
                                 Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
-                                helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant)
+                                faulty_meter = round(width_converter.convert(cx) / 10, 2)
+                                helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
                 ui9.text_Detect_Delik.setText(str(detect_faulty_fabric["Flawed Hole"]))
                 ui9.text_Detect_Leke.setText(str(detect_faulty_fabric["Flawed Spot"]))
                 ui9.text_Detect_Diger.setText(str(detect_faulty_fabric["Other Errors"]))
@@ -535,7 +544,7 @@ def main(worker, window):
                 # Görüntülerin Birleştirilmesi
                 tensor_temp = cat([tensor1, tensor2], dim=0)
                 # Tensorlerin CPU'ya atanması
-                results = model(tensor_temp.cpu().numpy(), 2048)
+                results = model(tensor_temp.cpu().numpy(), size=2048)
                 results.display(render=True)
                 h = results.ims[0].shape[0] 
                 out1= cvtColor(results.ims[0][0:int(h/2), :],COLOR_BGR2RGB)
@@ -590,7 +599,9 @@ def main(worker, window):
                             #Hata alanının bulunması
                             x=abs(x2-x1)
                             y=abs(y2-y1)
-                            xy=x*y
+                            x = round(width_converter.convert(x), 2)
+                            y = round(width_converter.convert(y), 2)
+                            xy = round(x * y, 2)
                             if str(df.iloc[:]['name'][detect])=='delik' or str(df.iloc[:]['name'][detect])=='leke': # Hatanın Delik veya Leke olması durumunda
                                 cnt=cnt+1
                             if cnt>=1: 
@@ -633,7 +644,8 @@ def main(worker, window):
                                         helper.last_images.append(crop)
                                     imwrite(Save_image, results_2)
                                     imwrite(Save_crop_image, crop)
-                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
+                                    faulty_meter = round(width_converter.convert(cx) / 10, 2)
+                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
                                         
                                 if Tools.Trigg_Port_Button==True:
                                     # Arduino_Tools.kirmizi_led_ac()
@@ -652,7 +664,8 @@ def main(worker, window):
                                         helper.last_images.append(crop)
                                     imwrite(Save_image, results_2)
                                     imwrite(Save_crop_image, crop)
-                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no)
+                                    faulty_meter = round(width_converter.convert(cx) / 10, 2)
+                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
                 for out in outs:
                     if out[1] == Tools.Camera_Serial[0]:
                         out_1= cvtColor(out[0],COLOR_BGR2RGB)
@@ -675,10 +688,15 @@ def main(worker, window):
                 frame = frame[:-1, :-1, :]
                 frame2 = frame2[:-1, :-1, :]
                 frame3 = frame3[:-1, :-1, :]
-                frame = ImageProcessor(image=frame, trim_size=75).process()
-                frame = ImageProcessor(image=frame, trim_size=65).paint_left_gray()
-                frame3 = ImageProcessor(image=frame3, trim_size=75).process()
-                frame = ImageProcessor(image=frame3, trim_size=65).paint_right_gray()
+                frame, cloth_width_1 = ImageProcessor(image=frame, trim_size=115).process()
+                cloth_width_1 = round(width_converter.convert(cloth_width_1), 2)
+                frame = ImageProcessor(image=frame, trim_size=75).paint_left_gray()
+                cloth_width_2 = round(width_converter.convert(resolution_pixels_width), 2)
+                frame3, cloth_width_3 = ImageProcessor(image=frame3, trim_size=115).process()
+                cloth_width_3 = round(width_converter.convert(cloth_width_3), 2)
+                cloth_width = (cloth_width_1 + cloth_width_2 + cloth_width_3) / 10
+
+                frame = ImageProcessor(image=frame3, trim_size=75).paint_right_gray()
                 frame_model, frame2_model, frame3_model = frames[0][1], frames[1][1], frames[2][1]
                 height, width, channel = frame.shape
                 height2, width2, channel2 = frame2.shape
@@ -732,23 +750,36 @@ def main(worker, window):
                 # Hataların koordinatları
                 
                 myTime+=1
-                def y_detect(cy, theta_1_center, theta_2_center):
+                def y_detect(cy, theta_1_center, theta_2_center, cx):
                     if 0 <= cy <= frame.shape[0] * 1:
                         detect_cam = 1
                         cv2.line(out1, (int(theta_1_center), (detect_cam-1) * height), (int(theta_1_center), height*detect_cam), (0, 255, 0), thickness=2)
                         cv2.line(out1, (int(theta_2_center), (detect_cam-1) * height), (int(theta_2_center), height*detect_cam), (0, 255, 0), thickness=2)      
-                        return detect_cam, out1
+                        faulty_meter = round(width_converter.convert(cx / 10), 2)
+                        return detect_cam, out1, faulty_meter
                     elif frame.shape[0] * 1 < cy <= frame.shape[0] * 2:
                         detect_cam = 2
                         cv2.line(out2, (int(theta_1_center), (detect_cam-1) * height), (int(theta_1_center), height*detect_cam), (0, 255, 0), thickness=2)
                         cv2.line(out2, (int(theta_2_center), (detect_cam-1) * height), (int(theta_2_center), height*detect_cam), (0, 255, 0), thickness=2)      
-                        return detect_cam, out2
+                        faulty_meter = round(width_converter.convert(cx + height) / 10, 2) 
+                        return detect_cam, out2, faulty_meter
                     elif frame.shape[0] * 2 < cy <= frame.shape[0] * 3:
                         detect_cam = 3
                         cv2.line(out3, (int(theta_1_center), (detect_cam-1) * height), (int(theta_1_center), height*detect_cam), (0, 255, 0), thickness=2)
                         cv2.line(out3, (int(theta_2_center), (detect_cam-1) * height), (int(theta_2_center), height*detect_cam), (0, 255, 0), thickness=2)      
-                        return detect_cam, out3
-                
+                        faulty_meter = round(width_converter.convert(cx + height * 2) / 10, 2)
+                        return detect_cam, out3, faulty_meter
+                def fault_meter_detect(cy, cx):
+                    if 0 <= cy <= frame.shape[0] * 1:
+                        faulty_meter = round(width_converter.convert(cx) / 10, 2)
+                        return faulty_meter
+                    elif frame.shape[0] * 1 < cy <= frame.shape[0] * 2:
+                        faulty_meter = round(width_converter.convert(cx + height) / 10, 2)
+                        return faulty_meter
+                    elif frame.shape[0] * 2 < cy <= frame.shape[0] * 3:
+                        faulty_meter = round(width_converter.convert(cx + height * 2) / 10, 2)
+                        return faulty_meter
+                    
                 for obj_class_ai, threshold_ai in class_thresholds.items():
                     obj_df = df[(df['confidence'] >= threshold_ai) & (df['name'] == obj_class_ai)]
                     if not obj_df.empty:
@@ -779,15 +810,17 @@ def main(worker, window):
                                     src=0
                                 x = abs(x2-x1)
                                 y = abs(y2-y1)
-                                xy = x * y
+                                x = round(width_converter.convert(x), 2)
+                                y = round(width_converter.convert(y), 2)
+                                xy = round(x * y, 2)
                                 if (str(df.at[detect, 'name']) in ['delik', 'leke']):
                                     if faulty_cnt == 0:
                                         start_time_faulty_cnt = time.time()
                                         theta_1_center = max(0, cx - threshold)
                                         theta_2_center = min(width, cx + threshold)
-                                        y_detect_1, single_frame = y_detect(cy, theta_1_center, theta_2_center)
+                                        y_detect_1, single_frame, faulty_meter = y_detect(cy, theta_1_center, theta_2_center, cx)
                                         print(f"yakalanan kamera: {y_detect_1}")
-                                    y_detect_2, single_frame = y_detect(cy, theta_1_center, theta_2_center)
+                                    y_detect_2, single_frame, faulty_meter = y_detect(cy, theta_1_center, theta_2_center, cx)
                                     if faulty_cnt_100 == 0:
                                         start_time_faulty_cnt_100 = time.time()
                                     crop = resize_cv2(crop, (320,320), interpolation = INTER_CUBIC)
@@ -842,7 +875,8 @@ def main(worker, window):
                                     waitKey(1)
                                     Hata_Koordinant = [x1, x2, y1, y2]
                                     Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
-                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant)
+                                    faulty_meter = round(width_converter.convert(cx) / 10, 2) 
+                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
                                 if (str(df.at[detect, 'name']) in ['delik', 'leke']) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2):
                                     faulty_cnt += 1
                                 if (str(df.at[detect, 'name']) in ['delik', 'leke']):
@@ -884,7 +918,8 @@ def main(worker, window):
                                     imwrite(Save_crop_image, crop)
                                     Hata_Koordinant = [x1, x2, y1, y2]
                                     Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
-                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant)
+                                    faulty_meter = fault_meter_detect(cy, cx)
+                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
                 ui9.text_Detect_Delik.setText(str(detect_faulty_fabric["Flawed Hole"]))
                 ui9.text_Detect_Leke.setText(str(detect_faulty_fabric["Flawed Spot"]))
                 ui9.text_Detect_Diger.setText(str(detect_faulty_fabric["Other Errors"]))
@@ -1185,7 +1220,13 @@ def main(worker, window):
                 _exit(0)
             else:
                 event.ignore()
-    
+    def camera_local_inf():
+        local_height = int(ui5.lineEdit_Kamera_Yuksekligi.text()) if ui5.lineEdit_Kamera_Yuksekligi.text().isdigit() else 200
+        vision_weight = int(ui5.lineEdit_Kamera_Gorus_Genisligi.text()) if ui5.lineEdit_Kamera_Gorus_Genisligi.text().isdigit() else 200
+        vision_height = int(ui5.lineEdit_Kamera_Gorus_Yuksekligi.text()) if ui5.lineEdit_Kamera_Gorus_Yuksekligi.text().isdigit() else 200
+        vision_angle = int(ui5.lineEdit_Kamera_Gorus_Acisi.text()) if ui5.lineEdit_Kamera_Gorus_Acisi.text().isdigit() else 200
+        Veri_Tabani_Window.set_Camera_Local_Settings(local_height, vision_weight, vision_height, vision_angle)
+
     print("Arayüzlerin Yüklenmesi")
     worker.progress.emit(83)
     Arduino_Tools=Arduino_Toolkits()
@@ -1313,6 +1354,7 @@ def main(worker, window):
     ui5.pushButton_Baglan.clicked.connect(arduinoAdminConnect)
     ui5.pushButton_Kapat.clicked.connect(arduinoAdminDisconnect)
     ui5.pushButton_Aktar_Kumas_Inf.clicked.connect(save_fabric_adjustment)
+    ui5.pushButton_Kamera_Konum_Ayari.clicked.connect(camera_local_inf)
     ui6.Ikaz_kapat_pushButton.clicked.connect(Arduino_Tools.hepsini_kapat)
     # ui7.Ac_pushButton.clicked.connect(Soft_Serial_OPEN)
     ui7.Kapat_pushButton.clicked.connect(Soft_NSerial_OPEN)
@@ -1332,7 +1374,7 @@ def main(worker, window):
     ui10.Kapat_pushButton.clicked.connect(lambda: MainWindow10.close())
     ui11.close_pushButton.clicked.connect(faulty_close)
     MainWindow2.closeEvent = lambda event: closeEvent(event=event, choice=MainWindow2)
-
+    
 
 if __name__ == '__main__':
     app1 = QApplication(sys.argv)
