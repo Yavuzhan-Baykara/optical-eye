@@ -97,7 +97,12 @@ class Data_Pre_Process:
             self.set_text_color(0, 0, 0)
             self.set_x(28)
             self.cell(60, 5, f'Dok No:{row[2]}', 1, 0, 'C', True)
-            self.cell(60, 5, f'Kalite No:{row[3]}', 1, 1, 'C', True)
+            quality = None
+            if len(row[3]) > 8:
+                quality = row[3][:8]
+            else:
+                quality = row[3]
+            self.cell(60, 5, f'Kalite No:{quality}', 1, 1, 'C', True)
             self.set_x(28)
             self.set_fill_color(144, 144, 144)
             self.set_text_color(0, 0, 0)
@@ -379,10 +384,14 @@ class Data_Pre_Process:
         leke_listesi = []
         for row in datas:
             tarih, dok_no, kalite_no, delik_sayisi, leke_sayisi = row
+            if len(kalite_no) > 8:
+                quality = kalite_no[:8]
+            else:
+                quality = kalite_no
             pdf.set_x(WIDTH/6)
             pdf.cell(30, 10, str(tarih), 1)
             pdf.cell(30, 10, str(dok_no), 1)
-            pdf.cell(30, 10, str(kalite_no).translate(eslesmeler), 1)
+            pdf.cell(30, 10, str(quality).translate(eslesmeler), 1)
             pdf.cell(30, 10, str(delik_sayisi), 1)
             pdf.cell(30, 10, str(leke_sayisi), 1)
             tarih_listesi.append(str(tarih))

@@ -12,4 +12,9 @@
     <file>Icon/MainWindow/clear.png</file>
     <file>Icon/MainWindow/close.png</file>
   </qresource>
+  <qresource prefix="arrows">
+    <file>Icon/MainWindow/home.png</file>
+    <file>Icon/MainWindow/left.png</file>
+    <file>Icon/MainWindow/right.png</file>
+  </qresource>
 </RCC>

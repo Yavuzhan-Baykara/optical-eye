@@ -19,7 +19,6 @@ from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
 
 
-
 from Veri_Tabani import*
 ############Veri Tabani#############
 app3=QtWidgets.QApplication(sys.argv)
@@ -39,8 +38,6 @@ ui4=Ui_Goster_Window()
 ui4.setupUi(MainWindow4)
 ####################################
 onlyInt = QIntValidator()
-ui3.Dok_No_LineEdit.setValidator(onlyInt)
-ui3.Kalite_No_LineEdit.setValidator(onlyInt)
 ui3.Gunclle_PushButton.setDisabled(True)
 ui3.Delete_PushButton.setDisabled(True)
 
@@ -62,34 +59,43 @@ sorguVeri=("""CREATE TABLE IF NOT EXISTS Hata_Sonuclari(
                  Sonuc_Isım INTEGER NOT NULL)
                  """)
 
-
 curs.execute(sorguVeri)
 conn.commit()
 class Veri_Tabani_Window():
+    def Button_Show(i, row):
+        table=ui3.Veri_Tabani_Widget
+        button = QtWidgets.QPushButton('Goster', MainWindow3)
+        button.clicked.connect(lambda _, x=i: Veri_Tabani_Window.Goster(x))
+        table.setCellWidget(row, 0, button)
     def Listele():
+        def Button_Show(i, row):
+            table=ui3.Veri_Tabani_Widget
+            button = QtWidgets.QPushButton('Goster', MainWindow3)
+            button.clicked.connect(lambda _, x=i: Veri_Tabani_Window.Goster(x))
+            table.setCellWidget(row, 0, button)
         ui3.Veri_Tabani_Widget.setSelectionBehavior(QAbstractItemView.SelectRows)
         ui3.Veri_Tabani_Widget.clear()
         ui3.Veri_Tabani_Widget.setHorizontalHeaderLabels(('Id','Tarih','Dok_No','Kalite_No','Hatanin_Geldiği_Metre','Bez_Eni','Hatanin_Duvar_Tarafından_Mesafesi','Hata_Eni','Hata_Boyutu','Hata_Alanı','Hata_Sınıfı','Sonuc_Isım'))
-        result = curs.execute("SELECT * FROM Hata_Sonuclari")
+        result = curs.execute("SELECT * FROM Hata_Sonuclari ORDER BY id DESC LIMIT 20000")
         cnt = 0
-        for satirIndeks, satirVeri in enumerate(curs):
+        for satirIndeks, satirVeri in enumerate(result):
             for sutunIndeks, sutunVeri in enumerate (satirVeri):
                 ui3.Veri_Tabani_Widget.setItem(satirIndeks,sutunIndeks,QTableWidgetItem(str(sutunVeri)))
-            Veri_Tabani_Window.Button_Show(satirVeri[0], cnt)
+            Button_Show(satirVeri[0], cnt)
             cnt+=1
-            if cnt == 999:
+            if cnt == 10000:
                 return
     def Doldur():
         selected=ui3.Veri_Tabani_Widget.selectedItems()
         if selected:
-            ui3.Dok_No_LineEdit.setText(selected[2].text())
-            ui3.Kalite_No_LineEdit.setText(selected[3].text())
-            ui3.Metre_LineEdit.setText(selected[4].text())
-            ui3.Hata_Alani_LineEdit.setText(selected[9].text())
-            ui3.Sinifi_LineEdit.setText(selected[10].text())
-            ui3.Gunclle_PushButton.setDisabled(False)
-            ui3.Delete_PushButton.setDisabled(False)
-
+            try:
+                ui3.Metre_LineEdit.setText(selected[4].text())
+                ui3.Hata_Alani_LineEdit.setText(selected[9].text())
+                ui3.Sinifi_LineEdit.setText(selected[10].text())
+                ui3.Gunclle_PushButton.setDisabled(False)
+                ui3.Delete_PushButton.setDisabled(False)
+            except:
+                pass
     def Goster(Id):
         curs.execute("SELECT * FROM Hata_Sonuclari WHERE Id='%s'" %(Id))
         conn.commit()
@@ -116,11 +122,6 @@ class Veri_Tabani_Window():
                 except Exception as e:
                     print(e.__class__)
 
-    # def Name_Bul(Id):
-    #     curs.execute("SELECT * FROM Hata_Sonuclari WHERE Id='%s'" %(Id))
-    #     conn.commit()
-    #     Data = curs.fetchall()
-    #     # print(Data)
         
     def Id_Bul(name):
         curs.execute("SELECT * FROM Hata_Sonuclari WHERE Sonuc_Isım='%s'" %(name))
@@ -128,12 +129,6 @@ class Veri_Tabani_Window():
         Data = curs.fetchall()
         for row in Data:
             print(row[0])
-            
-    def Button_Show(i, row):
-        table=ui3.Veri_Tabani_Widget
-        button = QtWidgets.QPushButton('Goster', MainWindow3)
-        button.clicked.connect(lambda _, x=i: Veri_Tabani_Window.Goster(x))
-        table.setCellWidget(row, 0, button)
              
     def Ara():
         aranan1=""
@@ -145,14 +140,10 @@ class Veri_Tabani_Window():
             aranan1=ui3.Yatay_RadioButton.text()
         if ui3.Delik_RadioButton.isChecked():
             aranan1=ui3.Delik_RadioButton.text()  
-        if ui3.Yag_RadioButton.isChecked():
-            aranan1="Yag"
         if ui3.Dikey_RadioButton.isChecked():
             aranan1=ui3.Dikey_RadioButton.text()
-        if ui3.Kirik_RadioButton.isChecked():
-            aranan1="Kirisik"
-        
-        curs.execute("SELECT * FROM Hata_Sonuclari WHERE Hata_Sınıfı=?",(aranan1,))
+
+        curs.execute("SELECT * FROM Hata_Sonuclari WHERE Hata_Sınıfı=? ORDER BY id DESC LIMIT 20000",(aranan1,))
         conn.commit()
         ui3.Veri_Tabani_Widget.clear()
         ui3.Veri_Tabani_Widget.setHorizontalHeaderLabels(('Id','Tarih','Dok_No','Kalite_No','Hatanin_Geldiği_Metre','Bez_Eni','Hatanin_Duvar_Tarafından_Mesafesi','Hata_Eni','Hata_Boyutu','Hata_Alanı','Hata_Sınıfı','Sonuc_Isım'))
@@ -255,10 +246,11 @@ class Veri_Tabani_Window():
         selected = ui3.Veri_Tabani_Widget.selectedItems()
         if selected:
             Id = int(selected[0].text())
-            Dok_No = int(ui3.Dok_No_LineEdit.text())
-            Kalite_No = int(ui3.Kalite_No_LineEdit.text())
+            alan = int(float(ui3.Hata_Alani_LineEdit.text()))
+            meter = int(float(ui3.Metre_LineEdit.text()))
+            sinif = str(ui3.Sinifi_LineEdit.text())
         try:
-            curs.execute(""" Update Hata_Sonuclari SET Dok_No=?, Kalite_No=? WHERE Id=?""", (str(Dok_No),str(Kalite_No), str(Id),))
+            curs.execute(""" Update Hata_Sonuclari SET Hata_Alanı=?, Hatanin_Geldiği_Metre=?, Hata_Sınıfı=?  WHERE Id=?""", (str(alan),str(meter), str(sinif), str(Id),))
             conn.commit()
         except sqlite3.Error as error:
             ui3.Gunclle_PushButton.setDisabled(True)
@@ -330,11 +322,60 @@ class Veri_Tabani_Window():
             curs.execute("SELECT * FROM Camera_local_inf ORDER BY Camera_local_height DESC LIMIT 1")
             result = curs.fetchone()
             print(result)
-            local_height = result[1]
-            vision_weight = result[2]
-            vision_height = result[3]
-            vision_angle = result[4]
+            local_height = result[0]
+            vision_weight = result[1]
+            vision_height = result[2]
+            vision_angle = result[3]
             return local_height, vision_weight, vision_height, vision_angle
         except:
             print("Veriler alınırken hata oluştu.")
             return 200, 200, 200, 200
+    def details_show(tarih, dok_no, kalite_no):
+        def Button_Show(i, row):
+            table=ui3.Veri_Tabani_Widget
+            button = QtWidgets.QPushButton('Goster', MainWindow3)
+            button.clicked.connect(lambda _, x=i: Veri_Tabani_Window.Goster(x))
+            table.setCellWidget(row, 0, button)
+        sql = "SELECT * FROM Hata_Sonuclari WHERE Tarih=? AND Dok_No=? AND Kalite_No=?"
+        result = curs.execute(sql, (tarih, dok_no, kalite_no))
+        ui3.Veri_Tabani_Widget.clear()
+        ui3.Veri_Tabani_Widget.setHorizontalHeaderLabels(('Id','Tarih','Dok_No','Kalite_No','Hatanin_Geldiği_Metre','Bez_Eni','Hatanin_Duvar_Tarafından_Mesafesi','Hata_Eni','Hata_Boyutu','Hata_Alanı','Hata_Sınıfı','Sonuc_Isım'))
+        cnt = 0
+        for satirIndeks, satirVeri in enumerate(result):
+            for sutunIndeks, sutunVeri in enumerate(satirVeri):
+                ui3.Veri_Tabani_Widget.setItem(satirIndeks, sutunIndeks, QTableWidgetItem(str(sutunVeri)))
+            Button_Show(satirVeri[0], cnt)
+            cnt += 1
+            if cnt == 1000:
+                return
+        ui3.Veri_Tabani_Widget.verticalScrollBar().setValue(0)
+    def filter():
+        def Button_Show(i, j, k, row):
+            table=ui3.Veri_Tabani_Widget
+            button = QtWidgets.QPushButton('Goster')
+            button.clicked.connect(lambda _, x=i, y=j, z=k: Veri_Tabani_Window.details_show(x,y,z))
+            table.setCellWidget(row, 0, button)
+        widget_1 = ui3.calendarWidget.selectedDate()
+        widget_2 = ui3.calendarWidget_2.selectedDate()
+        Date = [str(widget_1.day()), str(widget_1.month()), str(widget_1.year())]
+        DateLast = [str(widget_2.day()), str(widget_2.month()), str(widget_2.year())]
+        Split_Date=str(int(Date[0]))+'.'+str(int(Date[1]))+'.'+str(int(Date[2]))
+        Split_Date_last=str(int(DateLast[0]))+'.'+str(int(DateLast[1]))+'.'+str(int(DateLast[2]))
+        sql = "SELECT DISTINCT Tarih, Dok_No, Kalite_No FROM Hata_Sonuclari WHERE Tarih BETWEEN ? AND ?"
+        result = curs.execute(sql, (Split_Date, Split_Date_last))
+        ui3.Veri_Tabani_Widget.clear()
+        ui3.Veri_Tabani_Widget.setHorizontalHeaderLabels(('Id','Tarih','Dok_No','Kalite_No'))
+        cnt = 0
+        id = 1
+        for satirIndeks, satirVeri in enumerate(result):
+            # id değerini demetin başına ekle
+            row = (id,) + satirVeri
+            # Verileri ekrana yazdır
+            for sutunIndeks, sutunVeri in enumerate(row):
+                ui3.Veri_Tabani_Widget.setItem(satirIndeks, sutunIndeks, QTableWidgetItem(str(sutunVeri)))
+            # Buton göster
+            Button_Show(satirVeri[0], satirVeri[1], satirVeri[2], id-1)
+            # id değerini arttır
+            id += 1
+        ui3.Veri_Tabani_Widget.verticalScrollBar().setValue(0)
+        

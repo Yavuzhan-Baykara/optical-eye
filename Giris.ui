@@ -2228,6 +2228,9 @@ QLineEdit:focus{
 	border: 2px solid rgb(35, 218, 233);
 }</string>
     </property>
+    <property name="text">
+     <string>merserize118</string>
+    </property>
     <property name="placeholderText">
      <string>   Kullanıcı Adı</string>
     </property>

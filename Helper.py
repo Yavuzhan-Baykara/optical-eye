@@ -14,7 +14,7 @@ from compare import *
 from os import scandir, mkdir
 
 from threading import Thread, Timer
-from Db_Con import *
+from Db_Con import Veri_Tabani_Window
 
 class Helper():
     def __init__(self, now=None):

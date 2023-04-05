@@ -2646,6 +2646,54 @@ PlotWidget {
         </property>
        </widget>
       </widget>
+      <widget class="QPushButton" name="left_pushButton">
+       <property name="geometry">
+        <rect>
+         <x>100</x>
+         <y>790</y>
+         <width>64</width>
+         <height>64</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-image: url(:/arrows/Icon/MainWindow/left.png);</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="home_pushButton">
+       <property name="geometry">
+        <rect>
+         <x>186</x>
+         <y>790</y>
+         <width>64</width>
+         <height>64</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-image: url(:/arrows/Icon/MainWindow/home.png);</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
+      <widget class="QPushButton" name="righr_pushButton">
+       <property name="geometry">
+        <rect>
+         <x>270</x>
+         <y>790</y>
+         <width>64</width>
+         <height>64</height>
+        </rect>
+       </property>
+       <property name="styleSheet">
+        <string notr="true">background-image: url(:/arrows/Icon/MainWindow/right.png);</string>
+       </property>
+       <property name="text">
+        <string/>
+       </property>
+      </widget>
      </widget>
     </item>
     <item row="1" column="0">
@@ -3757,6 +3805,8 @@ PlotWidget {
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="source_rc.qrc"/>
+ </resources>
  <connections/>
 </ui>

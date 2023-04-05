@@ -89,6 +89,17 @@ class ToolKit():
         self.MainWindow8 = QtWidgets.QMainWindow()      #
         self.ui8 = Ui_FaultyFabricWindow()              #
         self.ui8.setupUi(self.MainWindow8)              #
+        icon_left = QIcon("./Icon/MainWindow/left.png")
+        icon_home = QIcon("./Icon/MainWindow/home.png")
+        icon_right = QIcon("./Icon/MainWindow/right.png")
+        self.ui8.left_pushButton.setIcon(icon_left)
+        self.ui8.left_pushButton.setIconSize(QSize(64, 64))
+        self.ui8.home_pushButton.setIcon(icon_home)
+        self.ui8.home_pushButton.setIconSize(QSize(64, 64))
+        self.ui8.righr_pushButton.setIcon(icon_right)
+        self.ui8.righr_pushButton.setIconSize(QSize(64, 64))
+
+
         #################################################
 
         ################ Warning Window #################

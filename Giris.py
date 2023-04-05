@@ -2252,6 +2252,7 @@ class Ui_Giris_Window(object):
         _translate = QtCore.QCoreApplication.translate
         Giris_Window.setWindowTitle(_translate("Giris_Window", "Giris"))
         self.Sifre_lineEdit.setPlaceholderText(_translate("Giris_Window", "Şifre"))
+        self.Kullaniciadi_lineEdit.setText(_translate("Giris_Window", "merserize118"))
         self.Kullaniciadi_lineEdit.setPlaceholderText(_translate("Giris_Window", "   Kullanıcı Adı"))
         self.Giris_pushButton.setText(_translate("Giris_Window", "Giriş"))
         self.Kayit_pushButton.setText(_translate("Giris_Window", "Kayıt Ol"))

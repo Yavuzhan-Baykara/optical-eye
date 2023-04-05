@@ -22,6 +22,7 @@ degistirilecekler = ['g', 'i', 'o', 'u', 's']
 eslesmeler = str.maketrans("".join(harfler), "".join(degistirilecekler))
 conn=sqlite3.connect('./Database/Tespit_Edilen_Veriler.db',timeout=1, check_same_thread=False)
 curs=conn.cursor()
+curs2=conn.cursor()
 sorguVeri=("""CREATE TABLE IF NOT EXISTS Hata_Sonuclari(
                  Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
                  Tarih TEXT NOT NULL UNIQUE,
@@ -41,6 +42,11 @@ conn.commit()
 Data = curs.fetchall()
 class Data_Pre_Process_Lister:
     class CustomPDF(FPDF):
+        def __init__(self, orientation = 'P', unit = 'mm', format='A4', Threshold_Tarih=None, Threshold_Tarih_Last=None):
+            FPDF.__init__(self, orientation, unit, format)
+            self.Threshold_Tarih = Threshold_Tarih
+            self.Threshold_Tarih_Last = Threshold_Tarih_Last
+
         def Line(self, HEIGHT, WIDTH):
             self.line(10, 10, 10, HEIGHT-10)
             self.line(HEIGHT-150, 10, WIDTH-63, HEIGHT-255)
@@ -83,7 +89,12 @@ class Data_Pre_Process_Lister:
             self.set_text_color(0, 0, 0)
             self.set_x(28)
             self.cell(60, 5, f'Dok No:{row[2]}', 1, 0, 'C', True)
-            self.cell(60, 5, f'Kalite No:{row[3]}', 1, 1, 'C', True)
+            quality = None
+            if len(row[3]) > 8:
+                quality = row[3][:8]
+            else:
+                quality = row[3]
+            self.cell(60, 5, f'Kalite No:{quality}', 1, 1, 'C', True)
 
             self.set_x(28)
             self.set_fill_color(144, 144, 144)
@@ -153,28 +164,48 @@ class Data_Pre_Process_Lister:
             dok_no = 0
             leke_hatası = 0
             delik_hatası = 0
+            limited_error = False
             # Tablodan verileri çekme
-            curs.execute("SELECT * FROM Hata_Sonuclari ORDER BY Id")
+            curs.execute("SELECT * FROM Hata_Sonuclari WHERE Tarih BETWEEN ? AND ?", (self.Threshold_Tarih, self.Threshold_Tarih_Last))
             rows = curs.fetchall()
+
+            if len(rows) > 200:
+                curs.execute("SELECT * FROM Hata_Sonuclari WHERE Tarih BETWEEN ? AND ? AND (Hata_Sınıfı = 'leke' OR Hata_Sınıfı = 'delik') ORDER BY RANDOM() LIMIT 200", (self.Threshold_Tarih, self.Threshold_Tarih_Last))
+                rows = curs.fetchall()
+                limited_error = True
+            else:
+                limited_error = False
+
             # Tüm kayıtlar için tablo oluşturma
-            for i, row in enumerate(rows):
-                delik_hatası += 1 if row[10] == "delik" else 0
-                leke_hatası += 1 if row[10] == "leke" else 0
-                if row[2] != dok_no:
-                    if i != 0:
-                        self.cell(190, 10, txt=f"Toplam Delik: {delik_hatası}, Toplam Leke: {leke_hatası}", ln=1, align='C')
+            if limited_error == False:
+                for i, row in enumerate(rows):
+                    delik_hatası += 1 if row[10] == "delik" else 0
+                    leke_hatası += 1 if row[10] == "leke" else 0
+                    if row[2] != dok_no:
+                        if i != 0:
+                            self.cell(190, 10, txt=f"Toplam Delik: {delik_hatası}, Toplam Leke: {leke_hatası}", ln=1, align='C')
+                            self.add_page()
+                    if i % 4 == 0:
                         self.add_page()
-                if i % 4 == 0:
-                    self.add_page()
-                    delik_hatası = 0
-                    leke_hatası = 0
-                # Tablo başlığı
-                self.set_font('Arial', 'B', 12)
-                self.ln()
-                # Tablo içeriği
-                self.table_details(row)
-                self.ln()
-                dok_no = row[2]
+                        delik_hatası = 0
+                        leke_hatası = 0
+                    # Tablo başlığı
+                    self.set_font('Arial', 'B', 12)
+                    self.ln()
+                    # Tablo içeriği
+                    self.table_details(row)
+                    self.ln()
+                    dok_no = row[2]
+            else:
+                for i, row in enumerate(rows):
+                    if i % 4 == 0:
+                        self.add_page()
+                    # Tablo başlığı
+                    self.set_font('Arial', 'B', 12)
+                    self.ln()
+                    # Tablo içeriği
+                    self.table_details(row)
+                    self.ln()
         def footer(self):
             self.set_y(-10)
             self.set_font('Arial',size=12)
@@ -199,12 +230,10 @@ class Data_Pre_Process_Lister:
             'Hata_Konum' : [ [], [], [], [] ],
             'Tarih_All':[]
                 }
-    
         curs.execute("SELECT * FROM Hata_Sonuclari")
         
     def positioning(self, Tarih):
         self.Tarih=Tarih
-        
         for satirIndex, satirVeri in enumerate(curs):
             if self.Tarih == satirVeri[1]:
                 if satirVeri[10] == self.Data['Hata_Türleri'][0]:
@@ -347,7 +376,7 @@ class Data_Pre_Process_Lister:
         plt.clf()
         WIDTH=210
         HEIGHT=297
-        pdf = self.CustomPDF(orientation = 'P', unit = 'mm', format='A4')
+        pdf = self.CustomPDF(orientation = 'P', unit = 'mm', format='A4',Threshold_Tarih=self.Threshold_Tarih, Threshold_Tarih_Last=self.Threshold_Tarih_Last)
         pdf.alias_nb_pages()
         pdf.add_page()
         pdf.set_line_width(0.5)
@@ -423,10 +452,14 @@ class Data_Pre_Process_Lister:
         leke_listesi = []
         for row in datas:
             tarih, dok_no, kalite_no, delik_sayisi, leke_sayisi = row
+            if len(kalite_no) > 8:
+                quality = kalite_no[:8]
+            else:
+                quality = kalite_no
             pdf.set_x(WIDTH/6)
             pdf.cell(30, 10, str(tarih), 1)
             pdf.cell(30, 10, str(dok_no), 1)
-            pdf.cell(30, 10, str(kalite_no).translate(eslesmeler), 1)
+            pdf.cell(30, 10, str(quality).translate(eslesmeler), 1)
             pdf.cell(30, 10, str(leke_sayisi), 1)
             pdf.cell(30, 10, str(delik_sayisi), 1)
             tarih_listesi.append(str(tarih))
