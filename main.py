@@ -16,6 +16,7 @@ from Yukleniyor import *
 from whitedetect import *
 from image_dimension_converter import *
 from threshold import *
+from mail_send import *
 import time
 import sys
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
@@ -204,9 +205,9 @@ def main(worker, window):
         ########################################################################################################################
         #Pixel to mm
         local_height, vision_weight, vision_height, vision_angle = Veri_Tabani_Window.get_Camera_Local_Settings()
-        print(vision_weight)
+        # print(vision_weight)
         resolution_pixels_height, resolution_pixels_width, _ = Veri_Tabani_Window.get_last_Heigt_Width()
-        print(resolution_pixels_width)
+        # print(resolution_pixels_width)
         width_converter = WidthConverter(vision_weight, resolution_pixels_width)
         ########################################################################################################################
         tlFactory = pylon.TlFactory.GetInstance()
@@ -221,6 +222,7 @@ def main(worker, window):
             else:
                 device_indices.append(None)
         for i, cam in enumerate(cameras):
+            # print(cam.GetDeviceInfo().GetSerialNumber())
             device_index = device_indices[i]
             if device_index is not None:
                 cam.Attach(tlFactory.CreateDevice(devices[device_index]))
@@ -233,7 +235,7 @@ def main(worker, window):
         ui2.statusbar.showMessage( " " * 1 + f" Cuda GPU Durumu: {cuda  .is_available()}", 1500)
         if cuda.is_available():
             tensor_temp = tensor_temp.to(device_temp)
-        class_thresholds = selected_Fabric(selected_item)
+        class_thresholds, error_thresholds = selected_Fabric(selected_item)
         while 1:
             position = Arduino_Tools.Feedback_src()
             delta_time = time.time() - prev_time 
@@ -291,9 +293,11 @@ def main(worker, window):
                 model_name = frames[0][1]
                 model_image = frames[0][0]
                 model_image = model_image[:-1, :-1, :] 
-                model_image, cloth_width = ImageProcessor(image=model_image, trim_size=75).process()
-                cloth_width = int(round(width_converter.convert(cloth_width) / 10, 2))
-                print(cloth_width)
+                model_image, cloth_width = ImageProcessor(image=model_image, trim_size=75).trim_image()
+                try:
+                    cloth_width = int(round(width_converter.convert(cloth_width) / 10, 2))
+                except:
+                    cloth_width=0
                 copy_model_image = np.copy(model_image)
                 height, width, channel = model_image.shape
                 zoom_value_5 = Tools.zoom_value_5()
@@ -336,16 +340,16 @@ def main(worker, window):
                         x2=int(df.iloc[:]['xmax'][detect])
                         y1=int(df.iloc[:]['ymin'][detect])
                         y2=int(df.iloc[:]['ymax'][detect])
-                        classId = df.iloc[:]['class'][detect]
                         cx = (x1 + x2)/ 2
                         cy = (y1 + y2)/ 2
                         if(x1<=0):x1=0
                         if(y1<=0):y1=0 
-                        if (x1<=6):x1=6
-                        if(y1<=6):y1=6
+                        if (x1<=56):x1=56
+                        if(y1<=56):y1=56
                         yc = (y1+y2)/2
-                        if yc>outh1 and  yc<outh2:
-                            crop = copy_model_image[y1-5:y2+5,x1-5:x2+5]
+                        if yc>outh1 and yc<outh2:
+                            new_x1, new_x2, new_y1, new_y2 = Tools.expand(copy_model_image.shape, x1, x2, y1, y2, [10.5, 5.5, 1.1])
+                            crop = copy_model_image[new_y1:new_y2,new_x1:new_x2]
                             if Tools.Trigg_Port_Button == True:
                                 try:
                                     src = int(Arduino_Tools.Feedback_src())
@@ -387,14 +391,15 @@ def main(worker, window):
                                 detect_Hata_Metre.insert(0, str(src))
                                 detect_Hata_Sinif.insert(0, str(df.iloc[:]['name'][detect]))
                                 for index in range(len(detect_images)):
-                                    index2 = index % 7
+                                    index2 = index % 6
+                                    index3 = page_num[index2]
                                     try:
-                                        Hata_Goster_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_images[index2]))
-                                        Hata_Eni_labels[index2].setText(detect_Hata_Eni[index2])
-                                        Hata_Boyu_labels[index2].setText(detect_Hata_Boyu[index2])
-                                        Hata_Alan_labels[index2].setText(detect_Hata_Alan[index2])
-                                        Hata_Metre_Labels[index2].setText(detect_Hata_Metre[index2])
-                                        Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index2])
+                                        Hata_Goster_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_images[index3]))
+                                        Hata_Eni_labels[index2].setText(detect_Hata_Eni[index3])
+                                        Hata_Boyu_labels[index2].setText(detect_Hata_Boyu[index3])
+                                        Hata_Alan_labels[index2].setText(detect_Hata_Alan[index3])
+                                        Hata_Metre_Labels[index2].setText(detect_Hata_Metre[index3])
+                                        Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index3])
                                     except:
                                         pass
                                 for index in range(len(detect_Faulty_Windows)):
@@ -427,11 +432,11 @@ def main(worker, window):
                                 Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
                                 faulty_meter = int(round(width_converter.convert(cx) / 10, 2) )
                                 helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
-                            if (str(df.at[detect, 'name']) in ['kirik']) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2) and crack_ready == True:
-                                faulty_cnt += 1                      
-                            if (str(df.at[detect, 'name']) in ['delik', 'leke']) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2):
+                            if (str(df.at[detect, 'name']) in error_thresholds) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2) and crack_ready == True:
+                                faulty_cnt += 1     
+                            if (str(df.at[detect, 'name']) in error_thresholds) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2):
                                 faulty_cnt += 1
-                            if (str(df.at[detect, 'name']) in ['delik', 'leke']):
+                            if (str(df.at[detect, 'name']) in error_thresholds):
                                 faulty_cnt_100 +=1
                             elif not (theta_1_center <= cx <= theta_2_center):
                                 faulty_cnt = 0
@@ -695,16 +700,27 @@ def main(worker, window):
                 frame = frame[:-1, :-1, :]
                 frame2 = frame2[:-1, :-1, :]
                 frame3 = frame3[:-1, :-1, :]
-                frame, cloth_width_1 = ImageProcessor(image=frame, trim_size=115).process()
-                cloth_width_1 = round(width_converter.convert(cloth_width_1), 2)
+                frame, cloth_width_1 = ImageProcessor(image=frame, trim_size=115).trim_image()
+                try:
+                    cloth_width_1 = round(width_converter.convert(cloth_width_1), 2)
+                except:
+                    cloth_width_1 = 0
                 frame = ImageProcessor(image=frame, trim_size=75).paint_left_gray()
-                cloth_width_2 = round(width_converter.convert(resolution_pixels_width), 2)
-                frame3, cloth_width_3 = ImageProcessor(image=frame3, trim_size=115).process()
-                cloth_width_3 = round(width_converter.convert(cloth_width_3), 2)
+                try:
+                    cloth_width_2 = round(width_converter.convert(resolution_pixels_width), 2)
+                except:
+                    cloth_width_2 = 0
+                frame3, cloth_width_3 = ImageProcessor(image=frame3, trim_size=115).trim_image()
+                try:
+                    cloth_width_3 = round(width_converter.convert(cloth_width_3), 2)
+                except:
+                    cloth_width_3 = 0
                 cloth_width = int((cloth_width_1 + cloth_width_2 + cloth_width_3) / 10)
                 frame3 = ImageProcessor(image=frame3, trim_size=75).paint_right_gray()
-                
-
+                # print(f"1. kameradan gelen veri: {cloth_width_1}")
+                # print(f"2. kameradan gelen veri: {cloth_width_2}")
+                # print(f"3. kameradan gelen veri: {cloth_width_3}")
+                # print(f"Toplam bez eni: {cloth_width}")
                 frame_model, frame2_model, frame3_model = frames[0][1], frames[1][1], frames[2][1]
                 height, width, channel = frame.shape
                 height2, width2, channel2 = frame2.shape
@@ -802,12 +818,8 @@ def main(worker, window):
                                 classId = df.iloc[:]['class'][detect]
                                 cx = (x1 + x2)/ 2
                                 cy = (y1 + y2)/ 2
-                                if(x1<=0):x1=0
-                                if(y1<=0):y1=0 
-                                if (x1<=6):x1=6
-                                if(y1<=6):y1=6
-                                yc = (y1+y2)/2
-                                crop = results_2[y1-5:y2+5,x1-5:x2+5]
+                                new_x1, new_x2, new_y1, new_y2 = Tools.expand(results_2.shape, x1, x2, y1, y2, [10.5, 5.5, 1.1])
+                                crop = results_2[new_y1:new_y2,new_x1:new_x2]
                                 if Tools.Trigg_Port_Button == True:
                                     try:
                                         src = int(Arduino_Tools.Feedback_src())
@@ -831,7 +843,7 @@ def main(worker, window):
                                         theta_1_center = max(0, cx - threshold)
                                         theta_2_center = min(width, cx + threshold)
                                         y_detect_1, single_frame, faulty_meter = y_detect(cy, theta_1_center, theta_2_center, cx)
-                                        print(f"yakalanan kamera: {y_detect_1}")
+                                        # print(f"yakalanan kamera: {y_detect_1}")
                                     y_detect_2, single_frame, faulty_meter = y_detect(cy, theta_1_center, theta_2_center, cx)
                                     if faulty_cnt_100 == 0:
                                         start_time_faulty_cnt_100 = time.time()
@@ -849,14 +861,15 @@ def main(worker, window):
                                     detect_Hata_Metre.insert(0, str(src))
                                     detect_Hata_Sinif.insert(0, str(df.iloc[:]['name'][detect]))
                                     for index in range(len(detect_images)):
-                                        index2 = index % 7
+                                        index2 = index % 6
+                                        index3 = page_num[index2]
                                         try:
-                                            Hata_Goster_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_images[index2]))
-                                            Hata_Eni_labels[index2].setText(detect_Hata_Eni[index2])
-                                            Hata_Boyu_labels[index2].setText(detect_Hata_Boyu[index2])
-                                            Hata_Alan_labels[index2].setText(detect_Hata_Alan[index2])
-                                            Hata_Metre_Labels[index2].setText(detect_Hata_Metre[index2])
-                                            Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index2])
+                                            Hata_Goster_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_images[index3]))
+                                            Hata_Eni_labels[index2].setText(detect_Hata_Eni[index3])
+                                            Hata_Boyu_labels[index2].setText(detect_Hata_Boyu[index3])
+                                            Hata_Alan_labels[index2].setText(detect_Hata_Alan[index3])
+                                            Hata_Metre_Labels[index2].setText(detect_Hata_Metre[index3])
+                                            Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index3])
                                         except:
                                             pass
                                     for index in range(len(detect_Faulty_Windows)):
@@ -865,15 +878,6 @@ def main(worker, window):
                                             Hata_Faultys_Window_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_Faulty_Windows[index2]))
                                         except:
                                             pass  
-                                    for index in range(len(detect_images)):
-                                        Hata_Goster_labels[index].setPixmap(QtGui.QPixmap.fromImage(detect_images[index]))
-                                        Hata_Eni_labels[index].setText(detect_Hata_Eni[index])
-                                        Hata_Boyu_labels[index].setText(detect_Hata_Boyu[index])
-                                        Hata_Alan_labels[index].setText(detect_Hata_Alan[index])
-                                        Hata_Metre_Labels[index].setText(detect_Hata_Metre[index])
-                                        Hata_Sinif_labels[index].setText(detect_Hata_Sinif[index])
-                                    for index2 in range(len(detect_Faulty_Windows)):
-                                        Hata_Faultys_Window_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_Faulty_Windows[index2]))
                                     if str(df.iloc[:]['name'][detect])=='delik':
                                         detect_faulty_fabric["Flawed Hole"] += 1
                                     elif str(df.iloc[:]['name'][detect])=='leke':
@@ -899,11 +903,11 @@ def main(worker, window):
                                     faulty_meter = int(round(width_converter.convert(cx) / 10, 2) )
                                     helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
 
-                                if (str(df.at[detect, 'name']) in ['kirik']) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2) and crack_ready == True:
+                                if (str(df.at[detect, 'name']) in error_thresholds) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2) and crack_ready == True:
                                     faulty_cnt += 1     
-                                if (str(df.at[detect, 'name']) in ['delik', 'leke']) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2):
+                                if (str(df.at[detect, 'name']) in error_thresholds) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2):
                                     faulty_cnt += 1
-                                if (str(df.at[detect, 'name']) in ['delik', 'leke']):
+                                if (str(df.at[detect, 'name']) in error_thresholds):
                                     faulty_cnt_100 +=1
                                 elif not (theta_1_center <= cx <= theta_2_center):
                                     faulty_cnt = 0
@@ -1037,14 +1041,15 @@ def main(worker, window):
         ui2.label_9.setText(str(0))
         MainWindow9.close()
         for index in range(len(detect_images)):
-            indexx = index % 7
+            indexx = index % 6
+            indexxx = page_num[indexx]
             try:
-                Hata_Goster_labels[indexx].setPixmap(QtGui.QPixmap.fromImage(detect_images[index]))
-                Hata_Eni_labels[indexx].setText(detect_Hata_Eni[index])
-                Hata_Boyu_labels[indexx].setText(detect_Hata_Boyu[index])
-                Hata_Alan_labels[indexx].setText(detect_Hata_Alan[index])
-                Hata_Metre_Labels[indexx].setText(detect_Hata_Metre[index])
-                Hata_Sinif_labels[indexx].setText(detect_Hata_Sinif[index])
+                Hata_Goster_labels[indexx].setPixmap(QtGui.QPixmap.fromImage(detect_images[indexxx]))
+                Hata_Eni_labels[indexx].setText(detect_Hata_Eni[indexxx])
+                Hata_Boyu_labels[indexx].setText(detect_Hata_Boyu[indexxx])
+                Hata_Alan_labels[indexx].setText(detect_Hata_Alan[indexxx])
+                Hata_Metre_Labels[indexx].setText(detect_Hata_Metre[indexxx])
+                Hata_Sinif_labels[indexx].setText(detect_Hata_Sinif[indexxx])
             except:
                 pass
         for index in range(len(detect_Faulty_Windows)):
@@ -1169,11 +1174,16 @@ def main(worker, window):
         PDFThread().stop()
         
     def Pdf_Lister():
+        # MainWindow12.show()
         widget_1 = DC.ui3.calendarWidget.selectedDate()
         widget_2 = DC.ui3.calendarWidget_2.selectedDate()
         Date = [str(widget_1.day()), str(widget_1.month()), str(widget_1.year())]
         DateLast = [str(widget_2.day()), str(widget_2.month()), str(widget_2.year())]
-        PDFThread_Lister(Date, DateLast).start()
+        def handle_out_path_main_callback(out_path_main):
+            nonlocal out_pdf_path
+            print(f"out_path_main: {out_path_main}")
+            out_pdf_path = out_path_main
+        mail_sender_Window(Date, DateLast, MainWindow12, callback=handle_out_path_main_callback)
 
     def Camera_Inf():
         Tools.Import_Height()
@@ -1274,27 +1284,98 @@ def main(worker, window):
         Veri_Tabani_Window.set_Camera_Local_Settings(local_height, vision_weight, vision_height, vision_angle)
     def faulty_window_cnt_plus():
         nonlocal page_cnt
+        nonlocal page_num
+        page_cnt_copy = page_cnt
         page_cnt = page_cnt + 1
+        if page_cnt >= len(detect_images) /6:
+            page_cnt = page_cnt_copy
+        page_start = (page_cnt - 1) * 6
+        page_end = page_start + 6
+        page_num = list(range(page_start, page_end))
+        # print(page_num)
     def faulty_window_cnt_diff():
         nonlocal page_cnt
+        nonlocal page_num
         page_cnt = page_cnt - 1
         if page_cnt == 0:
             page_cnt = 1
+        page_start = (page_cnt - 1) * 6
+        page_end = page_start + 6
+        page_num = list(range(page_start, page_end))
+        # print(page_num)
     def faulty_window_cnt_home():
         nonlocal page_cnt
+        nonlocal page_num
         page_cnt = 1
+        page_start = (page_cnt - 1) * 6
+        page_end = page_start + 6
+        page_num = list(range(page_start, page_end))
+        # print(page_num)
     def faulty_window():
-        for index in range(7):
-            index2 = index % 7
+        for index in range(6):
+            index2 = index % 6
+            index3 = page_num[index2] 
             try:
-                Hata_Goster_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_images[index*page_cnt]))
-                Hata_Eni_labels[index2].setText(detect_Hata_Eni[index*page_cnt])
-                Hata_Boyu_labels[index2].setText(detect_Hata_Boyu[index*page_cnt])
-                Hata_Alan_labels[index2].setText(detect_Hata_Alan[index*page_cnt])
-                Hata_Metre_Labels[index2].setText(detect_Hata_Metre[index*page_cnt])
-                Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index*page_cnt])
+                # print(index3)
+                Hata_Goster_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_images[index3]))
+                Hata_Eni_labels[index2].setText(detect_Hata_Eni[index3])
+                Hata_Boyu_labels[index2].setText(detect_Hata_Boyu[index3])
+                Hata_Alan_labels[index2].setText(detect_Hata_Alan[index3])
+                Hata_Metre_Labels[index2].setText(detect_Hata_Metre[index3])
+                Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index3])
             except:
                 pass
+    def mail_listwidget():
+        # mail_listWidget'ı temizle
+        email_data = Veri_Tabani_Window.mail_show()
+        ui5.mail_listWidget.clear()
+        for i, email in enumerate(email_data):
+            if i == 0:
+                ui12.lineEdit_gnderici_adres.setText(email[0])
+            else:
+                ui12.mail_kayitli_adresler.addItem(email[0])
+            ui5.mail_listWidget.addItem(email[0])
+    def mail_deleted():
+        selected_item = ui5.mail_listWidget.selectedItems()
+        try:
+            select_item = ui5.mail_listWidget.currentItem().text()
+        except AttributeError:
+            select_item = None
+        Veri_Tabani_Window.mail_delete(select_item)
+        for item in selected_item:
+            ui5.mail_listWidget.takeItem(ui5.mail_listWidget.row(item))
+
+    def mail_add():
+        item = ui5.lineEdit_mail.text()
+        Veri_Tabani_Window.mail_add(item)
+        ui5.mail_listWidget.addItem(item)
+
+    def right_add():
+        try:
+            selected_item = ui12.mail_kayitli_adresler.currentItem()
+            index = ui12.mail_kayitli_adresler.row(selected_item)
+            ui12.mail_kayitli_adresler.takeItem(index)
+            ui12.mail_gnderilen_adresler.addItem(selected_item.text())
+        except:
+            pass
+    def left_add():
+        try:
+            selected_item = ui12.mail_gnderilen_adresler.currentItem()
+            index = ui12.mail_gnderilen_adresler.row(selected_item)
+            ui12.mail_gnderilen_adresler.takeItem(index)
+            ui12.mail_kayitli_adresler.addItem(selected_item.text())
+        except:
+            pass
+    def mail_send():
+        mail_data, key_data = Veri_Tabani_Window.mail_key_show()
+        listWidget = ui12.mail_gnderilen_adresler
+        mail_list = []
+        for index in range(listWidget.count()):
+            item = listWidget.item(index)
+            mail_list.append(item.text())
+        email_sender = EmailSender.get_instance()
+        email_sender.send_email(ui12, mail_data, key_data, mail_list, out_pdf_path, "Günlük hata tespiti ektedir")
+
     print("Arayüzlerin Yüklenmesi")
     worker.progress.emit(83)
     Arduino_Tools=Arduino_Toolkits()
@@ -1325,6 +1406,7 @@ def main(worker, window):
     ui9, MainWindow9, app9 = Tools.Feedback_Faulty_UI()
     ui10, MainWindow10, app10 = Tools.FeedBack_Warning_UI()
     ui11, MainWindow11, app11 = Tools.FeedBack_Faultys_UI()
+    ui12, MainWindow12, app12 = Tools.FeedBack_Mail_UI()
     #######################################################################################################
     black_image = np.zeros((256, 1400), dtype=np.uint8)
     show_images       = [black_image, black_image, black_image, black_image, black_image, black_image]
@@ -1349,6 +1431,8 @@ def main(worker, window):
                             ui9.text_Hata_Sinif_4, ui9.text_Hata_Sinif_5, ui9.text_Hata_Sinif_6]
     Hata_Faultys_Window_labels = [ui11.fault_1_label, ui11.fault_2_label, ui11.fault_3_label]
     page_cnt = 1
+    page_num = [0, 1, 2, 3, 4, 5]
+    out_pdf_path = ""
     #######################################################################################################
     
     worker.progress.emit(100)
@@ -1373,6 +1457,7 @@ def main(worker, window):
     last_detect(pixmap_detect_off)
     starting_upload()
     default_model()
+    mail_listwidget()
     timer = QTimer()
     timer.timeout.connect(showTime)
     timer.start(1000)
@@ -1426,6 +1511,8 @@ def main(worker, window):
     ui5.pushButton_Kapat.clicked.connect(arduinoAdminDisconnect)
     ui5.pushButton_Aktar_Kumas_Inf.clicked.connect(save_fabric_adjustment)
     ui5.pushButton_Kamera_Konum_Ayari.clicked.connect(camera_local_inf)
+    ui5.pushButton_mail_sil.clicked.connect(mail_deleted)
+    ui5.pushButton_mail_ekle.clicked.connect(mail_add)
     ui6.Ikaz_kapat_pushButton.clicked.connect(Arduino_Tools.hepsini_kapat)
     # ui7.Ac_pushButton.clicked.connect(Soft_Serial_OPEN)
     ui7.Kapat_pushButton.clicked.connect(Soft_NSerial_OPEN)
@@ -1436,12 +1523,15 @@ def main(worker, window):
     ui9.actionKameralar.triggered.connect(Tools.QWindow_Camera)
     ui9.actionVeri_Taban.triggered.connect(Tools.QWindow_DataBase)
     ui9.actionAdmin_Paneli.triggered.connect(Tools.QWindow_Admin)
-    ui9.label_Hata_Goster_1.mousePressEvent = lambda event: show_faulty(name="Hata - 1", arr=show_images[0])
-    ui9.label_Hata_Goster_2.mousePressEvent = lambda event: show_faulty(name="Hata - 2", arr=show_images[1])
-    ui9.label_Hata_Goster_3.mousePressEvent = lambda event: show_faulty(name="Hata - 3", arr=show_images[2])
-    ui9.label_Hata_Goster_4.mousePressEvent = lambda event: show_faulty(name="Hata - 4", arr=show_images[3])
-    ui9.label_Hata_Goster_5.mousePressEvent = lambda event: show_faulty(name="Hata - 5", arr=show_images[4])
-    ui9.label_Hata_Goster_6.mousePressEvent = lambda event: show_faulty(name="Hata - 6", arr=show_images[5])
+    try:
+        ui9.label_Hata_Goster_1.mousePressEvent = lambda event: show_faulty(name="Hata - 1", arr=show_images[page_num[0]])
+        ui9.label_Hata_Goster_2.mousePressEvent = lambda event: show_faulty(name="Hata - 2", arr=show_images[page_num[1]])
+        ui9.label_Hata_Goster_3.mousePressEvent = lambda event: show_faulty(name="Hata - 3", arr=show_images[page_num[2]])
+        ui9.label_Hata_Goster_4.mousePressEvent = lambda event: show_faulty(name="Hata - 4", arr=show_images[page_num[3]])
+        ui9.label_Hata_Goster_5.mousePressEvent = lambda event: show_faulty(name="Hata - 5", arr=show_images[page_num[4]])
+        ui9.label_Hata_Goster_6.mousePressEvent = lambda event: show_faulty(name="Hata - 6", arr=show_images[page_num[5]])
+    except:
+        print("Maksimum alan aşı")
     ui10.Kapat_pushButton.clicked.connect(lambda: MainWindow10.close())
     ui11.close_pushButton.clicked.connect(faulty_close)
     MainWindow2.closeEvent = lambda event: closeEvent(event=event, choice=MainWindow2)
@@ -1451,6 +1541,9 @@ def main(worker, window):
     ui9.righr_pushButton.clicked.connect(faulty_window)
     ui9.left_pushButton.clicked.connect(faulty_window)
     ui9.home_pushButton.clicked.connect(faulty_window)
+    ui12.aktargnderlen_pushButton.clicked.connect(right_add)
+    ui12.aktarkayitli_pushButton.clicked.connect(left_add)
+    ui12.mailgonder_pushButton.clicked.connect(mail_send)
 
 if __name__ == '__main__':
     app1 = QApplication(sys.argv)

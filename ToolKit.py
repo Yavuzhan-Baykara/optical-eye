@@ -17,6 +17,7 @@ from FaultyFabricWindow import *
 from Warning_window import *
 from PyQt5.QtGui import QPixmap
 from faultys_window import *
+from mail_send_window import *
 
 class ToolKit():
     def Windows(self):
@@ -37,6 +38,8 @@ class ToolKit():
         self.ui2=Ui_Camera_Window()                   #
         self.ui2.setupUi(self.MainWindow2)            #
         self.ui2.groupBox_3.setEnabled(False)
+        validator = QtGui.QIntValidator(0, 100000)
+        self.ui2.lineEdit_Dok_No.setValidator(validator)
         ###############################################
 
         ############ Veri Tabani ######################
@@ -121,8 +124,16 @@ class ToolKit():
         self.ui10.warning_label_3.setPixmap(icon_warning)
         #################################################
         
+        ################ Faultys Window ##################
+        self.app11 = QtWidgets.QApplication(sys.argv)    #
+        self.MainWindow11 = QtWidgets.QMainWindow()      #
+        self.ui11 = Ui_mail_send_window()                #
+        self.ui11.setupUi(self.MainWindow11)             #
+        icon_warning = QPixmap("./Icon/MainWindow/warning.png")
+        self.ui11.warning_icon.setPixmap(icon_warning)   #
+        ##################################################
 
-        
+
 ###################### İnit #################################################
     def __init__(self):                                                    
         self.camera_W_H_I=Veri_Tabani_Window.get_last_Heigt_Width()         
@@ -161,8 +172,6 @@ class ToolKit():
             str(self._Camera_Type[2]), str(self._Camera_Type[3])
             ]
 #############################################################################
-
-    
 
     ############ MainWindow Giris ################################
     def QWindow_Login(self):                                     #
@@ -218,6 +227,10 @@ class ToolKit():
         self.MainWindow10.close()
         self.MainWindow10.show()
 
+    def QMail_Send_Window(self):
+        self.MainWindow11.close()
+        self.MainWindow11.show()
+
     ########################################## FeedBacks ##########################################################################
     def FeedBack_SetupUi(self) : return self.ui1, self.ui2, self.ui3, self.ui4, self.ui5                                          #
     def FeedBack_Windows(self) : return self.MainWindow1, self.MainWindow2, self.MainWindow3, self.MainWindow4, self.MainWindow5  #
@@ -227,7 +240,8 @@ class ToolKit():
     def Feedback_Kayt_UI(self) : return self.ui7, self.MainWindow7, self.app7                                                     #
     def Feedback_Faulty_UI(self): return self.ui8, self.MainWindow8, self.app8                                                    #
     def FeedBack_Warning_UI(self): return self.ui9, self.MainWindow9, self.app9                                                   #
-    def FeedBack_Faultys_UI(self): return self.ui10, self.MainWindow10, self.app10                                                #
+    def FeedBack_Faultys_UI(self): return self.ui10, self.MainWindow10, self.app10      
+    def FeedBack_Mail_UI(self): return self.ui11, self.MainWindow11, self.app11                                                   #
     ########################################## FeedBacks ##########################################################################
 
     def Cam_out_file_folder(self):
@@ -539,4 +553,18 @@ class ToolKit():
     
     def feedback_Splited_Last_Data(self):
         return self.Camera_Height, self.Camera_Width, self.zoom_impact_rate, self.Camera_Serial, self.Camera_Exposure_Time, 20, self.Cameras_Type
-       
+    
+    def expand(self, img_shape, x1, x2, y1, y2, ratios):
+        genislik = x2 - x1
+        yukseklik = y2 - y1
+        for ratio in ratios:
+            try:
+                yeni_x1 = max(0, int(x1 - ratio * genislik))
+                yeni_x2 = min(img_shape[1] - 1, int(x2 + ratio * genislik))
+                yeni_y1 = max(0, int(y1 - ratio * yukseklik))
+                yeni_y2 = min(img_shape[0] - 1, int(y2 + ratio * yukseklik))
+                return yeni_x1, yeni_x2, yeni_y1, yeni_y2
+            except Exception as e:
+                print(f'Hata (oran={ratio}): {e}')
+        return x1, x2, y1, y2
+        

@@ -2978,6 +2978,81 @@ PlotWidget {
     <property name="title">
      <string/>
     </property>
+    <widget class="QLabel" name="mail_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>241</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Kayitli Mailler</string>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="mail_listWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>241</width>
+       <height>192</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="mail_label_2">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>20</y>
+       <width>211</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>E-posta</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_mail">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>70</y>
+       <width>211</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_mail_ekle">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>120</y>
+       <width>91</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ekle</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_mail_sil">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>120</y>
+       <width>91</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sil</string>
+     </property>
+    </widget>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">

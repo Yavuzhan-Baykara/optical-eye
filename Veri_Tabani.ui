@@ -12762,6 +12762,18 @@ PlotWidget {
         <bool>true</bool>
        </property>
       </widget>
+      <zorder>Filtrele_pushButton</zorder>
+      <zorder>calendarWidget</zorder>
+      <zorder>calendarWidget_2</zorder>
+      <zorder>label</zorder>
+      <zorder>Raporla_PushButton</zorder>
+      <zorder>Listele_pushButton</zorder>
+      <zorder>label_2</zorder>
+      <zorder>label_3</zorder>
+      <zorder>label_4</zorder>
+      <zorder>warning_label</zorder>
+      <zorder>warning_label_2</zorder>
+      <zorder>warning_label_3</zorder>
      </widget>
     </item>
    </layout>

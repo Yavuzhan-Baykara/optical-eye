@@ -210,9 +210,64 @@ class Data_Pre_Process_Lister:
             self.set_y(-10)
             self.set_font('Arial',size=12)
             page = 'Sayfa ' + str(self.page_no()) + '/{nb}'
-            self.cell(0, 10, page, 0, 0, 'C')  
-            
+            self.cell(0, 10, page, 0, 0, 'C')
+        def meter_Bar(self, baslangic_tarihi, bitis_tarihi, hata_sinifi):
+            WIDTH=210
+            HEIGHT=297
+            import itertools
+            # Verileri sorgula
+            query = """SELECT Dok_No, Kalite_No, Hatanin_Geldiği_Metre 
+                    FROM Hata_Sonuclari 
+                    WHERE Tarih BETWEEN ? AND ? AND Hata_Sınıfı = ?"""
+            curs.execute(query, (baslangic_tarihi, bitis_tarihi, hata_sinifi))
+            results = curs.fetchall()
+
+            # Gruplama işlemi yap
+            results.sort(key=lambda x: (x[0], x[1])) # İlk önce dok_no'ya göre sırala, ardından kalite_no'ya göre sırala
+            groups = []
+            for key, group in itertools.groupby(results, lambda x: (x[0], x[1])):
+                groups.append((key, [row[2] for row in group]))
+
+            # Grupları yazdır
+            i=0
+            for group in groups:
+                metres = np.array(group[1])
+                mean = np.mean(metres)
+                std_dev = np.std(metres)
+                threshold = mean + 3 * std_dev  # Burada 3 kat standart sapma kullanarak aykırı değerleri belirliyoruz.
+
+                filtered_metres = [metre for metre in metres if metre < threshold]
+                if len(filtered_metres) == 0:
+                    filtered_metres = [0]
+
+                max_metre = max(filtered_metres)
+                num_bars = int(max_metre / 250) + 1
+                counts = [0] * num_bars
+
+                for metre in filtered_metres:
+                    bar_index = int(metre / 250)
+                    counts[bar_index] += 1
+
+                x_labels = [f"{i*250}-{(i+1)*250-1}" for i in range(num_bars)]
+                plt.bar(x_labels, counts)
+                plt.tick_params(axis='x', labelsize=8, rotation=90)
+
+                plt.title(f"{hata_sinifi} için;Dok No: {group[0][0]}, Kalite No: {group[0][1]}")
+                plt.xlabel("Hatanin Geldiği Metre Aralığı")
+                plt.ylabel("Hata Sayısı")
+                plt.savefig(f"./PDF/fig/{hata_sinifi}_Dok_No_{group[0][0]}_Kalite_No_{group[0][1]}.png")
+                plt.cla()
+                plt.clf()
+                if hata_sinifi == "leke":
+                    try:
+                        self.set_xy(WIDTH/9, HEIGHT/7)
+                        self.image(f"./PDF/fig/delik_Dok_No_{group[0][0]}_Kalite_No_{group[0][1]}.png", w = 170, h = 100, type = '', link = 'C')
+                        self.image(f"./PDF/fig/{hata_sinifi}_Dok_No_{group[0][0]}_Kalite_No_{group[0][1]}.png", w = 170, h = 100, type = '', link = 'C')
+                        self.add_page()
+                    except:
+                        pass
     def __init__(self, Threshold_Tarih, Threshold_Tarih_Last):
+        self.out_path_main = ""
         self.Res_Tarih_Splited=[]
         self.Re_Tarih_Splited=[]
         self.Tarih="17.8.2022"
@@ -315,7 +370,10 @@ class Data_Pre_Process_Lister:
             pdf.line(WIDTH-10, 10, 200, HEIGHT-10)
             pdf.line(10, HEIGHT-10, WIDTH-10, HEIGHT-10)
             pdf.line(10, HEIGHT-255, WIDTH-10, HEIGHT-255)
-            
+        
+        
+
+    
         df = pd.DataFrame()
         df2 = pd.DataFrame()
         if len(Tarih_Splited)==1:
@@ -406,23 +464,21 @@ class Data_Pre_Process_Lister:
         pdf.set_x(-180)
         pdf.set_font('Arial',size=12)
         if len(Tarih_Splited)==1:
+            print(Tarih_Splited)
             pdf.cell(0, 10, f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[1][0]}-{Month[1][1]} (Adet)",ln=0.5, align="")
-            baslangic_id, bitis_id = curs.execute(f"SELECT MIN(Id), MAX(Id) FROM Hata_Sonuclari WHERE Tarih BETWEEN '{Tarih_Splited[0][0]}' AND '{Tarih_Splited[-1][-1]}'").fetchone()        
         elif len(Tarih_Splited)==2:
             pdf.cell(0, 10, f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[1][0]}-{Month[1][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[3][0]}-{Month[3][1]} (Adet)",ln=0.5, align="")
-            baslangic_id, bitis_id = curs.execute(f"SELECT MIN(Id), MAX(Id) FROM Hata_Sonuclari WHERE Tarih BETWEEN '{Tarih_Splited[0][0]}' AND '{Tarih_Splited[-1][-1]}'").fetchone()
         elif len(Tarih_Splited)==3:
             pdf.cell(0, 10, f"{Tarih_Splited[0][0]}-{Tarih_Splited[0][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[1][0]}-{Month[1][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[1][0]}-{Tarih_Splited[1][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[3][0]}-{Month[3][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[2][0]}-{Tarih_Splited[2][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[5][0]}-{Month[5][1]} (Adet)",ln=0.5, align="")
-            baslangic_id, bitis_id = curs.execute(f"SELECT MIN(Id), MAX(Id) FROM Hata_Sonuclari WHERE Tarih BETWEEN '{Tarih_Splited[0][0]}' AND '{Tarih_Splited[-1][-1]}'").fetchone()
         else:
             pdf.cell(0, 10, f"{Tarih_Splited[-4][0]}-{Tarih_Splited[-4][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[-7][0]}-{Month[-7][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[-3][0]}-{Tarih_Splited[-3][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[-5][0]}-{Month[-5][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[-2][0]}-{Tarih_Splited[-2][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[-3][0]}-{Month[-3][1]} (Adet)",ln=0.5, align="")
             pdf.cell(0, 10, f"{Tarih_Splited[-1][0]}-{Tarih_Splited[-1][-1]}'leri arasinda tespit edilen Delik ve Leke sayisi: {Month[-1][0]}-{Month[-1][1]} (Adet)",ln=0.5, align="")
-            baslangic_id, bitis_id = curs.execute(f"SELECT MIN(Id), MAX(Id) FROM Hata_Sonuclari WHERE Tarih BETWEEN '{Tarih_Splited[-4][0]}' AND '{Tarih_Splited[-1][-1]}'").fetchone()
+        baslangic_id, bitis_id = curs.execute(f"SELECT MIN(Id), MAX(Id) FROM Hata_Sonuclari WHERE Tarih BETWEEN '{self.Threshold_Tarih}' AND '{self.Threshold_Tarih_Last}'").fetchone()
         datas = curs.execute(f'''SELECT Tarih, Dok_No, Kalite_No, 
                 SUM(CASE WHEN Hata_Sınıfı = 'leke' THEN 1 ELSE 0 END) AS leke, 
                 SUM(CASE WHEN Hata_Sınıfı = 'delik' THEN 1 ELSE 0 END) AS delik
@@ -486,9 +542,16 @@ class Data_Pre_Process_Lister:
         pdf.image('delikler.png', w = 170, h = 100, type = '', link = 'C')
         plt.clf()
         plt.cla()
+        pdf.add_page()
+        pdf.meter_Bar(self.Threshold_Tarih, self.Threshold_Tarih_Last, "delik")
+        pdf.meter_Bar(self.Threshold_Tarih, self.Threshold_Tarih_Last, "leke")
+
+
         pdf.create_pdf_details()
         main_path = getcwd()
         main_path = main_path.replace('\\' , "/")
         main_path = main_path +'/' + "PDF" + "/" + str(Re_Tarih_Splited[0]) +str(Re_Tarih_Splited[-1]) + '-aylık-rapor.pdf'
+        self.out_path_main = main_path
+        print(self.out_path_main)
         pdf.output(main_path, 'F')
         os.system(main_path)

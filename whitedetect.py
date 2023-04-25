@@ -7,17 +7,7 @@ class ImageProcessor:
         self.area = None
         _, self.out_w, _ = image.shape
 
-    def process(self):
-        result = self.trim_image()
-        if self.wDetect:
-            return result
-        else:
-            return result
-        
-    def trim_image(self, tolerance=50, iteration=0):
-        if iteration > 5:
-            return self.image, self.out_w
-        
+    def trim_image(self, tolerance=60):
         if self.image is None:
             raise ValueError("Görüntü yüklenemedi.")
         h, w, c = self.image.shape
@@ -40,7 +30,7 @@ class ImageProcessor:
         
         if left_white > 20 and right_white > 20:
             new_w = w - (left_white + right_white + self.trim_size*2)
-            if new_w < w/20:
+            if new_w < w/1000:
                 return self.image, None
             else:
                 self.wDetect = True
@@ -48,14 +38,14 @@ class ImageProcessor:
                 self.image[:, w-right_white-self.trim_size:] = 150  # paint the right area with gray
         elif left_white > 20:
             new_w = w - (left_white + self.trim_size)
-            if new_w < w/20:
+            if new_w < w/1000:
                 return self.image, None
             else:
                 self.wDetect = True
                 self.image[:, :left_white+self.trim_size] = 150  # paint the left area with gray
         elif right_white > self.trim_size:
             new_w = w - (right_white + self.trim_size)
-            if new_w < w/20:
+            if new_w < w/1000:
                 return self.image, None
             else:
                 self.wDetect = True
@@ -64,8 +54,7 @@ class ImageProcessor:
             return self.image, w
         else:
             self.out_w = new_w
-            self.trim_image(tolerance, iteration + 1), self.out_w
-        return self.image, self.out_w
+            return self.image, self.out_w
 
     def paint_left_gray(self):
         h, w, c = self.image.shape
