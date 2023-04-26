@@ -2211,7 +2211,7 @@ PlotWidget {
         <string notr="true">color:white;</string>
        </property>
        <property name="text">
-        <string>Hata Alanı(mm2) :</string>
+        <string>Hatanın Yat Konumu(cm) :</string>
        </property>
       </widget>
       <widget class="QLabel" name="text_Hata_Alan_2">
@@ -2738,7 +2738,7 @@ PlotWidget {
         <string notr="true">color:white;</string>
        </property>
        <property name="text">
-        <string>Hata Alanı(mm2) :</string>
+        <string>Hatanın Yat Konumu(cm) :</string>
        </property>
       </widget>
       <widget class="QLabel" name="text_Hata_Alan_4">
@@ -2937,7 +2937,7 @@ PlotWidget {
         <string notr="true">color:white;</string>
        </property>
        <property name="text">
-        <string>Hata Alanı(mm2) :</string>
+        <string>Hatanın Yat Konumu(cm) :</string>
        </property>
       </widget>
       <widget class="QLabel" name="text_Hata_Alan_3">
@@ -3136,7 +3136,7 @@ PlotWidget {
         <string notr="true">color:white;</string>
        </property>
        <property name="text">
-        <string>Hata Alanı(mm2) :</string>
+        <string>Hatanın Yat Konumu(cm) :</string>
        </property>
       </widget>
       <widget class="QLabel" name="text_Hata_Alan_6">
@@ -3335,7 +3335,7 @@ PlotWidget {
         <string notr="true">color:white;</string>
        </property>
        <property name="text">
-        <string>Hata Alanı(mm2) :</string>
+        <string>Hatanın Yat Konumu(cm) :</string>
        </property>
       </widget>
       <widget class="QLabel" name="text_Hata_Alan_1">
@@ -3534,7 +3534,7 @@ PlotWidget {
         <string notr="true">color:white;</string>
        </property>
        <property name="text">
-        <string>Hata Alanı(mm2) :</string>
+        <string>Hatanın Yat Konumu(cm) :</string>
        </property>
       </widget>
       <widget class="QLabel" name="text_Hata_Alan_5">

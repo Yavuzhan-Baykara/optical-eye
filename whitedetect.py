@@ -12,21 +12,31 @@ class ImageProcessor:
             raise ValueError("Görüntü yüklenemedi.")
         h, w, c = self.image.shape
         left_white = 0
+        left_count = 0
         for i in range(w):
             if np.mean(self.image[:, i]) > 127:
                 left_white += 1
+                left_count = 0
             elif np.min(self.image[:, i]) >= 127 - tolerance:
                 left_white += 1
+                left_count = 0
             else:
-                break
+                left_count += 1
+                if left_count >= 10:
+                    break
         right_white = 0
+        right_count = 0
         for i in range(w-1, -1, -1):
             if np.mean(self.image[:, i]) > 127:
                 right_white += 1
+                right_count = 0
             elif np.min(self.image[:, i]) >= 127 - tolerance:
                 right_white += 1
+                right_count = 0
             else:
-                break
+                right_count += 1
+                if right_count >= 10:
+                    break
         
         if left_white > 20 and right_white > 20:
             new_w = w - (left_white + right_white + self.trim_size*2)

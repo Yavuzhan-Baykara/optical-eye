@@ -321,13 +321,25 @@ def main(worker, window):
                 df=results.pandas().xyxy[0]
                 df=DataFrame(df)
                 myTime+=1
-                def y_detect(cy):
+                def y_detect(cy, theta_1_center, theta_2_center, cx):
                     if 0 <= cy <= model_image.shape[0] * 1:
                         detect_cam = 1
+                        cv2.line(out, (int(theta_1_center), (detect_cam-1) * height), (int(theta_1_center), height*detect_cam), (0, 255, 0), thickness=2)
+                        cv2.line(out, (int(theta_2_center), (detect_cam-1) * height), (int(theta_2_center), height*detect_cam), (0, 255, 0), thickness=2)
+                        faulty_meter = round(width_converter.convert(cx) / 10, 2)
+                        return detect_cam, out, faulty_meter
                     elif model_image.shape[0] * 1 < cy <= model_image.shape[0] * 2:
                         detect_cam = 2
+                        cv2.line(out, (int(theta_1_center), (detect_cam-1) * height), (int(theta_1_center), height*detect_cam), (0, 255, 0), thickness=2)
+                        cv2.line(out, (int(theta_2_center), (detect_cam-1) * height), (int(theta_2_center), height*detect_cam), (0, 255, 0), thickness=2)      
+                        faulty_meter = round(width_converter.convert(cx + width) / 10, 2) 
+                        return detect_cam, out, faulty_meter
                     elif model_image.shape[0] * 2 < cy <= model_image.shape[0] * 3:
                         detect_cam = 3
+                        cv2.line(out, (int(theta_1_center), (detect_cam-1) * height), (int(theta_1_center), height*detect_cam), (0, 255, 0), thickness=2)
+                        cv2.line(out, (int(theta_2_center), (detect_cam-1) * height), (int(theta_2_center), height*detect_cam), (0, 255, 0), thickness=2)      
+                        faulty_meter = round(width_converter.convert(cx + width * 2) / 10, 2)
+                        return detect_cam, out, faulty_meter
                     return detect_cam
                 single_frame = resize(out,  width=1400)
                 height_s, width_s, channel_s = single_frame.shape
@@ -349,7 +361,10 @@ def main(worker, window):
                         yc = (y1+y2)/2
                         if yc>outh1 and yc<outh2:
                             new_x1, new_x2, new_y1, new_y2 = Tools.expand(copy_model_image.shape, x1, x2, y1, y2, [10.5, 5.5, 1.1])
-                            crop = copy_model_image[new_y1:new_y2,new_x1:new_x2]
+                            try:
+                                crop = copy_model_image[new_y1:new_y2,new_x1:new_x2]
+                            except:
+                                crop = copy_model_image[y1:y2,x1:x2]
                             if Tools.Trigg_Port_Button == True:
                                 try:
                                     src = int(Arduino_Tools.Feedback_src())
@@ -373,12 +388,16 @@ def main(worker, window):
                                     start_time_faulty_cnt = time.time()
                                     theta_1_center = max(0, cx - threshold)
                                     theta_2_center = min(model_image.shape[1], cx + threshold)
-                                    y_detect_1 = y_detect(cy)
+                                    y_detect_1, single_frame, faulty_meter = y_detect(cy, theta_1_center, theta_2_center, cx)
                                     print(f"yakalanan kamera: {y_detect_1}")
-                                y_detect_2 = y_detect(cy)
+                                y_detect_2, single_frame, faulty_meter = y_detect(cy, theta_1_center, theta_2_center, cx)
                                 if faulty_cnt_100 == 0:
                                     start_time_faulty_cnt_100 = time.time()
-                                crop = resize_cv2(crop, (320,320), interpolation = INTER_CUBIC)
+                                try:
+                                    crop = resize_cv2(crop, (320,320), interpolation = INTER_CUBIC)
+                                except:
+                                    crop = np.zeros((320, 320), dtype=np.uint8)
+                                faulty_meter = int(round(width_converter.convert(cx) / 10, 2) )
                                 image2 = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
                                 image3 = QtGui.QImage(single_frame.data, single_frame.shape[1], single_frame.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
                                 ui6.Goster_Label.setPixmap(QtGui.QPixmap.fromImage(image2))
@@ -387,7 +406,7 @@ def main(worker, window):
                                 detect_Faulty_Windows.insert(0, image3)
                                 detect_Hata_Eni.insert(0, str(x))
                                 detect_Hata_Boyu.insert(0, str(y))
-                                detect_Hata_Alan.insert(0, str(xy))
+                                detect_Hata_Alan.insert(0, str(faulty_meter))
                                 detect_Hata_Metre.insert(0, str(src))
                                 detect_Hata_Sinif.insert(0, str(df.iloc[:]['name'][detect]))
                                 for index in range(len(detect_images)):
@@ -405,7 +424,8 @@ def main(worker, window):
                                 for index in range(len(detect_Faulty_Windows)):
                                     index2 = index % 4
                                     try:
-                                        Hata_Faultys_Window_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_Faulty_Windows[index2]))
+                                        if (str(df.at[detect, 'name']) in error_thresholds):
+                                            Hata_Faultys_Window_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_Faulty_Windows[index2]))
                                     except:
                                         pass  
                                 if str(df.iloc[:]['name'][detect])=='delik':
@@ -430,7 +450,7 @@ def main(worker, window):
                                 waitKey(1)
                                 Hata_Koordinant = [x1, x2, y1, y2]
                                 Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
-                                faulty_meter = int(round(width_converter.convert(cx) / 10, 2) )
+                                
                                 helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
                             if (str(df.at[detect, 'name']) in error_thresholds) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2) and crack_ready == True:
                                 faulty_cnt += 1     
@@ -486,8 +506,6 @@ def main(worker, window):
                 else:
                     ui9.Ikaz_Durum.setText("AÇIK")
                 ################################################################################################
-                cv2.line(out, (int(theta_1_center), 0), (int(theta_1_center), height), (255, 0, 0), thickness=2)
-                cv2.line(out, (int(theta_2_center), 0), (int(theta_2_center), height), (255, 0, 0), thickness=2)
                 current_time_faulty_cnt = time.time()
                 current_time_faulty_cnt_100 = time.time()
                 current_time_crack_cnt = time.time()
@@ -717,10 +735,7 @@ def main(worker, window):
                     cloth_width_3 = 0
                 cloth_width = int((cloth_width_1 + cloth_width_2 + cloth_width_3) / 10)
                 frame3 = ImageProcessor(image=frame3, trim_size=75).paint_right_gray()
-                # print(f"1. kameradan gelen veri: {cloth_width_1}")
-                # print(f"2. kameradan gelen veri: {cloth_width_2}")
-                # print(f"3. kameradan gelen veri: {cloth_width_3}")
-                # print(f"Toplam bez eni: {cloth_width}")
+
                 frame_model, frame2_model, frame3_model = frames[0][1], frames[1][1], frames[2][1]
                 height, width, channel = frame.shape
                 height2, width2, channel2 = frame2.shape
@@ -818,7 +833,7 @@ def main(worker, window):
                                 classId = df.iloc[:]['class'][detect]
                                 cx = (x1 + x2)/ 2
                                 cy = (y1 + y2)/ 2
-                                new_x1, new_x2, new_y1, new_y2 = Tools.expand(results_2.shape, x1, x2, y1, y2, [10.5, 5.5, 1.1])
+                                new_x1, new_x2, new_y1, new_y2 = Tools.expand(results_2.shape, x1, x2, y1, y2, [5.5, 1.1])
                                 crop = results_2[new_y1:new_y2,new_x1:new_x2]
                                 if Tools.Trigg_Port_Button == True:
                                     try:
@@ -847,6 +862,7 @@ def main(worker, window):
                                     y_detect_2, single_frame, faulty_meter = y_detect(cy, theta_1_center, theta_2_center, cx)
                                     if faulty_cnt_100 == 0:
                                         start_time_faulty_cnt_100 = time.time()
+                                    faulty_meter = int(round(width_converter.convert(cx) / 10, 2))
                                     crop = resize_cv2(crop, (320,320), interpolation = INTER_CUBIC)
                                     single_frame = resize(single_frame,  width=1400)
                                     image2 = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
@@ -857,7 +873,7 @@ def main(worker, window):
                                     show_images.insert(0, single_frame)
                                     detect_Hata_Eni.insert(0, str(x))
                                     detect_Hata_Boyu.insert(0, str(y))
-                                    detect_Hata_Alan.insert(0, str(xy))
+                                    detect_Hata_Alan.insert(0, str(faulty_meter))
                                     detect_Hata_Metre.insert(0, str(src))
                                     detect_Hata_Sinif.insert(0, str(df.iloc[:]['name'][detect]))
                                     for index in range(len(detect_images)):
@@ -875,7 +891,8 @@ def main(worker, window):
                                     for index in range(len(detect_Faulty_Windows)):
                                         index2 = index % 4
                                         try:
-                                            Hata_Faultys_Window_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_Faulty_Windows[index2]))
+                                            if (str(df.at[detect, 'name']) in error_thresholds):
+                                                Hata_Faultys_Window_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_Faulty_Windows[index2]))
                                         except:
                                             pass  
                                     if str(df.iloc[:]['name'][detect])=='delik':
@@ -900,7 +917,6 @@ def main(worker, window):
                                     waitKey(1)
                                     Hata_Koordinant = [x1, x2, y1, y2]
                                     Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
-                                    faulty_meter = int(round(width_converter.convert(cx) / 10, 2) )
                                     helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
 
                                 if (str(df.at[detect, 'name']) in error_thresholds) and (theta_1_center <= cx <= theta_2_center) and (y_detect_1 == y_detect_2) and crack_ready == True:
@@ -1183,7 +1199,7 @@ def main(worker, window):
             nonlocal out_pdf_path
             print(f"out_path_main: {out_path_main}")
             out_pdf_path = out_path_main
-        mail_sender_Window(Date, DateLast, MainWindow12, callback=handle_out_path_main_callback)
+        mail_sender_Window(Date, DateLast, MainWindow12, inf_pdf, handle_out_path_main_callback)
 
     def Camera_Inf():
         Tools.Import_Height()
@@ -1376,6 +1392,10 @@ def main(worker, window):
         email_sender = EmailSender.get_instance()
         email_sender.send_email(ui12, mail_data, key_data, mail_list, out_pdf_path, "Günlük hata tespiti ektedir")
 
+    def get_inf_filter():
+        nonlocal inf_pdf
+        inf_pdf = Veri_Tabani_Window.filter()
+        print(inf_pdf)
     print("Arayüzlerin Yüklenmesi")
     worker.progress.emit(83)
     Arduino_Tools=Arduino_Toolkits()
@@ -1433,6 +1453,7 @@ def main(worker, window):
     page_cnt = 1
     page_num = [0, 1, 2, 3, 4, 5]
     out_pdf_path = ""
+    inf_pdf = None
     #######################################################################################################
     
     worker.progress.emit(100)
@@ -1493,7 +1514,7 @@ def main(worker, window):
     DC.ui3.Goster_pushButton.clicked.connect(Veri_Tabani_Window.Ara)
     DC.ui3.Raporla_PushButton.clicked.connect(Pdf_Show)
     DC.ui3.Listele_pushButton.clicked.connect(Pdf_Lister)
-    DC.ui3.Filtrele_pushButton.clicked.connect(Veri_Tabani_Window.filter)
+    DC.ui3.Filtrele_pushButton.clicked.connect(get_inf_filter)
     DC.ui3.Gunclle_PushButton.clicked.connect(Veri_Tabani_Window.Update)
     DC.ui3.Delete_PushButton.clicked.connect(Veri_Tabani_Window.Delete)
     DC.ui4.Ikaz_kapat_pushButton.clicked.connect(lambda: DC.MainWindow4.close())
