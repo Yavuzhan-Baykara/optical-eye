@@ -7,7 +7,7 @@ class AThread:
         self.com = com
         self.bound = bound
         self.ser = serial.Serial(com, baudrate=bound, timeout=0)
-        self.src = 0
+        self.src = [0, 0]
         self._stop = False
 
     def stop(self):
@@ -23,8 +23,7 @@ class AThread:
                 self.inp = self.ser.readline()
                 self.inp = str(self.inp)
                 self.inp = findall('[0-9]+', self.inp)
-                if self.inp:
-                    self.src = int(self.inp[0]) / 1000
+                self.src = self.inp
                 sleep(1./120)
         except serial.SerialException as e:
             print("Serial portu kapanırken hata oluştu", e)

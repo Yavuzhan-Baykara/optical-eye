@@ -43,9 +43,17 @@ class Arduino_Toolkits():
             print("Beklenmeyen Bir Hata Port Kapatırken Bir Sorun Oluştu...")
     def Feedback_src(self):
         try:
-            return sa.src
+            if sa.inp:
+                if len(sa.inp) > 2:
+                    return sa.inp[0:2]
+                elif len(sa.inp) == 2:
+                    return sa.src
+                else:
+                    return [0,0]
+            else:
+                return [0,0]
         except Exception as e:
-            pass
+            [0,0]
             # print(f"Bir sorun oluştu: {e}")    
     def sari_led_ac(self):
         try:

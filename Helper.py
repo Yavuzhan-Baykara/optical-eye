@@ -40,7 +40,7 @@ class Helper():
             time.sleep(0.0001)
             if len(self.db_queue) != 0:
                 task=self.db_queue.pop(0)
-                Veri_Tabani_Window.Ekle(self.Db_path_time(choice="Now-Day"),task['Dok_no'] , task['Kalite_no'], task['Metre'], task['Bez_eni'], task['Duvar_metre'], task['En'], task['Boy'], task['Alan'],str(task['df'].iloc[:]['name'][task['detect']]), task['Save_image'], task['Hata_Koordinant'])
+                Veri_Tabani_Window().Ekle(self.Db_path_time(choice="Now-Day"),task['Dok_no'] , task['Kalite_no'], task['Metre'], task['Bez_eni'], task['Duvar_metre'], task['En'], task['Boy'], task['Alan'],str(task['df'].iloc[:]['name'][task['detect']]), task['Save_image'], task['Hata_Koordinant'])
                 self.db_queue.clear()
             else:
                 continue

@@ -8,13 +8,13 @@ Created on Wed Mar 13 11:58:46 2019
 from PyQt5 import uic
 
 # with open('FaultyFabricWindow.py', 'w', encoding="utf-8") as fout:
-#    uic.compileUi('FaultyFabricWindow.ui',fout)
+#     uic.compileUi('FaultyFabricWindow.ui',fout)
 
 # with open('Camera.py', 'w', encoding="utf-8") as fout:
 #    uic.compileUi('Camera.ui',fout)
 
-with open('admin_page.py', 'w', encoding="utf-8") as fout:
-   uic.compileUi('admin_page.ui',fout)
+# with open('admin_page.py', 'w', encoding="utf-8") as fout:
+#    uic.compileUi('admin_page.ui',fout)
 
 # with open('Goster.py', 'w', encoding="utf-8") as fout:
 #    uic.compileUi('Goster.ui',fout)
@@ -37,8 +37,8 @@ with open('admin_page.py', 'w', encoding="utf-8") as fout:
 # with open('Warning_window.py', 'w', encoding="utf-8") as fout:
 #    uic.compileUi('Warning_window.ui',fout)
 
-# with open('faultys_window.py', 'w', encoding="utf-8") as fout:
-#    uic.compileUi('faultys_window.ui',fout)
+with open('faultys_window.py', 'w', encoding="utf-8") as fout:
+    uic.compileUi('faultys_window.ui',fout)
 
-with open('mail_send_window.py', 'w', encoding="utf-8") as fout:
-   uic.compileUi('mail_send_window.ui',fout)
+# with open('mail_send_window.py', 'w', encoding="utf-8") as fout:
+#    uic.compileUi('mail_send_window.ui',fout)

@@ -21,7 +21,7 @@ from mail_send_window import *
 
 class ToolKit():
     def Windows(self):
-        self.Model_Path=Veri_Tabani_Window.get_last_model_path()
+        self.Model_Path=Veri_Tabani_Window().get_last_model_path()
         ############ Giris ############################
         self.app1=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow1=QtWidgets.QMainWindow()      #
@@ -136,8 +136,8 @@ class ToolKit():
 
 ###################### İnit #################################################
     def __init__(self):                                                    
-        self.camera_W_H_I=Veri_Tabani_Window.get_last_Heigt_Width()         
-        self.Camera_Inf = Veri_Tabani_Window.get_last_data()                
+        self.camera_W_H_I=Veri_Tabani_Window().get_last_Heigt_Width()         
+        self.Camera_Inf = Veri_Tabani_Window().get_last_data()                
         
         self._Camera_Serials=self.Camera_Inf[0][3].split(',') 
         self._Camera_Exposure_Time=self.Camera_Inf[0][4].split(',')
@@ -154,7 +154,7 @@ class ToolKit():
         self.camera_3 = False                                               
         self.camera_4 = False                                               
         self.upload_path = './configs/13.46.55.txt'                         
-        self.Serial_port="COM4"                                             
+        self.Serial_port="COM3"                                             
         self.Baud_Rate="9600"                                               
         self.Windows()                                                      
         self.Trigg_Port_Button=False                                        
@@ -342,7 +342,7 @@ class ToolKit():
             self.Model_Path=str(self.filepaths[0])                                                      #
             print("Başarılı")                                                                           #
             self.ui5.statusbar.showMessage(" " * 1 + "Yapay zeka import'u başarılı..." , 1500)
-            Veri_Tabani_Window.set_last_model_path(self.Model_Path)                                     #
+            Veri_Tabani_Window().set_last_model_path(self.Model_Path)                                     #
     #####################################################################################################
     def feedback_Model_Filepath(self):return self.Model_Path                                            #
     #####################################################################################################
@@ -485,7 +485,7 @@ class ToolKit():
     def download(self, configs, time):
         with open(f'./configs/{time}.txt', 'w') as convert_file:
             convert_file.write(json.dumps(configs))
-            Veri_Tabani_Window.set_last_path(f'./configs/{time}.txt')
+            Veri_Tabani_Window().set_last_path(f'./configs/{time}.txt')
 
 
             
@@ -519,7 +519,7 @@ class ToolKit():
                 with open(str(self.filepaths[-1])) as f:
                     data = f.read()
                 self.js = json.loads(data)
-                Veri_Tabani_Window.set_last_path(str(self.filepaths[-1]))
+                Veri_Tabani_Window().set_last_path(str(self.filepaths[-1]))
                 return True
             else:
                 return False
@@ -528,7 +528,7 @@ class ToolKit():
         return self.js
 
     def default_upload(self):
-        config_path = Veri_Tabani_Window.get_last_path()
+        config_path = Veri_Tabani_Window().get_last_path()
         with open(config_path) as f:
             data = f.read()
             self.js = json.loads(data)

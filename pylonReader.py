@@ -16,7 +16,7 @@ class Active_Camera:
         self.model_name = cam.GetDeviceInfo().GetSerialNumber()
         
         if self.model_name == Tools.Camera_Serial[0] or self.model_name == Tools.Camera_Serial[1] or self.model_name == Tools.Camera_Serial[2]:
-            self.camera_W_H_I=Veri_Tabani_Window.get_last_Heigt_Width()
+            self.camera_W_H_I=Veri_Tabani_Window().get_last_Heigt_Width()
             Width, Height, Rate=self.camera_W_H_I
             self.camera.Width = MinCamerasSize
             self.camera.Width = int(Tools.feedback_Import_Width())

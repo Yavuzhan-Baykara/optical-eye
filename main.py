@@ -95,7 +95,6 @@ def main(worker, window):
     from pypylon import pylon
     loadingbar(80)
     import random
-    
     global configs
     configs =  {
         1: {
@@ -169,7 +168,7 @@ def main(worker, window):
         selected_item = ui2.comboBox_Kalite_No.currentText()
         try:
             Arduino_Tools.port_ac(Tools)
-            brightnessValue = Veri_Tabani_Window.get_fabric_brightness(selected_item)
+            brightnessValue = Veri_Tabani_Window().get_fabric_brightness(selected_item)
             sleep(1./5)
             Arduino_Tools.setBrightness(str(brightnessValue))
             sleep(1./5)
@@ -187,8 +186,8 @@ def main(worker, window):
         wDetect = False
         start_time_faulty_cnt = 0
         start_time_faulty_cnt_100 = 0
-        limited_time_faulty = 5
-        limited_time_faulty_100 = 90
+        limited_time_faulty = 6
+        limited_time_faulty_100 = 120
         detect_faulty_fabric = {"Flawed Hole": 0, "Flawed Spot": 0, "Flawed Crack": 0, "Other Errors": 0}
         start_time_crack_cnt = 0
         limited_time_crack = 18
@@ -198,15 +197,14 @@ def main(worker, window):
         recordcounter = 0
         prev_time = time.time()
         position = 0
-        prev_position = 0
         speed = 0
         prev_frame_time = 0
         new_frame_time = 0
         ########################################################################################################################
         #Pixel to mm
-        local_height, vision_weight, vision_height, vision_angle = Veri_Tabani_Window.get_Camera_Local_Settings()
+        local_height, vision_weight, vision_height, vision_angle = Veri_Tabani_Window().get_Camera_Local_Settings()
         # print(vision_weight)
-        resolution_pixels_height, resolution_pixels_width, _ = Veri_Tabani_Window.get_last_Heigt_Width()
+        resolution_pixels_height, resolution_pixels_width, _ = Veri_Tabani_Window().get_last_Heigt_Width()
         # print(resolution_pixels_width)
         width_converter = WidthConverter(vision_weight, resolution_pixels_width)
         ########################################################################################################################
@@ -235,25 +233,17 @@ def main(worker, window):
         ui2.statusbar.showMessage( " " * 1 + f" Cuda GPU Durumu: {cuda  .is_available()}", 1500)
         if cuda.is_available():
             tensor_temp = tensor_temp.to(device_temp)
-        class_thresholds, error_thresholds = selected_Fabric(selected_item)
+        class_thresholds, error_thresholds, type_speed = selected_Fabric(selected_item)
         while 1:
-            position = Arduino_Tools.Feedback_src()
-            delta_time = time.time() - prev_time 
-            recordcounter = recordcounter + 1
-            if delta_time == 0:
-                speed = 0
-            else:
-                try:
-                    speed = int(abs((position - prev_position) / delta_time * 10)) * 10
-                except TypeError as e:
-                    speed = 0
-                    pass
-            prev_position = position
-            prev_time = time.time()
+            position, speed = Arduino_Tools.Feedback_src()
+            position: int = int(position) / 1000
+            speed: int = int(speed)
+            
             if speed > 120:
                 ui9.text_Dok_Hizi.setText("0")
             else:
                 ui9.text_Dok_Hizi.setText(str(speed))
+                
             if position is None:
                 ui9.text_Metre_Durumu.setText(str(int(0)))
             else:
@@ -367,7 +357,9 @@ def main(worker, window):
                                 crop = copy_model_image[y1:y2,x1:x2]
                             if Tools.Trigg_Port_Button == True:
                                 try:
-                                    src = int(Arduino_Tools.Feedback_src())
+                                    src, speed = Arduino_Tools.Feedback_src()
+                                    src: int = int(int(src) / 1000)
+                                    speed: int = int(speed)
                                 except:
                                     ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                     src=0
@@ -480,7 +472,9 @@ def main(worker, window):
                                 Arduino_Tools.setBrightness(str(brightnessValue))
                             if Tools.Trigg_Port_Button==True:
                                 try:
-                                    src=int(Arduino_Tools.Feedback_src())
+                                    src, speed = Arduino_Tools.Feedback_src()
+                                    src: int = int(int(src) / 1000)
+                                    speed: int = int(speed)
                                 except:
                                     ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                     src=0
@@ -496,7 +490,13 @@ def main(worker, window):
                                 Hata_Koordinant = [x1, x2, y1, y2]
                                 Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
                                 faulty_meter = int(round(width_converter.convert(cx) / 10, 2))
-                                helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
+                                try:
+                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
+                                except:
+                                    theta_1_center = max(0, cx - threshold)
+                                    theta_2_center = min(model_image.shape[1], cx + threshold)
+                                    y_detect_2, single_frame, faulty_meter = y_detect(cy, theta_1_center, theta_2_center, cx)
+                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
                 ui9.text_Detect_Delik.setText(str(detect_faulty_fabric["Flawed Hole"]))
                 ui9.text_Detect_Leke.setText(str(detect_faulty_fabric["Flawed Spot"]))
                 ui9.text_Detect_Diger.setText(str(detect_faulty_fabric["Other Errors"]))
@@ -509,6 +509,7 @@ def main(worker, window):
                 current_time_faulty_cnt = time.time()
                 current_time_faulty_cnt_100 = time.time()
                 current_time_crack_cnt = time.time()
+                
                 if current_time_faulty_cnt - start_time_faulty_cnt >= limited_time_faulty:
                     faulty_cnt = 0
                     start_time_faulty_cnt = current_time_faulty_cnt
@@ -534,11 +535,12 @@ def main(worker, window):
                     ui2.Camera_2.setPixmap(QPixmap.fromImage(qImg))
                 ui2.label_8.setText(str(fps))
                 if choise == "Record":
-                    ui2.Kayit_pushButton_2.setDisabled(True)
-                    record_now_day = helper.Db_path_time(choice="Now-Day")
-                    save_image_record_path = "./Database"+"/"+helper.Db_path_time(choice="Now-Day")+"/"+"Cam"+"/"+"images"+"/"+ "ss"+ "/" + df.iloc[:]['name'][detect]+"-"+helper.Db_path_time(choice="Now-Time")+"-"+".jpg"
-                    imwrite(save_image_record_path, copy_model_image)
-                    imwrite(Save_crop_image, crop)
+                    for detect in range(len(df.iloc[:]['name'])):
+                        ui2.Kayit_pushButton_2.setDisabled(True)
+                        record_now_day = helper.Db_path_time(choice="Now-Day")
+                        save_image_record_path = "./Database"+"/"+helper.Db_path_time(choice="Now-Day")+"/"+"Cam"+"/"+"images"+"/"+ "ss"+ "/" + df.iloc[:]['name'][detect]+"-"+helper.Db_path_time(choice="Now-Time")+"-"+".jpg"
+                        imwrite(save_image_record_path, copy_model_image)
+                        imwrite(Save_crop_image, crop)
 
                 waitKey(2)
             if len(frames) == 2:
@@ -620,7 +622,9 @@ def main(worker, window):
                             if Tools.Trigg_Port_Button==True:   # Serial Portun açılması durumunda 
                                 # Arduino_Tools.kirmizi_led_ac()
                                 try:
-                                    src=int(Arduino_Tools.Feedback_src())
+                                    src, speed = Arduino_Tools.Feedback_src()
+                                    src: int = int(int(src) / 1000)
+                                    speed: int = int(speed)
                                 except:
                                     ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                     src=0
@@ -680,7 +684,9 @@ def main(worker, window):
                                 if Tools.Trigg_Port_Button==True:
                                     # Arduino_Tools.kirmizi_led_ac()
                                     try:
-                                        src=int(Arduino_Tools.Feedback_src())
+                                        src, speed = Arduino_Tools.Feedback_src()
+                                        src: int = int(int(src) / 1000)
+                                        speed: int = int(speed)
                                     except:
                                         ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                         src=0
@@ -718,23 +724,26 @@ def main(worker, window):
                 frame = frame[:-1, :-1, :]
                 frame2 = frame2[:-1, :-1, :]
                 frame3 = frame3[:-1, :-1, :]
-                frame, cloth_width_1 = ImageProcessor(image=frame, trim_size=115).trim_image()
+                ImgPr1 = ImageProcessor(image=frame, trim_size=115, choise="left")
+                ImgPr2 = ImageProcessor(image=frame2, trim_size=115)
+                ImgPr3 = ImageProcessor(image=frame3, trim_size=115, choise="right")
+                
+                frame, cloth_width_1 = ImgPr1.trim_image()
+                frame3, cloth_width_3 = ImgPr3.trim_image()
                 try:
                     cloth_width_1 = round(width_converter.convert(cloth_width_1), 2)
                 except:
                     cloth_width_1 = 0
-                frame = ImageProcessor(image=frame, trim_size=75).paint_left_gray()
+
                 try:
                     cloth_width_2 = round(width_converter.convert(resolution_pixels_width), 2)
                 except:
                     cloth_width_2 = 0
-                frame3, cloth_width_3 = ImageProcessor(image=frame3, trim_size=115).trim_image()
                 try:
                     cloth_width_3 = round(width_converter.convert(cloth_width_3), 2)
                 except:
                     cloth_width_3 = 0
                 cloth_width = int((cloth_width_1 + cloth_width_2 + cloth_width_3) / 10)
-                frame3 = ImageProcessor(image=frame3, trim_size=75).paint_right_gray()
 
                 frame_model, frame2_model, frame3_model = frames[0][1], frames[1][1], frames[2][1]
                 height, width, channel = frame.shape
@@ -822,7 +831,7 @@ def main(worker, window):
                 for obj_class_ai, threshold_ai in class_thresholds.items():
                     obj_df = df[(df['confidence'] >= threshold_ai) & (df['name'] == obj_class_ai)]
                     if not obj_df.empty:
-                        if len(df)!=0 and speed >= 10:
+                        if len(df)!=0 and int(speed) >= type_speed:
                             for detect in range(len(df.iloc[:]['name'])):
                                 Save_image="./Database"+"/"+helper.Db_path_time(choice="Now-Day")+"/"+"Cam"+"/"+"images"+"/"+df.iloc[:]['name'][detect]+"-"+helper.Db_path_time(choice="Now-Time")+"-"+".jpg"
                                 Save_crop_image = "./Database"+"/"+helper.Db_path_time(choice="Now-Day")+"/"+"Cam"+"/"+"images"+"/"+"cropped"+"/"+df.iloc[:]['name'][detect]+"-"+helper.Db_path_time(choice="Now-Time")+"-"+".jpg"
@@ -837,7 +846,9 @@ def main(worker, window):
                                 crop = results_2[new_y1:new_y2,new_x1:new_x2]
                                 if Tools.Trigg_Port_Button == True:
                                     try:
-                                        src = int(Arduino_Tools.Feedback_src())
+                                        src, speed = Arduino_Tools.Feedback_src()
+                                        src: int = int(int(src) / 1000)
+                                        speed: int = int(speed)
                                     except:
                                         ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                         src=0
@@ -863,6 +874,7 @@ def main(worker, window):
                                     if faulty_cnt_100 == 0:
                                         start_time_faulty_cnt_100 = time.time()
                                     faulty_meter = int(round(width_converter.convert(cx) / 10, 2))
+                                    faulty_meter = int(fault_meter_detect(cy, cx))
                                     crop = resize_cv2(crop, (320,320), interpolation = INTER_CUBIC)
                                     single_frame = resize(single_frame,  width=1400)
                                     image2 = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
@@ -947,23 +959,34 @@ def main(worker, window):
                                     Arduino_Tools.setBrightness(str(brightnessValue))
                                 if Tools.Trigg_Port_Button==True:
                                     try:
-                                        src=int(Arduino_Tools.Feedback_src())
+                                        src, speed = Arduino_Tools.Feedback_src()
+                                        src: int = int(int(src) / 1000)
+                                        speed: int = int(speed)
                                     except:
                                         ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                         src=0
-                                if str(df.iloc[:]['name'][detect]) not in ['delik', 'leke']:
-                                    if len(helper.last_images)>=5:
-                                        del helper.last_images[0]
-                                        helper.last_images.append(crop)
-                                    else:
-                                        helper.last_images.append(crop)
-                                    detect_faulty_fabric["Other Errors"] += 1
-                                    imwrite(Save_image, results_2)
-                                    imwrite(Save_crop_image, crop)
-                                    Hata_Koordinant = [x1, x2, y1, y2]
-                                    Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
-                                    faulty_meter = int(fault_meter_detect(cy, cx))
-                                    helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
+                                try:
+                                    if str(df.iloc[:]['name'][detect]) not in ['delik', 'leke']:
+                                        if len(helper.last_images)>=5:
+                                            del helper.last_images[0]
+                                            helper.last_images.append(crop)
+                                        else:
+                                            helper.last_images.append(crop)
+                                        detect_faulty_fabric["Other Errors"] += 1
+                                        imwrite(Save_image, results_2)
+                                        imwrite(Save_crop_image, crop)
+                                        Hata_Koordinant = [x1, x2, y1, y2]
+                                        Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
+                                        try:
+                                            helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
+                                        except:
+                                            theta_1_center = max(0, cx - threshold)
+                                            theta_2_center = min(model_image.shape[1], cx + threshold)
+                                            y_detect_2, single_frame, faulty_meter = y_detect(cy, theta_1_center, theta_2_center, cx)
+                                            faulty_meter = int(round(width_converter.convert(cx) / 10, 2))
+                                            helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
+                                except:
+                                    pass
                 ui9.text_Detect_Delik.setText(str(detect_faulty_fabric["Flawed Hole"]))
                 ui9.text_Detect_Leke.setText(str(detect_faulty_fabric["Flawed Spot"]))
                 ui9.text_Detect_Diger.setText(str(detect_faulty_fabric["Other Errors"]))
@@ -976,7 +999,9 @@ def main(worker, window):
                 current_time_faulty_cnt = time.time()
                 current_time_faulty_cnt_100 = time.time()
                 current_time_crack_cnt = time.time()
+                
                 if current_time_faulty_cnt - start_time_faulty_cnt >= limited_time_faulty:
+                    
                     faulty_cnt = 0
                     start_time_faulty_cnt = current_time_faulty_cnt
                 if current_time_faulty_cnt_100 - start_time_faulty_cnt_100 >= limited_time_faulty_100:
@@ -1165,12 +1190,12 @@ def main(worker, window):
         configs[4] = Tools.feedback_js()['4']
 
     def default_model():
-        path = Veri_Tabani_Window.get_last_model_path()
+        path = Veri_Tabani_Window().get_last_model_path()
         Tools.Model_Path = path
         
     def Upload_Cameras_Inf():
         _Camera_Height, _Camera_Width, _Camera_Impact_Rate, _Camera_Serial, _Camera_Exposure_Time, _Camera_Cut_Off, _Cameras_Type= Tools.feedback_Splited_Last_Data()
-        Veri_Tabani_Window.Last_Cameras_Info_Add(_Camera_Height, _Camera_Width, _Camera_Impact_Rate, _Camera_Serial, _Camera_Exposure_Time, _Camera_Cut_Off, _Cameras_Type,
+        Veri_Tabani_Window().Last_Cameras_Info_Add(_Camera_Height, _Camera_Width, _Camera_Impact_Rate, _Camera_Serial, _Camera_Exposure_Time, _Camera_Cut_Off, _Cameras_Type,
         )
         
     def handle_upload():
@@ -1188,18 +1213,6 @@ def main(worker, window):
     def Pdf_Show():
         PDFThread().start()
         PDFThread().stop()
-        
-    def Pdf_Lister():
-        # MainWindow12.show()
-        widget_1 = DC.ui3.calendarWidget.selectedDate()
-        widget_2 = DC.ui3.calendarWidget_2.selectedDate()
-        Date = [str(widget_1.day()), str(widget_1.month()), str(widget_1.year())]
-        DateLast = [str(widget_2.day()), str(widget_2.month()), str(widget_2.year())]
-        def handle_out_path_main_callback(out_path_main):
-            nonlocal out_pdf_path
-            print(f"out_path_main: {out_path_main}")
-            out_pdf_path = out_path_main
-        mail_sender_Window(Date, DateLast, MainWindow12, inf_pdf, handle_out_path_main_callback)
 
     def Camera_Inf():
         Tools.Import_Height()
@@ -1237,8 +1250,8 @@ def main(worker, window):
     def save_fabric_adjustment():
         save_fabric_classification = ui5.lineEdit_Kumas_Turu.text()
         save_fabric_light_level = ui5.horizontal_Isik_siddeti.value()
-        Veri_Tabani_Window.set_fabric_settings(save_fabric_classification, save_fabric_light_level)
-        for fabric_name in Veri_Tabani_Window.get_fabric_name():
+        Veri_Tabani_Window().set_fabric_settings(save_fabric_classification, save_fabric_light_level)
+        for fabric_name in Veri_Tabani_Window().get_fabric_name():
             if ui2.comboBox_Kalite_No.findText(fabric_name) == -1:
                 ui2.comboBox_Kalite_No.addItem(fabric_name)
     def warning_status_inf():
@@ -1297,7 +1310,7 @@ def main(worker, window):
         vision_weight = int(ui5.lineEdit_Kamera_Gorus_Genisligi.text()) if ui5.lineEdit_Kamera_Gorus_Genisligi.text().isdigit() else 200
         vision_height = int(ui5.lineEdit_Kamera_Gorus_Yuksekligi.text()) if ui5.lineEdit_Kamera_Gorus_Yuksekligi.text().isdigit() else 200
         vision_angle = int(ui5.lineEdit_Kamera_Gorus_Acisi.text()) if ui5.lineEdit_Kamera_Gorus_Acisi.text().isdigit() else 200
-        Veri_Tabani_Window.set_Camera_Local_Settings(local_height, vision_weight, vision_height, vision_angle)
+        Veri_Tabani_Window().set_Camera_Local_Settings(local_height, vision_weight, vision_height, vision_angle)
     def faulty_window_cnt_plus():
         nonlocal page_cnt
         nonlocal page_num
@@ -1343,7 +1356,7 @@ def main(worker, window):
                 pass
     def mail_listwidget():
         # mail_listWidget'ı temizle
-        email_data = Veri_Tabani_Window.mail_show()
+        email_data = Veri_Tabani_Window().mail_show()
         ui5.mail_listWidget.clear()
         for i, email in enumerate(email_data):
             if i == 0:
@@ -1357,13 +1370,13 @@ def main(worker, window):
             select_item = ui5.mail_listWidget.currentItem().text()
         except AttributeError:
             select_item = None
-        Veri_Tabani_Window.mail_delete(select_item)
+        Veri_Tabani_Window().mail_delete(select_item)
         for item in selected_item:
             ui5.mail_listWidget.takeItem(ui5.mail_listWidget.row(item))
 
     def mail_add():
         item = ui5.lineEdit_mail.text()
-        Veri_Tabani_Window.mail_add(item)
+        Veri_Tabani_Window().mail_add(item)
         ui5.mail_listWidget.addItem(item)
 
     def right_add():
@@ -1383,7 +1396,7 @@ def main(worker, window):
         except:
             pass
     def mail_send():
-        mail_data, key_data = Veri_Tabani_Window.mail_key_show()
+        mail_data, key_data = Veri_Tabani_Window().mail_key_show()
         listWidget = ui12.mail_gnderilen_adresler
         mail_list = []
         for index in range(listWidget.count()):
@@ -1391,11 +1404,26 @@ def main(worker, window):
             mail_list.append(item.text())
         email_sender = EmailSender.get_instance()
         email_sender.send_email(ui12, mail_data, key_data, mail_list, out_pdf_path, "Günlük hata tespiti ektedir")
-
-    def get_inf_filter():
-        nonlocal inf_pdf
-        inf_pdf = Veri_Tabani_Window.filter()
-        print(inf_pdf)
+    
+    def Pdf_Lister():
+        DC.ui3.Listele_pushButton.setEnabled(False)
+        DC.ui3.Raporla_PushButton.setEnabled(False)
+        inf_pdf = Vtw.get_details()
+        # MainWindow12.show()
+        widget_1 = DC.ui3.calendarWidget.selectedDate()
+        widget_2 = DC.ui3.calendarWidget_2.selectedDate()
+        Date = [str(widget_1.day()), str(widget_1.month()), str(widget_1.year())]
+        DateLast = [str(widget_2.day()), str(widget_2.month()), str(widget_2.year())]
+        def handle_out_path_main_callback(out_path_main):
+            nonlocal out_pdf_path
+            print(f"out_path_main: {out_path_main}")
+            out_pdf_path = out_path_main
+        mail_sender_Window(Date, DateLast, MainWindow12, inf_pdf, handle_out_path_main_callback)
+    
+    def pdf_filter():
+        DC.ui3.Raporla_PushButton.setEnabled(True)
+        DC.ui3.Listele_pushButton.setEnabled(True)
+        Vtw.filter()
     print("Arayüzlerin Yüklenmesi")
     worker.progress.emit(83)
     Arduino_Tools=Arduino_Toolkits()
@@ -1428,6 +1456,9 @@ def main(worker, window):
     ui11, MainWindow11, app11 = Tools.FeedBack_Faultys_UI()
     ui12, MainWindow12, app12 = Tools.FeedBack_Mail_UI()
     #######################################################################################################
+    inf_pdf = []
+    Vtw = Veri_Tabani_Window()
+
     black_image = np.zeros((256, 1400), dtype=np.uint8)
     show_images       = [black_image, black_image, black_image, black_image, black_image, black_image]
     detect_images     = []
@@ -1453,7 +1484,6 @@ def main(worker, window):
     page_cnt = 1
     page_num = [0, 1, 2, 3, 4, 5]
     out_pdf_path = ""
-    inf_pdf = None
     #######################################################################################################
     
     worker.progress.emit(100)
@@ -1464,9 +1494,9 @@ def main(worker, window):
     MainWindow1.show()
     Tools.Cam_out_file_folder()
     New_Day_Folder()
-    Veri_Tabani_Window.Listele()
-    Veri_Tabani_Window.get_last_path()
-    Veri_Tabani_Window.get_last_Heigt_Width()
+    Veri_Tabani_Window().Listele()
+    Veri_Tabani_Window().get_last_path()
+    Veri_Tabani_Window().get_last_Heigt_Width()
     ui2.logic_All = 0
     ui2.Off_pushButton.setDisabled(True)
     pixmap = QPixmap('./Icon/Label Img/CameraOFF.PNG')
@@ -1482,11 +1512,11 @@ def main(worker, window):
     timer = QTimer()
     timer.timeout.connect(showTime)
     timer.start(1000)
-    for fabric_name in Veri_Tabani_Window.get_fabric_name():
+    for fabric_name in Veri_Tabani_Window().get_fabric_name():
         ui2.comboBox_Kalite_No.addItem(fabric_name)
     ##Slotlar
     #######################
-    get_log_reg=GirisVKayit(app1, ui1, ui2, ui8, MainWindow1, MainWindow2, MainWindow8, MainWindow9, Veri_Tabani_Window.get_users_inf(), Veri_Tabani_Window)
+    get_log_reg=GirisVKayit(app1, ui1, ui2, ui8, MainWindow1, MainWindow2, MainWindow8, MainWindow9, Veri_Tabani_Window().get_users_inf(), Veri_Tabani_Window)
     ui1.actionClose.triggered.connect(Close)
     ui1.Giris_pushButton.clicked.connect(lambda : get_log_reg.Giris("Camera"))
     ui1.Kayit_pushButton.clicked.connect(lambda : get_log_reg.Giris("Kayit"))
@@ -1509,14 +1539,14 @@ def main(worker, window):
     DC.ui3.action_k.triggered.connect(Close)
     DC.ui3.actionKameralar.triggered.connect(Tools.QWindow_Camera)
     DC.ui3.actionAdmin_Paneli.triggered.connect(Tools.QWindow_Admin)
-    DC.ui3.Temiz_pushButton.clicked.connect(Veri_Tabani_Window.Clear)
-    DC.ui3.Veri_Tabani_Widget.itemSelectionChanged.connect(Veri_Tabani_Window.Doldur)
-    DC.ui3.Goster_pushButton.clicked.connect(Veri_Tabani_Window.Ara)
+    DC.ui3.Temiz_pushButton.clicked.connect(Veri_Tabani_Window().Clear)
+    DC.ui3.Veri_Tabani_Widget.itemSelectionChanged.connect(Veri_Tabani_Window().Doldur)
+    DC.ui3.Goster_pushButton.clicked.connect(Veri_Tabani_Window().Ara)
     DC.ui3.Raporla_PushButton.clicked.connect(Pdf_Show)
     DC.ui3.Listele_pushButton.clicked.connect(Pdf_Lister)
-    DC.ui3.Filtrele_pushButton.clicked.connect(get_inf_filter)
-    DC.ui3.Gunclle_PushButton.clicked.connect(Veri_Tabani_Window.Update)
-    DC.ui3.Delete_PushButton.clicked.connect(Veri_Tabani_Window.Delete)
+    DC.ui3.Filtrele_pushButton.clicked.connect(pdf_filter)
+    DC.ui3.Gunclle_PushButton.clicked.connect(Veri_Tabani_Window().Update)
+    DC.ui3.Delete_PushButton.clicked.connect(Veri_Tabani_Window().Delete)
     DC.ui4.Ikaz_kapat_pushButton.clicked.connect(lambda: DC.MainWindow4.close())
     
     ui5.action_k.triggered.connect(Close)
