@@ -27,7 +27,7 @@ class PI(Fabric):
         self.thresholds['delik'] = 0.60
         self.thresholds['leke'] = 0.85
         self.error_types = ['delik', 'kirik']
-        self.type_speed = 50
+        self.type_speed = 55
         
 class IV(Fabric):
     def __init__(self):
@@ -68,7 +68,7 @@ class DC(Fabric):
         self.thresholds['delik'] = 0.65
         self.thresholds['leke'] = 0.85
         self.error_types = ['kirik']
-        self.type_speed = 40
+        self.type_speed = 30
         
 class DD(Fabric):
     def __init__(self):
@@ -76,7 +76,7 @@ class DD(Fabric):
         self.thresholds['delik'] = 0.60
         self.thresholds['leke'] = 0.85
         self.error_types = ['kirik']
-        self.type_speed = 45
+        self.type_speed = 30
         
 class GB(Fabric):
     def __init__(self):

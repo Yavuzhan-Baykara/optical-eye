@@ -1404,6 +1404,7 @@ def main(worker, window):
             ui12.mail_gnderilen_adresler.addItem(selected_item.text())
         except:
             pass
+        
     def left_add():
         try:
             selected_item = ui12.mail_gnderilen_adresler.currentItem()
