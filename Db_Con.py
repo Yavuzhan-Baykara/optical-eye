@@ -333,6 +333,7 @@ class Veri_Tabani_Window():
         except:
             print("Veriler alınırken hata oluştu.")
             return 200, 200, 200, 200
+        
     def details_show(self, tarih, dok_no, kalite_no):
         aranan1 = ""
         radio_buttons = [
@@ -342,7 +343,6 @@ class Veri_Tabani_Window():
             ui3.Delik_RadioButton,
             ui3.Dikey_RadioButton
         ]
-
         for button in radio_buttons:
             if button.isChecked():
                 aranan1 = button.text()
@@ -368,12 +368,16 @@ class Veri_Tabani_Window():
             Button_Show(satirVeri[0], cnt)
             cnt += 1
             if cnt == 1000:
-                return
+                ui3.Veri_Tabani_Widget.verticalScrollBar().setValue(0)
+                return [tarih, dok_no, kalite_no]
         ui3.Veri_Tabani_Widget.verticalScrollBar().setValue(0)
         return [tarih, dok_no, kalite_no]
     def filter(self):
-        def show_details(x,y,z):
+        def show_details(x, y, z):
+            print("sa", x, y, z)
             self.details = self.details_show(x,y,z)
+            print(self.details)
+
         def Button_Show(i, j, k, row):
             table=ui3.Veri_Tabani_Widget
             button = QtWidgets.QPushButton('Goster')
@@ -426,9 +430,14 @@ class Veri_Tabani_Window():
                 conn.commit()
             except:
                 pass
+
     def mail_add(self, item):
         if item is not None:
             curs.execute("INSERT INTO Mail (email) VALUES (?)", (item,))
             conn.commit()
+
     def get_details(self):
         return self.details
+    
+    def set_details(self):
+        self.details = None

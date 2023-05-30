@@ -235,10 +235,9 @@ def main(worker, window):
             tensor_temp = tensor_temp.to(device_temp)
         class_thresholds, error_thresholds, type_speed = selected_Fabric(selected_item)
         while 1:
-            position, speed = Arduino_Tools.Feedback_src()
+            position, speed = [0, 0]
             position: int = int(position) / 1000
             speed: int = int(speed)
-            
             if speed > 120:
                 ui9.text_Dok_Hizi.setText("0")
             else:
@@ -405,12 +404,13 @@ def main(worker, window):
                                     index2 = index % 6
                                     index3 = page_num[index2]
                                     try:
-                                        Hata_Goster_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_images[index3]))
-                                        Hata_Eni_labels[index2].setText(detect_Hata_Eni[index3])
-                                        Hata_Boyu_labels[index2].setText(detect_Hata_Boyu[index3])
-                                        Hata_Alan_labels[index2].setText(detect_Hata_Alan[index3])
-                                        Hata_Metre_Labels[index2].setText(detect_Hata_Metre[index3])
-                                        Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index3])
+                                        if (str(df.at[detect, 'name']) in error_thresholds):
+                                            Hata_Goster_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_images[index3]))
+                                            Hata_Eni_labels[index2].setText(detect_Hata_Eni[index3])
+                                            Hata_Boyu_labels[index2].setText(detect_Hata_Boyu[index3])
+                                            Hata_Alan_labels[index2].setText(detect_Hata_Alan[index3])
+                                            Hata_Metre_Labels[index2].setText(detect_Hata_Metre[index3])
+                                            Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index3])
                                     except:
                                         pass
                                 for index in range(len(detect_Faulty_Windows)):
@@ -1395,6 +1395,7 @@ def main(worker, window):
             ui12.mail_kayitli_adresler.addItem(selected_item.text())
         except:
             pass
+
     def mail_send():
         mail_data, key_data = Veri_Tabani_Window().mail_key_show()
         listWidget = ui12.mail_gnderilen_adresler
@@ -1419,6 +1420,7 @@ def main(worker, window):
             print(f"out_path_main: {out_path_main}")
             out_pdf_path = out_path_main
         mail_sender_Window(Date, DateLast, MainWindow12, inf_pdf, handle_out_path_main_callback)
+        Vtw.set_details()
     
     def pdf_filter():
         DC.ui3.Raporla_PushButton.setEnabled(True)

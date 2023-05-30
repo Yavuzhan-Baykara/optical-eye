@@ -47,7 +47,7 @@ class Data_Pre_Process_Lister:
             self.Threshold_Tarih = Threshold_Tarih
             self.Threshold_Tarih_Last = Threshold_Tarih_Last
             self.inf_pdf = inf_pdf
-            print(self.inf_pdf)
+            print("inf_pdf: " + str(self.inf_pdf))
         def Line(self, HEIGHT, WIDTH):
             self.line(10, 10, 10, HEIGHT-10)
             self.line(HEIGHT-150, 10, WIDTH-63, HEIGHT-255)
@@ -247,6 +247,7 @@ class Data_Pre_Process_Lister:
                         # Tablo içeriği
                         self.table_details(row)
                         self.ln()
+            
         def footer(self):
             self.set_y(-10)
             self.set_font('Arial',size=12)
@@ -257,12 +258,17 @@ class Data_Pre_Process_Lister:
             HEIGHT=297
             import itertools
             # Verileri sorgula
-            query = """SELECT Dok_No, Kalite_No, Hatanin_Geldiği_Metre 
-                    FROM Hata_Sonuclari 
-                    WHERE Tarih BETWEEN ? AND ? AND Hata_Sınıfı = ?"""
-            curs.execute(query, (baslangic_tarihi, bitis_tarihi, hata_sinifi))
+            if self.inf_pdf:
+                query = """SELECT Dok_No, Kalite_No, Hatanin_Geldiği_Metre 
+                        FROM Hata_Sonuclari 
+                        WHERE Tarih=? AND Dok_No=? AND Kalite_No=? AND Hata_Sınıfı=?"""
+                curs.execute(query, (self.inf_pdf[0], self.inf_pdf[1], self.inf_pdf[2], hata_sinifi))
+            else:
+                query = """SELECT Dok_No, Kalite_No, Hatanin_Geldiği_Metre 
+                            FROM Hata_Sonuclari 
+                            WHERE Tarih BETWEEN ? AND ? AND Hata_Sınıfı = ?"""
+                curs.execute(query, (baslangic_tarihi, bitis_tarihi, hata_sinifi))
             results = curs.fetchall()
-            print("curs-fetchalladı")
             # Gruplama işlemi yap
             results.sort(key=lambda x: (x[0], x[1])) # İlk önce dok_no'ya göre sırala, ardından kalite_no'ya göre sırala
             groups = []
@@ -273,12 +279,10 @@ class Data_Pre_Process_Lister:
             # Grupları yazdır
             i=0
             for group in groups:
-                print("groups")
                 metres = np.array(group[1])
                 mean = np.mean(metres)
                 std_dev = np.std(metres)
                 threshold = mean + 3 * std_dev  # Burada 3 kat standart sapma kullanarak aykırı değerleri belirliyoruz.
-
                 filtered_metres = [metre for metre in metres if metre < threshold]
                 if len(filtered_metres) == 0:
                     filtered_metres = [0]
@@ -291,6 +295,8 @@ class Data_Pre_Process_Lister:
                     bar_index = int(metre / 250)
                     counts[bar_index] += 1
                 x_labels = [f"{i*250}-{(i+1)*250-1}" for i in range(num_bars)]
+
+                print(counts)
                 plt.bar(x_labels, counts)
                 plt.tick_params(axis='x', labelsize=8, rotation=90)
 

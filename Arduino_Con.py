@@ -53,7 +53,7 @@ class Arduino_Toolkits():
             else:
                 return [0,0]
         except Exception as e:
-            [0,0]
+            return [0,0]
             # print(f"Bir sorun oluştu: {e}")    
     def sari_led_ac(self):
         try:
