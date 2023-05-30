@@ -400,11 +400,15 @@ def main(worker, window):
                                 detect_Hata_Alan.insert(0, str(faulty_meter))
                                 detect_Hata_Metre.insert(0, str(src))
                                 detect_Hata_Sinif.insert(0, str(df.iloc[:]['name'][detect]))
+
+                                # detect_images için değişiklik
+                                if len(detect_images) > max_data_count:
+                                    del detect_images[max_data_count:]
                                 for index in range(len(detect_images)):
                                     index2 = index % 6
                                     index3 = page_num[index2]
                                     try:
-                                        if (str(df.at[detect, 'name']) in error_thresholds):
+                                        if str(df.at[detect, 'name']) in error_thresholds:
                                             Hata_Goster_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_images[index3]))
                                             Hata_Eni_labels[index2].setText(detect_Hata_Eni[index3])
                                             Hata_Boyu_labels[index2].setText(detect_Hata_Boyu[index3])
@@ -413,13 +417,17 @@ def main(worker, window):
                                             Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index3])
                                     except:
                                         pass
+                                # detect_Faulty_Windows için değişiklik
+                                if len(detect_Faulty_Windows) > max_data_count:
+                                    del detect_Faulty_Windows[max_data_count:]
+
                                 for index in range(len(detect_Faulty_Windows)):
                                     index2 = index % 4
                                     try:
-                                        if (str(df.at[detect, 'name']) in error_thresholds):
+                                        if str(df.at[detect, 'name']) in error_thresholds:
                                             Hata_Faultys_Window_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_Faulty_Windows[index2]))
                                     except:
-                                        pass  
+                                        pass
                                 if str(df.iloc[:]['name'][detect])=='delik':
                                     detect_faulty_fabric["Flawed Hole"] += 1
                                 elif str(df.iloc[:]['name'][detect])=='leke':
@@ -888,6 +896,10 @@ def main(worker, window):
                                     detect_Hata_Alan.insert(0, str(faulty_meter))
                                     detect_Hata_Metre.insert(0, str(src))
                                     detect_Hata_Sinif.insert(0, str(df.iloc[:]['name'][detect]))
+
+                                    # detect_images için değişiklik
+                                    if len(detect_images) > max_data_count:
+                                        del detect_images[max_data_count:]
                                     for index in range(len(detect_images)):
                                         index2 = index % 6
                                         index3 = page_num[index2]
@@ -900,6 +912,11 @@ def main(worker, window):
                                             Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index3])
                                         except:
                                             pass
+
+                                    # detect_Faulty_Windows için değişiklik
+                                    if len(detect_Faulty_Windows) > max_data_count:
+                                        del detect_Faulty_Windows[max_data_count:]
+
                                     for index in range(len(detect_Faulty_Windows)):
                                         index2 = index % 4
                                         try:
@@ -1460,7 +1477,7 @@ def main(worker, window):
     #######################################################################################################
     inf_pdf = []
     Vtw = Veri_Tabani_Window()
-
+    max_data_count = 500
     black_image = np.zeros((256, 1400), dtype=np.uint8)
     show_images       = [black_image, black_image, black_image, black_image, black_image, black_image]
     detect_images     = []
