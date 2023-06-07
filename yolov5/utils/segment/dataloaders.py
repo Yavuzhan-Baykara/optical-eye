@@ -17,6 +17,8 @@ from ..general import LOGGER, xyn2xy, xywhn2xyxy, xyxy2xywhn
 from ..torch_utils import torch_distributed_zero_first
 from .augmentations import mixup, random_perspective
 
+RANK = int(os.getenv('RANK', -1))
+
 
 def create_dataloader(path,
                       imgsz,
@@ -35,7 +37,8 @@ def create_dataloader(path,
                       prefix='',
                       shuffle=False,
                       mask_downsample_ratio=1,
-                      overlap_mask=False):
+                      overlap_mask=False,
+                      seed=0):
     if rect and shuffle:
         LOGGER.warning('WARNING ⚠️ --rect is incompatible with DataLoader shuffle, setting shuffle=False')
         shuffle = False
@@ -61,8 +64,8 @@ def create_dataloader(path,
     nw = min([os.cpu_count() // max(nd, 1), batch_size if batch_size > 1 else 0, workers])  # number of workers
     sampler = None if rank == -1 else distributed.DistributedSampler(dataset, shuffle=shuffle)
     loader = DataLoader if image_weights else InfiniteDataLoader  # only DataLoader allows for attribute updates
-    # generator = torch.Generator()
-    # generator.manual_seed(0)
+    generator = torch.Generator()
+    generator.manual_seed(6148914691236517205 + seed + RANK)
     return loader(
         dataset,
         batch_size=batch_size,
@@ -72,7 +75,7 @@ def create_dataloader(path,
         pin_memory=True,
         collate_fn=LoadImagesAndLabelsAndMasks.collate_fn4 if quad else LoadImagesAndLabelsAndMasks.collate_fn,
         worker_init_fn=seed_worker,
-        # generator=generator,
+        generator=generator,
     ), dataset
 
 
@@ -91,12 +94,13 @@ class LoadImagesAndLabelsAndMasks(LoadImagesAndLabels):  # for training/testing
         single_cls=False,
         stride=32,
         pad=0,
-        prefix="",
+        min_items=0,
+        prefix='',
         downsample_ratio=1,
         overlap=False,
     ):
         super().__init__(path, img_size, batch_size, augment, hyp, rect, image_weights, cache_images, single_cls,
-                         stride, pad, prefix)
+                         stride, pad, min_items, prefix)
         self.downsample_ratio = downsample_ratio
         self.overlap = overlap
 
@@ -112,7 +116,7 @@ class LoadImagesAndLabelsAndMasks(LoadImagesAndLabels):  # for training/testing
             shapes = None
 
             # MixUp augmentation
-            if random.random() < hyp["mixup"]:
+            if random.random() < hyp['mixup']:
                 img, labels, segments = mixup(img, labels, segments, *self.load_mosaic(random.randint(0, self.n - 1)))
 
         else:
@@ -140,17 +144,14 @@ class LoadImagesAndLabelsAndMasks(LoadImagesAndLabels):  # for training/testing
                 labels[:, 1:] = xywhn2xyxy(labels[:, 1:], ratio[0] * w, ratio[1] * h, padw=pad[0], padh=pad[1])
 
             if self.augment:
-                img, labels, segments = random_perspective(
-                    img,
-                    labels,
-                    segments=segments,
-                    degrees=hyp["degrees"],
-                    translate=hyp["translate"],
-                    scale=hyp["scale"],
-                    shear=hyp["shear"],
-                    perspective=hyp["perspective"],
-                    return_seg=True,
-                )
+                img, labels, segments = random_perspective(img,
+                                                           labels,
+                                                           segments=segments,
+                                                           degrees=hyp['degrees'],
+                                                           translate=hyp['translate'],
+                                                           scale=hyp['scale'],
+                                                           shear=hyp['shear'],
+                                                           perspective=hyp['perspective'])
 
         nl = len(labels)  # number of labels
         if nl:
@@ -176,17 +177,17 @@ class LoadImagesAndLabelsAndMasks(LoadImagesAndLabels):  # for training/testing
             nl = len(labels)  # update after albumentations
 
             # HSV color-space
-            augment_hsv(img, hgain=hyp["hsv_h"], sgain=hyp["hsv_s"], vgain=hyp["hsv_v"])
+            augment_hsv(img, hgain=hyp['hsv_h'], sgain=hyp['hsv_s'], vgain=hyp['hsv_v'])
 
             # Flip up-down
-            if random.random() < hyp["flipud"]:
+            if random.random() < hyp['flipud']:
                 img = np.flipud(img)
                 if nl:
                     labels[:, 2] = 1 - labels[:, 2]
                     masks = torch.flip(masks, dims=[1])
 
             # Flip left-right
-            if random.random() < hyp["fliplr"]:
+            if random.random() < hyp['fliplr']:
                 img = np.fliplr(img)
                 if nl:
                     labels[:, 1] = 1 - labels[:, 1]
@@ -250,15 +251,15 @@ class LoadImagesAndLabelsAndMasks(LoadImagesAndLabels):  # for training/testing
         # img4, labels4 = replicate(img4, labels4)  # replicate
 
         # Augment
-        img4, labels4, segments4 = copy_paste(img4, labels4, segments4, p=self.hyp["copy_paste"])
+        img4, labels4, segments4 = copy_paste(img4, labels4, segments4, p=self.hyp['copy_paste'])
         img4, labels4, segments4 = random_perspective(img4,
                                                       labels4,
                                                       segments4,
-                                                      degrees=self.hyp["degrees"],
-                                                      translate=self.hyp["translate"],
-                                                      scale=self.hyp["scale"],
-                                                      shear=self.hyp["shear"],
-                                                      perspective=self.hyp["perspective"],
+                                                      degrees=self.hyp['degrees'],
+                                                      translate=self.hyp['translate'],
+                                                      scale=self.hyp['scale'],
+                                                      shear=self.hyp['shear'],
+                                                      perspective=self.hyp['perspective'],
                                                       border=self.mosaic_border)  # border to remove
         return img4, labels4, segments4
 
@@ -308,7 +309,8 @@ def polygons2masks(img_size, polygons, color, downsample_ratio=1):
 
 def polygons2masks_overlap(img_size, segments, downsample_ratio=1):
     """Return a (640, 640) overlap mask."""
-    masks = np.zeros((img_size[0] // downsample_ratio, img_size[1] // downsample_ratio), dtype=np.uint8)
+    masks = np.zeros((img_size[0] // downsample_ratio, img_size[1] // downsample_ratio),
+                     dtype=np.int32 if len(segments) > 255 else np.uint8)
     areas = []
     ms = []
     for si in range(len(segments)):

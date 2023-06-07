@@ -7,12 +7,8 @@ from Db_Con import *
 class Cops:
     def __init__(self):
         self.queue=(None,None,None)
-
-
     def tupple(self,df,detect,Save_image):
         self.tup=(df,detect,Save_image)
-
-        
     # producer task
     def producer(self,queue,tup):
         tup=self.tup
@@ -24,8 +20,6 @@ class Cops:
         # report progress
         print(f'>producer added {self.item}')
     # signal that there are no further items
-
-    
     # consumer task
     def consumer(self,queue):
         print('Consumer: Running')

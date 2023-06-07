@@ -13,15 +13,20 @@ from admin_page import *
 from Port import*
 from Kayit_Ol import*
 import json
+from FaultyFabricWindow import *
+from Warning_window import *
+from PyQt5.QtGui import QPixmap
+from faultys_window import *
+from mail_send_window import *
 
 class ToolKit():
     def Windows(self):
-        self.Model_Path=Veri_Tabani_Window.get_last_model_path()
+        self.Model_Path=Veri_Tabani_Window().get_last_model_path()
         ############ Giris ############################
         self.app1=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow1=QtWidgets.QMainWindow()      #
         self.ui1= Ui_Giris_Window()                   #
-        self.MainWindow1.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow1.setWindowFlag(Qt.FramelessWindowHint)
         self.ui1.setupUi(self.MainWindow1)            #
         ###############################################
 
@@ -29,16 +34,19 @@ class ToolKit():
         self.app2=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow2=QtWidgets.QMainWindow()      #
         self.app2.setWindowIcon(QtGui.QIcon('./Icon/MainWindow/mmm.png'))
-        self.MainWindow2.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow2.setWindowFlag(Qt.FramelessWindowHint)
         self.ui2=Ui_Camera_Window()                   #
         self.ui2.setupUi(self.MainWindow2)            #
+        self.ui2.groupBox_3.setEnabled(False)
+        validator = QtGui.QIntValidator(0, 100000)
+        self.ui2.lineEdit_Dok_No.setValidator(validator)
         ###############################################
 
         ############ Veri Tabani ######################
         self.app3=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow3=QtWidgets.QMainWindow()      #
         self.ui3=Ui_Veri_Tabani_Window()              #
-        self.MainWindow3.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow3.setWindowFlag(Qt.FramelessWindowHint)
         self.ui3.setupUi(self.MainWindow3)            #
         ###############################################
 
@@ -46,7 +54,7 @@ class ToolKit():
         self.app4=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow4=QtWidgets.QMainWindow()      #
         self.ui4=Ui_Goster_Window()                   #
-        self.MainWindow4.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow4.setWindowFlag(Qt.FramelessWindowHint)
         self.ui4.setupUi(self.MainWindow4)            #
         ###############################################
 
@@ -54,15 +62,20 @@ class ToolKit():
         self.app5=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow5=QtWidgets.QMainWindow()      #
         self.ui5=Ui_MainWindow()                      #
-        self.MainWindow5.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow5.setWindowFlag(Qt.FramelessWindowHint)
         self.ui5.setupUi(self.MainWindow5)            #
+        validator = QtGui.QIntValidator(0, 10000)
+        self.ui5.lineEdit_Kamera_Yuksekligi.setValidator(validator)
+        self.ui5.lineEdit_Kamera_Gorus_Genisligi.setValidator(validator)
+        self.ui5.lineEdit_Kamera_Gorus_Yuksekligi.setValidator(validator)
+        self.ui5.lineEdit_Kamera_Gorus_Acisi.setValidator(validator)
         ###############################################
 
         ############ Port Sorgula #####################
         self.app6=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow6=QtWidgets.QMainWindow()      #
         self.ui6=Ui_Port_Window()                     #
-        self.MainWindow6.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow6.setWindowFlag(Qt.FramelessWindowHint)
         self.ui6.setupUi(self.MainWindow6)            #
         ###############################################
 
@@ -70,16 +83,61 @@ class ToolKit():
         self.app7=QtWidgets.QApplication(sys.argv)    #
         self.MainWindow7=QtWidgets.QMainWindow()      #
         self.ui7=Ui_Kayt_Ol()                         #
-        self.MainWindow7.setWindowFlag(Qt.FramelessWindowHint)
+        #self.MainWindow7.setWindowFlag(Qt.FramelessWindowHint)
         self.ui7.setupUi(self.MainWindow7)            #
         ###############################################
-        
 
+        ################ Faulty Fabric ##################
+        self.app8 = QtWidgets.QApplication(sys.argv)    #
+        self.MainWindow8 = QtWidgets.QMainWindow()      #
+        self.ui8 = Ui_FaultyFabricWindow()              #
+        self.ui8.setupUi(self.MainWindow8)              #
+        icon_left = QIcon("./Icon/MainWindow/left.png")
+        icon_home = QIcon("./Icon/MainWindow/home.png")
+        icon_right = QIcon("./Icon/MainWindow/right.png")
+        self.ui8.left_pushButton.setIcon(icon_left)
+        self.ui8.left_pushButton.setIconSize(QSize(64, 64))
+        self.ui8.home_pushButton.setIcon(icon_home)
+        self.ui8.home_pushButton.setIconSize(QSize(64, 64))
+        self.ui8.righr_pushButton.setIcon(icon_right)
+        self.ui8.righr_pushButton.setIconSize(QSize(64, 64))
+
+
+        #################################################
+
+        ################ Warning Window #################
+        self.app9 = QtWidgets.QApplication(sys.argv)    #
+        self.MainWindow9 = QtWidgets.QMainWindow()      #
+        self.ui9 = Ui_Warning_window()                  #
+        self.ui9.setupUi(self.MainWindow9)              #
+        icon_warning = QPixmap("./Icon/MainWindow/warning.png")
+        self.ui9.warning_icon.setPixmap(icon_warning)
+        #################################################
         
+        ################ Faultys Window #################
+        self.app10 = QtWidgets.QApplication(sys.argv)    #
+        self.MainWindow10 = QtWidgets.QMainWindow()      #
+        self.ui10 = Ui_ikaz_MainWindow()                  #
+        self.ui10.setupUi(self.MainWindow10)              #
+        icon_warning = QPixmap("./Icon/MainWindow/warning 150x150.png")
+        self.ui10.warning_label_2.setPixmap(icon_warning)
+        self.ui10.warning_label_3.setPixmap(icon_warning)
+        #################################################
+        
+        ################ Faultys Window ##################
+        self.app11 = QtWidgets.QApplication(sys.argv)    #
+        self.MainWindow11 = QtWidgets.QMainWindow()      #
+        self.ui11 = Ui_mail_send_window()                #
+        self.ui11.setupUi(self.MainWindow11)             #
+        icon_warning = QPixmap("./Icon/MainWindow/warning.png")
+        self.ui11.warning_icon.setPixmap(icon_warning)   #
+        ##################################################
+
+
 ###################### İnit #################################################
     def __init__(self):                                                    
-        self.camera_W_H_I=Veri_Tabani_Window.get_last_Heigt_Width()         
-        self.Camera_Inf = Veri_Tabani_Window.get_last_data()                
+        self.camera_W_H_I=Veri_Tabani_Window().get_last_Heigt_Width()         
+        self.Camera_Inf = Veri_Tabani_Window().get_last_data()                
         
         self._Camera_Serials=self.Camera_Inf[0][3].split(',') 
         self._Camera_Exposure_Time=self.Camera_Inf[0][4].split(',')
@@ -96,7 +154,7 @@ class ToolKit():
         self.camera_3 = False                                               
         self.camera_4 = False                                               
         self.upload_path = './configs/13.46.55.txt'                         
-        self.Serial_port="COM8"                                             
+        self.Serial_port="COM4"                                             
         self.Baud_Rate="9600"                                               
         self.Windows()                                                      
         self.Trigg_Port_Button=False                                        
@@ -114,8 +172,6 @@ class ToolKit():
             str(self._Camera_Type[2]), str(self._Camera_Type[3])
             ]
 #############################################################################
-
-    
 
     ############ MainWindow Giris ################################
     def QWindow_Login(self):                                     #
@@ -155,6 +211,26 @@ class ToolKit():
         self.MainWindow7.show()                                  #
     ##############################################################
 
+    ############ Faulty Window >>>>>##############################
+    def QWindow_Faulty(self):                                     #
+        self.MainWindow8.close()                                 #
+        self.MainWindow8.show()                                  #
+    ##############################################################
+
+    ############ Warning Window >>>>>#############################
+    def QWarning_Window(self):                                   #
+        self.MainWindow9.close()                                 #
+        self.MainWindow9.show()                                  #
+    ##############################################################
+
+    def QFaultys_Window(self):
+        self.MainWindow10.close()
+        self.MainWindow10.show()
+
+    def QMail_Send_Window(self):
+        self.MainWindow11.close()
+        self.MainWindow11.show()
+
     ########################################## FeedBacks ##########################################################################
     def FeedBack_SetupUi(self) : return self.ui1, self.ui2, self.ui3, self.ui4, self.ui5                                          #
     def FeedBack_Windows(self) : return self.MainWindow1, self.MainWindow2, self.MainWindow3, self.MainWindow4, self.MainWindow5  #
@@ -162,6 +238,10 @@ class ToolKit():
     def FeedBack_Zoom_Rate(self) : return self.zoom_impact_rate                                                                   #
     def FeedBack_Port_UI(self) : return self.ui6, self.MainWindow6, self.app6                                                     #
     def Feedback_Kayt_UI(self) : return self.ui7, self.MainWindow7, self.app7                                                     #
+    def Feedback_Faulty_UI(self): return self.ui8, self.MainWindow8, self.app8                                                    #
+    def FeedBack_Warning_UI(self): return self.ui9, self.MainWindow9, self.app9                                                   #
+    def FeedBack_Faultys_UI(self): return self.ui10, self.MainWindow10, self.app10      
+    def FeedBack_Mail_UI(self): return self.ui11, self.MainWindow11, self.app11                                                   #
     ########################################## FeedBacks ##########################################################################
 
     def Cam_out_file_folder(self):
@@ -262,7 +342,7 @@ class ToolKit():
             self.Model_Path=str(self.filepaths[0])                                                      #
             print("Başarılı")                                                                           #
             self.ui5.statusbar.showMessage(" " * 1 + "Yapay zeka import'u başarılı..." , 1500)
-            Veri_Tabani_Window.set_last_model_path(self.Model_Path)                                     #
+            Veri_Tabani_Window().set_last_model_path(self.Model_Path)                                     #
     #####################################################################################################
     def feedback_Model_Filepath(self):return self.Model_Path                                            #
     #####################################################################################################
@@ -276,7 +356,7 @@ class ToolKit():
             self.ui5.statusbar.showMessage(" " * 1 + "Kamera yükseklik paramatresi başarılı bir şekilde import edilmiştir..." , 1500)
 
         else:                                                                                           #
-            self.Camera_Height=256                                                                      #
+            self.Camera_Height= 256                                                                      #
             print("Başarısız... Default 256 olarak ayarlanmıştır...")                                   #
             self.ui5.statusbar.showMessage(" " * 1 + "Kamera yükseklik paramatresi yüklenirken bir hata oluştu. Özellik 256 olarak ayarlanmıştır..." , 1500)
 
@@ -290,7 +370,7 @@ class ToolKit():
             print(int(self.Camera_Width))                                                                                                                            #
             self.ui5.statusbar.showMessage(" " * 1 + "Kamera genişlik paramatresi başarılı bir şekilde import edilmiştir..." , 1500)
         else:                                                                                                                                                   #
-            self.Camera_Width = 2592                                                                                                                            #
+            self.Camera_Width = 4096                                                                                                                            #
             self.ui5.statusbar.showMessage(" " * 1 + "Kamera genişlik paramatresi yüklenirken bir hata oluştu. Özellik 2592 olarak ayarlanmıştır..." , 1500)
             print("Başarısız... Default 2592 olarak ayarlanmıştır...")                                                                                          #
     #############################################################################################################################################################
@@ -405,7 +485,7 @@ class ToolKit():
     def download(self, configs, time):
         with open(f'./configs/{time}.txt', 'w') as convert_file:
             convert_file.write(json.dumps(configs))
-            Veri_Tabani_Window.set_last_path(f'./configs/{time}.txt')
+            Veri_Tabani_Window().set_last_path(f'./configs/{time}.txt')
 
 
             
@@ -439,7 +519,7 @@ class ToolKit():
                 with open(str(self.filepaths[-1])) as f:
                     data = f.read()
                 self.js = json.loads(data)
-                Veri_Tabani_Window.set_last_path(str(self.filepaths[-1]))
+                Veri_Tabani_Window().set_last_path(str(self.filepaths[-1]))
                 return True
             else:
                 return False
@@ -448,7 +528,7 @@ class ToolKit():
         return self.js
 
     def default_upload(self):
-        config_path = Veri_Tabani_Window.get_last_path()
+        config_path = Veri_Tabani_Window().get_last_path()
         with open(config_path) as f:
             data = f.read()
             self.js = json.loads(data)
@@ -473,4 +553,18 @@ class ToolKit():
     
     def feedback_Splited_Last_Data(self):
         return self.Camera_Height, self.Camera_Width, self.zoom_impact_rate, self.Camera_Serial, self.Camera_Exposure_Time, 20, self.Cameras_Type
-       
+    
+    def expand(self, img_shape, x1, x2, y1, y2, ratios):
+        genislik = x2 - x1
+        yukseklik = y2 - y1
+        for ratio in ratios:
+            try:
+                yeni_x1 = max(0, int(x1 - ratio * genislik))
+                yeni_x2 = min(img_shape[1] - 1, int(x2 + ratio * genislik))
+                yeni_y1 = max(0, int(y1 - ratio * yukseklik))
+                yeni_y2 = min(img_shape[0] - 1, int(y2 + ratio * yukseklik))
+                return yeni_x1, yeni_x2, yeni_y1, yeni_y2
+            except Exception as e:
+                print(f'Hata (oran={ratio}): {e}')
+        return x1, x2, y1, y2
+        

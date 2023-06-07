@@ -6,20 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1165</width>
-    <height>710</height>
+    <width>1675</width>
+    <height>750</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
-    <width>1165</width>
-    <height>710</height>
+    <width>1675</width>
+    <height>750</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
-    <width>1165</width>
-    <height>710</height>
+    <width>1675</width>
+    <height>750</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -2156,11 +2156,17 @@ PlotWidget {
    <widget class="QGroupBox" name="groupBox">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>30</y>
+      <x>12</x>
+      <y>12</y>
       <width>541</width>
-      <height>601</height>
+      <height>650</height>
      </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>541</width>
+      <height>650</height>
+     </size>
     </property>
     <property name="title">
      <string>Kamera Özellikleri</string>
@@ -2169,7 +2175,7 @@ PlotWidget {
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>540</y>
+       <y>560</y>
        <width>110</width>
        <height>40</height>
       </rect>
@@ -2183,7 +2189,7 @@ PlotWidget {
       <rect>
        <x>290</x>
        <y>251</y>
-       <width>200</width>
+       <width>241</width>
        <height>40</height>
       </rect>
      </property>
@@ -2225,7 +2231,7 @@ PlotWidget {
       <rect>
        <x>290</x>
        <y>310</y>
-       <width>200</width>
+       <width>241</width>
        <height>40</height>
       </rect>
      </property>
@@ -2235,7 +2241,7 @@ PlotWidget {
       <rect>
        <x>290</x>
        <y>370</y>
-       <width>200</width>
+       <width>241</width>
        <height>40</height>
       </rect>
      </property>
@@ -2261,7 +2267,7 @@ PlotWidget {
       <rect>
        <x>290</x>
        <y>191</y>
-       <width>200</width>
+       <width>241</width>
        <height>40</height>
       </rect>
      </property>
@@ -2287,7 +2293,7 @@ PlotWidget {
       <rect>
        <x>290</x>
        <y>490</y>
-       <width>200</width>
+       <width>241</width>
        <height>40</height>
       </rect>
      </property>
@@ -2313,7 +2319,7 @@ PlotWidget {
       <rect>
        <x>290</x>
        <y>430</y>
-       <width>200</width>
+       <width>241</width>
        <height>40</height>
       </rect>
      </property>
@@ -2338,7 +2344,7 @@ PlotWidget {
      <property name="geometry">
       <rect>
        <x>290</x>
-       <y>540</y>
+       <y>560</y>
        <width>110</width>
        <height>40</height>
       </rect>
@@ -2468,11 +2474,17 @@ PlotWidget {
    <widget class="QGroupBox" name="groupBox_2">
     <property name="geometry">
      <rect>
-      <x>580</x>
-      <y>29</y>
+      <x>570</x>
+      <y>11</y>
       <width>571</width>
-      <height>251</height>
+      <height>171</height>
      </rect>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>571</width>
+      <height>200</height>
+     </size>
     </property>
     <property name="title">
      <string>Yapay Zeka Özellikleri</string>
@@ -2523,7 +2535,7 @@ PlotWidget {
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>190</y>
+       <y>100</y>
        <width>110</width>
        <height>40</height>
       </rect>
@@ -2536,11 +2548,23 @@ PlotWidget {
    <widget class="QGroupBox" name="groupBox_3">
     <property name="geometry">
      <rect>
-      <x>580</x>
-      <y>290</y>
+      <x>570</x>
+      <y>191</y>
+      <width>571</width>
+      <height>271</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>571</width>
+      <height>250</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
       <width>571</width>
       <height>341</height>
-     </rect>
+     </size>
     </property>
     <property name="title">
      <string>Seri Port Ayarları</string>
@@ -2671,7 +2695,129 @@ PlotWidget {
      <property name="geometry">
       <rect>
        <x>20</x>
-       <y>160</y>
+       <y>170</y>
+       <width>110</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Aktar</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_Baglan">
+     <property name="geometry">
+      <rect>
+       <x>150</x>
+       <y>170</y>
+       <width>110</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Bağlan</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_Kapat">
+     <property name="geometry">
+      <rect>
+       <x>280</x>
+       <y>170</y>
+       <width>110</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Kapat</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="Kumas_ve_Isik_Ayari">
+    <property name="geometry">
+     <rect>
+      <x>570</x>
+      <y>469</y>
+      <width>571</width>
+      <height>194</height>
+     </rect>
+    </property>
+    <property name="minimumSize">
+     <size>
+      <width>0</width>
+      <height>0</height>
+     </size>
+    </property>
+    <property name="maximumSize">
+     <size>
+      <width>571</width>
+      <height>341</height>
+     </size>
+    </property>
+    <property name="title">
+     <string>Kumaş ve Işık Ayarı</string>
+    </property>
+    <widget class="QLabel" name="label_Kumas_Turu">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>30</y>
+       <width>221</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Kumas Turu</string>
+     </property>
+     <property name="buddy">
+      <cstring>lineEdit_Camera_Serial</cstring>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Kumas_Turu_2">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>80</y>
+       <width>221</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Işık Şiddeti</string>
+     </property>
+     <property name="buddy">
+      <cstring>lineEdit_Camera_Serial</cstring>
+     </property>
+    </widget>
+    <widget class="QScrollBar" name="horizontal_Isik_siddeti">
+     <property name="geometry">
+      <rect>
+       <x>250</x>
+       <y>80</y>
+       <width>241</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="maximum">
+      <number>20</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_Kumas_Turu">
+     <property name="geometry">
+      <rect>
+       <x>267</x>
+       <y>30</y>
+       <width>206</width>
+       <height>40</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_Aktar_Kumas_Inf">
+     <property name="geometry">
+      <rect>
+       <x>20</x>
+       <y>140</y>
        <width>110</width>
        <height>40</height>
       </rect>
@@ -2681,13 +2827,240 @@ PlotWidget {
      </property>
     </widget>
    </widget>
+   <widget class="QGroupBox" name="groupBox_4">
+    <property name="geometry">
+     <rect>
+      <x>1160</x>
+      <y>10</y>
+      <width>491</width>
+      <height>351</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string>Kamera Konum Ayarı</string>
+    </property>
+    <widget class="QLabel" name="label_Kamera_Yuksekligi">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>50</y>
+       <width>241</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Kamera Yüksekliği</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_Kamera_Yuksekligi">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>50</y>
+       <width>206</width>
+       <height>40</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_Kamera_Gorus_Genisligi">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>110</y>
+       <width>206</width>
+       <height>40</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Kamera_Gorus_Genisligi">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>241</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Kamera Görüş Genişliği</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_Kamera_Gorus_Yuksekligi">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>170</y>
+       <width>206</width>
+       <height>40</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Kamera_Gorus_Yuksekligi">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>170</y>
+       <width>241</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Kamera Görüş Yüksekliği</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_Kamera_Gorus_Acisi">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>230</y>
+       <width>241</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Kamera Görüş Açısı</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_Kamera_Gorus_Acisi">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>230</y>
+       <width>206</width>
+       <height>40</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_Kamera_Konum_Ayari">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>290</y>
+       <width>110</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Aktar</string>
+     </property>
+    </widget>
+    <widget class="QLabel" name="label_8">
+     <property name="geometry">
+      <rect>
+       <x>146</x>
+       <y>290</y>
+       <width>331</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+      </font>
+     </property>
+     <property name="styleSheet">
+      <string notr="true">font: 10pt &quot;MS Shell Dlg 2&quot;;</string>
+     </property>
+     <property name="text">
+      <string>*Konum ayarı bir kamera için seçiniz</string>
+     </property>
+    </widget>
+   </widget>
+   <widget class="QGroupBox" name="groupBox_5">
+    <property name="geometry">
+     <rect>
+      <x>1160</x>
+      <y>370</y>
+      <width>491</width>
+      <height>291</height>
+     </rect>
+    </property>
+    <property name="title">
+     <string/>
+    </property>
+    <widget class="QLabel" name="mail_label">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>20</y>
+       <width>241</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Kayitli Mailler</string>
+     </property>
+    </widget>
+    <widget class="QListWidget" name="mail_listWidget">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>70</y>
+       <width>241</width>
+       <height>192</height>
+      </rect>
+     </property>
+    </widget>
+    <widget class="QLabel" name="mail_label_2">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>20</y>
+       <width>211</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>E-posta</string>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEdit_mail">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>70</y>
+       <width>211</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_mail_ekle">
+     <property name="geometry">
+      <rect>
+       <x>270</x>
+       <y>120</y>
+       <width>91</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Ekle</string>
+     </property>
+    </widget>
+    <widget class="QPushButton" name="pushButton_mail_sil">
+     <property name="geometry">
+      <rect>
+       <x>390</x>
+       <y>120</y>
+       <width>91</width>
+       <height>40</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Sil</string>
+     </property>
+    </widget>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1165</width>
+     <width>1675</width>
      <height>43</height>
     </rect>
    </property>
