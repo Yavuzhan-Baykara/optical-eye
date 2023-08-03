@@ -3,4 +3,8 @@
     <file>Icon/MainWindow/warning.png</file>
     <file>Icon/MainWindow/Menderes_Tekstil_Logo.png</file>
   </qresource>
+  <qresource prefix="background">
+    <file>../Users/ybaykara/Desktop/7831484881_shutterstock_9340375 (6).png</file>
+    <file>../Users/ybaykara/Desktop/transparent_image.png</file>
+  </qresource>
 </RCC>

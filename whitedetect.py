@@ -11,6 +11,7 @@ class ImageProcessor:
     def trim_image(self, tolerance=60):
         if self.image is None:
             raise ValueError("Görüntü yüklenemedi.")
+            
         h, w, c = self.image.shape
         left_white = 0
         left_count = 0

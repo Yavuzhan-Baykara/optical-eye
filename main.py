@@ -41,6 +41,13 @@ class MainWindow(QMainWindow):
         self.ui_.setupUi(self)
         self.show()
         self.execute()
+        # QSharedMemory nesnesini oluştur
+        self.sharedMemory = QSharedMemory("MyUniqueIdentifier")
+
+        # Zaten çalışan bir örnek varsa
+        if not self.sharedMemory.create(1):  # 1 bayt yarat
+            QMessageBox.critical(self, "Hata", "Uygulama zaten çalışıyor!")
+            sys.exit(1)
 
     def execute(self):
         self.update_progress(0)
@@ -1018,7 +1025,6 @@ def main(worker, window):
                 current_time_crack_cnt = time.time()
                 
                 if current_time_faulty_cnt - start_time_faulty_cnt >= limited_time_faulty:
-                    
                     faulty_cnt = 0
                     start_time_faulty_cnt = current_time_faulty_cnt
                 if current_time_faulty_cnt_100 - start_time_faulty_cnt_100 >= limited_time_faulty_100:
