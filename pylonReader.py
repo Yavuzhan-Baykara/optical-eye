@@ -15,28 +15,25 @@ class Active_Camera:
         self.camera = cam
         self.model_name = cam.GetDeviceInfo().GetSerialNumber()
         
-        if self.model_name == Tools.Camera_Serial[0] or self.model_name == Tools.Camera_Serial[1]:
-            self.camera_W_H_I=Veri_Tabani_Window.get_last_Heigt_Width()
+        if self.model_name == Tools.Camera_Serial[0] or self.model_name == Tools.Camera_Serial[1] or self.model_name == Tools.Camera_Serial[2]:
+            self.camera_W_H_I=Veri_Tabani_Window().get_last_Heigt_Width()
             Width, Height, Rate=self.camera_W_H_I
             self.camera.Width = MinCamerasSize
             self.camera.Width = int(Tools.feedback_Import_Width())
-
             self.camera.Height = Height
             self.camera.Height = int(Tools.feedback_Import_Height())
             for index in range(len(Tools.Camera_Serial)):
                 if Tools.Cameras_Type[index] == "Alan Kamera":
-                    if self.model_name == Tools.Camera_Serial[index]: 
-                        try:
-                            self.camera.ExposureTime.SetValue(int(Tools.feedback_Import_Exposure_Time(index)))
-                            self.camera.CenterY = True
-                        except:
-                            print("Alan Kameraların Exposure Timlerı düzgün ayarlanamamaştır...")
+                    try:
+                        self.camera.ExposureTime.SetValue(int(Tools.feedback_Import_Exposure_Time(index)))
+                        self.camera.CenterY = True
+                    except:
+                        print("Alan Kameraların Exposure Timlerı düzgün ayarlanamamaştır...")
                 if Tools.Cameras_Type[index] == "Çizgi Kamera":
-                    if self.model_name == Tools.Camera_Serial[index]: 
-                        try:
-                            self.camera.ExposureTimeRaw.SetValue(int(Tools.feedback_Import_Exposure_Time(index)))
-                        except:
-                            print("Çizgi Kameraların Exposure Timlerı düzgün ayarlanamamaştır...")    
+                    try:
+                        self.camera.ExposureTimeRaw.SetValue(int(Tools.feedback_Import_Exposure_Time(index)))
+                    except:
+                        print("Çizgi Kameraların Exposure Timlerı düzgün ayarlanamamaştır...")    
                             
         cam.StartGrabbing(pylon.GrabStrategy_LatestImageOnly) 
         self.converter = converter
@@ -47,7 +44,10 @@ class Active_Camera:
 class PylonVideoStream:
     def __init__(self, cameras,Tools):
           self.cameras = cameras 
-          self.cameras.Open()
+          try:
+            self.cameras.Open()
+          except:
+              return
           self.num_of_cam = cameras.GetSize()
           self.Active_cameras = []
           self.converter = pylon.ImageFormatConverter()
@@ -74,14 +74,15 @@ class PylonVideoStream:
         return self
         
     def update(self):
-        while self.stopped == False:
-            for active_cam in self.Active_cameras:
-                active_cam.calculate()
-
+        try:
+            while self.stopped == False:
+                for active_cam in self.Active_cameras:
+                    active_cam.calculate()
+        except:
+            return
     def read(self):
             frames = []
             for active_cam in self.Active_cameras:
-                
                 frames.append((active_cam.frame, active_cam.model_name))
 
             return frames

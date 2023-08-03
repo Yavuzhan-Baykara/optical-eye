@@ -1,5 +1,7 @@
 <RCC>
   <qresource prefix="Logos">
+    <file>Icon/MainWindow/warning 250x150.png</file>
+    <file>Icon/MainWindow/warning.png</file>
     <file>Icon/MainWindow/Menderes_Tekstil_Logo.png</file>
     <file>Icon/MainWindow/mmm.png</file>
   </qresource>
@@ -9,5 +11,10 @@
   <qresource prefix="close">
     <file>Icon/MainWindow/clear.png</file>
     <file>Icon/MainWindow/close.png</file>
+  </qresource>
+  <qresource prefix="arrows">
+    <file>Icon/MainWindow/home.png</file>
+    <file>Icon/MainWindow/left.png</file>
+    <file>Icon/MainWindow/right.png</file>
   </qresource>
 </RCC>

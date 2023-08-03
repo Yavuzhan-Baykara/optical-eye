@@ -4,7 +4,7 @@ from PyQt5 import *
 import re
 
 class GirisVKayit():
-    def __init__(self, app1, ui1, ui2, ui8, MainWindow1, MainWindow2, MainWindow8, users, db):
+    def __init__(self, app1, ui1, ui2, ui8, MainWindow1, MainWindow2, MainWindow8, MainWindow9, users, db):
         self.app1=app1
         self.ui1=ui1
         self.ui2=ui2
@@ -12,12 +12,11 @@ class GirisVKayit():
         self.MainWindow1 = MainWindow1
         self.MainWindow2 = MainWindow2
         self.MainWindow8 = MainWindow8
+        self.MainWindow9 = MainWindow9
         self.db=db
         global name
         global password
         self.users=users
-        print(self.users)
-
     def Inf(self) -> list:
         name=self.ui1.Kullaniciadi_lineEdit.text()
         password=self.ui1.Sifre_lineEdit.text()
@@ -32,6 +31,8 @@ class GirisVKayit():
             if(self.users[i][0] == login[0] and self.users[i][1] == login[1] and choice == "Camera"):
                 self.MainWindow1.close()
                 self.MainWindow2.showMaximized()
+                # self.MainWindow9.showMaximized()
+
             elif(self.users[i][0] == login[0] and self.users[i][1] == login[1] and choice == "Kayit"):
                 self.MainWindow8.show()
             else:
