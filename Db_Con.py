@@ -441,3 +441,34 @@ class Veri_Tabani_Window():
     
     def set_details(self):
         self.details = None
+
+    def get_fabric_settings(self, fabric_name):
+        # Fabrics tablosundan kumaş türüne göre fabric_id ve type_speed değerlerini al
+        curs.execute("SELECT id, type_speed FROM Fabrics WHERE name=?", (fabric_name,))
+        fabric_data = curs.fetchone()
+        if fabric_data:
+            fabric_id, type_speed = fabric_data
+        else:
+            print(f"{fabric_name} isimli kumaş veritabanında bulunamadı.")
+            return None
+
+        # Thresholds tablosundan kumaş türüne göre eşik değerlerini al
+        curs.execute("SELECT error_type, threshold_value FROM Thresholds WHERE fabric_id=?", (fabric_id,))
+        thresholds = {row[0]: row[1] for row in curs.fetchall()}
+
+        # ErrorTypes tablosundan kumaş türüne göre hata türlerini al
+        curs.execute("SELECT error_type FROM ErrorTypes WHERE fabric_id=?", (fabric_id,))
+        error_types = [row[0] for row in curs.fetchall()]
+
+        return thresholds, error_types, type_speed - 5
+    
+    def get_com_port(self):
+        # COM_Ports tablosundan ilk COM port bilgisini al
+        curs.execute("SELECT Port_Name, Bound_rate FROM COM_Ports LIMIT 1")
+        port_data = curs.fetchone()
+
+        if port_data:
+            return port_data  # Bu, (port_name, bound_rate) şeklinde bir tuple döndürecektir
+        else:
+            print("Veritabanında kayıtlı COM port bulunamadı.")
+            return "Com3", 9600  # İki None değeri döndürerek her iki değişken için de değer atanmasını sağlar

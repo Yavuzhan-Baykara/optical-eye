@@ -16,11 +16,11 @@ const char son1 = 'B'; //yellow
 const char yak2 = 'C'; //red
 const char son2 = 'D'; //red
 
-const float wheelRadius = 8.2;
+const float wheelRadius = 8.2; //16.0
 
 const float wheelCircumference = 2 * PI * wheelRadius;
 
-const long encoderResolution = 100000;
+const long encoderResolution = 52500;  //52500 // 100000
 
 const unsigned long interval = 100;
 

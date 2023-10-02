@@ -66,7 +66,7 @@ class Data_Pre_Process_Lister:
             self.set_font('Arial', 'B', 15)
             self.set_y(20)
             self.cell(63)
-            self.cell(0, 5, 'Merserize Makinesinde   ', ln=1,link='C')
+            self.cell(0, 5, 'Düz kasar 132 Makinesinde   ', ln=1,link='C')
             self.set_y(27)
             self.cell(66)
             self.cell(0, 5, "Tespit Edilen Kumas", ln=1,link='C')

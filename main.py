@@ -19,12 +19,22 @@ from threshold import *
 from mail_send import *
 import time
 import sys
+import psutil
+import logging
+import traceback
+
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from PyQt5.QtWidgets import (
     QApplication,
     QMainWindow,
     qApp
 )
+
+# Log ayarları
+logging.basicConfig(filename='app_logs.txt')
+
+logging.info("Program başlatıldı.")
+
 
 class Worker(QObject):
     finished = pyqtSignal()
@@ -39,19 +49,11 @@ class MainWindow(QMainWindow):
         self.ui_ = Ui_LoadingScreen()
         self.setWindowFlag(Qt.FramelessWindowHint)
         self.ui_.setupUi(self)
+        icon_loading = QPixmap("./Icon/MainWindow/Loadign-Logo.png")
+        self.ui_.Logo.setPixmap(icon_loading)
         self.show()
         self.execute()
         
-        self.sharedMemory = QSharedMemory("BenzersizUygulamaAdı")
-        if self.sharedMemory.attach():
-            # Uygulama zaten çalışıyor
-            QMessageBox.warning(self, "Uyarı", "Uygulama zaten çalışıyor!")
-            sys.exit()
-        elif not self.sharedMemory.create(1):
-            # Hata oluştu
-            QMessageBox.critical(self, "Hata", "Uygulama başlatılamıyor!")
-            sys.exit()
-
     def execute(self):
         self.update_progress(0)
         self.thread = QThread()
@@ -68,6 +70,8 @@ class MainWindow(QMainWindow):
     def update_progress(self, progress):
         self.ui_.progressBar.setValue(progress)
         qApp.processEvents()
+        
+    
 
 def main(worker, window):
     def loadingbar(x):
@@ -177,13 +181,17 @@ def main(worker, window):
         New_Day_Folder()
         selected_item = ui2.comboBox_Kalite_No.currentText()
         try:
-            Arduino_Tools.port_ac(Tools)
+            Arduino_Tools.port_ac(Veri_Tabani_Window())
             brightnessValue = Veri_Tabani_Window().get_fabric_brightness(selected_item)
             sleep(1./5)
             Arduino_Tools.setBrightness(str(brightnessValue))
             sleep(1./5)
             Arduino_Tools.setBrightness(str(brightnessValue))
-        except:
+        except Exception as e:
+            logging.error(f'Hata meydana geldi: {str(e)}')
+            logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
+
+            brightnessValue = Veri_Tabani_Window().get_fabric_brightness(selected_item)
             time.sleep(0.1)
             ui2.statusbar.showMessage(" "*1 + " Port açılamadı !!!", 1500)
         faulty_cnt = 0
@@ -243,7 +251,7 @@ def main(worker, window):
         ui2.statusbar.showMessage( " " * 1 + f" Cuda GPU Durumu: {cuda  .is_available()}", 1500)
         if cuda.is_available():
             tensor_temp = tensor_temp.to(device_temp)
-        class_thresholds, error_thresholds, type_speed = selected_Fabric(selected_item)
+        class_thresholds, error_thresholds, type_speed = Veri_Tabani_Window().get_fabric_settings(selected_item)
         while 1:
             position, speed = Arduino_Tools.Feedback_src()
             position: int = int(position) / 1000
@@ -269,7 +277,9 @@ def main(worker, window):
                 return Basler_Cameras()
             try:
                 frames = vs_pylon.read()
-            except:
+            except Exception as e:
+                logging.error(f'Hata meydana geldi: {str(e)}')
+                logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                 return
             if ui2.logic_All == 0:
                 vs_pylon.stop()
@@ -295,7 +305,9 @@ def main(worker, window):
                 model_image, cloth_width = ImageProcessor(image=model_image, trim_size=75).trim_image()
                 try:
                     cloth_width = int(round(width_converter.convert(cloth_width) / 10, 2))
-                except:
+                except Exception as e:
+                    logging.error(f'Hata meydana geldi: {str(e)}')
+                    logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                     cloth_width=0
                 copy_model_image = np.copy(model_image)
                 height, width, channel = model_image.shape
@@ -362,14 +374,18 @@ def main(worker, window):
                             new_x1, new_x2, new_y1, new_y2 = Tools.expand(copy_model_image.shape, x1, x2, y1, y2, [10.5, 5.5, 1.1])
                             try:
                                 crop = copy_model_image[new_y1:new_y2,new_x1:new_x2]
-                            except:
+                            except Exception as e:
+                                logging.error(f'Hata meydana geldi: {str(e)}')
+                                logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                 crop = copy_model_image[y1:y2,x1:x2]
                             if Tools.Trigg_Port_Button == True:
                                 try:
                                     src, speed = Arduino_Tools.Feedback_src()
                                     src: int = int(int(src) / 1000)
                                     speed: int = int(speed)
-                                except:
+                                except Exception as e:
+                                    logging.error(f'Hata meydana geldi: {str(e)}')
+                                    logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                     ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                     src=0
                             if Tools.Trigg_Port_Button==False:
@@ -396,7 +412,9 @@ def main(worker, window):
                                     start_time_faulty_cnt_100 = time.time()
                                 try:
                                     crop = resize_cv2(crop, (320,320), interpolation = INTER_CUBIC)
-                                except:
+                                except Exception as e:
+                                    logging.error(f'Hata meydana geldi: {str(e)}')
+                                    logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                     crop = np.zeros((320, 320), dtype=np.uint8)
                                 faulty_meter = int(round(width_converter.convert(cx) / 10, 2) )
                                 image2 = QtGui.QImage(crop.data, crop.shape[1], crop.shape[0], QtGui.QImage.Format_RGB888).rgbSwapped()
@@ -425,7 +443,9 @@ def main(worker, window):
                                             Hata_Alan_labels[index2].setText(detect_Hata_Alan[index3])
                                             Hata_Metre_Labels[index2].setText(detect_Hata_Metre[index3])
                                             Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index3])
-                                    except:
+                                    except Exception as e:
+                                        logging.error(f'Hata meydana geldi: {str(e)}')
+                                        logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                         pass
                                 # detect_Faulty_Windows için değişiklik
                                 if len(detect_Faulty_Windows) > max_data_count:
@@ -436,7 +456,9 @@ def main(worker, window):
                                     try:
                                         if str(df.at[detect, 'name']) in error_thresholds:
                                             Hata_Faultys_Window_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_Faulty_Windows[index2]))
-                                    except:
+                                    except Exception as e:
+                                        logging.error(f'Hata meydana geldi: {str(e)}')
+                                        logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                         pass
                                 if str(df.iloc[:]['name'][detect])=='delik':
                                     detect_faulty_fabric["Flawed Hole"] += 1
@@ -493,7 +515,9 @@ def main(worker, window):
                                     src, speed = Arduino_Tools.Feedback_src()
                                     src: int = int(int(src) / 1000)
                                     speed: int = int(speed)
-                                except:
+                                except Exception as e:
+                                    logging.error(f'Hata meydana geldi: {str(e)}')
+                                    logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                     ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                     src=0
                             if str(df.iloc[:]['name'][detect]) not in ['delik', 'leke']:
@@ -510,7 +534,9 @@ def main(worker, window):
                                 faulty_meter = int(round(width_converter.convert(cx) / 10, 2))
                                 try:
                                     helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
-                                except:
+                                except Exception as e:
+                                    logging.error(f'Hata meydana geldi: {str(e)}')
+                                    logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                     theta_1_center = max(0, cx - threshold)
                                     theta_2_center = min(model_image.shape[1], cx + threshold)
                                     y_detect_2, single_frame, faulty_meter = y_detect(cy, theta_1_center, theta_2_center, cx)
@@ -643,7 +669,9 @@ def main(worker, window):
                                     src, speed = Arduino_Tools.Feedback_src()
                                     src: int = int(int(src) / 1000)
                                     speed: int = int(speed)
-                                except:
+                                except Exception as e:
+                                    logging.error(f'Hata meydana geldi: {str(e)}')
+                                    logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                     ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                     src=0
                             if Tools.Trigg_Port_Button==False:
@@ -705,7 +733,9 @@ def main(worker, window):
                                         src, speed = Arduino_Tools.Feedback_src()
                                         src: int = int(int(src) / 1000)
                                         speed: int = int(speed)
-                                    except:
+                                    except Exception as e:
+                                        logging.error(f'Hata meydana geldi: {str(e)}')
+                                        logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                         ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                         src=0
         
@@ -750,16 +780,22 @@ def main(worker, window):
                 frame3, cloth_width_3 = ImgPr3.trim_image()
                 try:
                     cloth_width_1 = round(width_converter.convert(cloth_width_1), 2)
-                except:
+                except Exception as e:
+                    logging.error(f'Hata meydana geldi: {str(e)}')
+                    logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                     cloth_width_1 = 0
 
                 try:
                     cloth_width_2 = round(width_converter.convert(resolution_pixels_width), 2)
-                except:
+                except Exception as e:
+                    logging.error(f'Hata meydana geldi: {str(e)}')
+                    logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                     cloth_width_2 = 0
                 try:
                     cloth_width_3 = round(width_converter.convert(cloth_width_3), 2)
-                except:
+                except Exception as e:
+                    logging.error(f'Hata meydana geldi: {str(e)}')
+                    logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                     cloth_width_3 = 0
                 cloth_width = int((cloth_width_1 + cloth_width_2 + cloth_width_3) / 10)
 
@@ -861,13 +897,20 @@ def main(worker, window):
                                 cx = (x1 + x2)/ 2
                                 cy = (y1 + y2)/ 2
                                 new_x1, new_x2, new_y1, new_y2 = Tools.expand(results_2.shape, x1, x2, y1, y2, [5.5, 1.1])
-                                crop = results_2[new_y1:new_y2,new_x1:new_x2]
+                                try:
+                                    crop = results_2[new_y1:new_y2,new_x1:new_x2]
+                                except Exception as e:
+                                    logging.error(f'Hata meydana geldi: {str(e)}')
+                                    logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
+                                    crop = results_2[y1:y2, x1:x2]
                                 if Tools.Trigg_Port_Button == True:
                                     try:
                                         src, speed = Arduino_Tools.Feedback_src()
                                         src: int = int(int(src) / 1000)
                                         speed: int = int(speed)
-                                    except:
+                                    except Exception as e:
+                                        logging.error(f'Hata meydana geldi: {str(e)}')
+                                        logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                         ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                         src=0
                                 if Tools.Trigg_Port_Button==False:
@@ -920,7 +963,9 @@ def main(worker, window):
                                             Hata_Alan_labels[index2].setText(detect_Hata_Alan[index3])
                                             Hata_Metre_Labels[index2].setText(detect_Hata_Metre[index3])
                                             Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index3])
-                                        except:
+                                        except Exception as e:
+                                            logging.error(f'Hata meydana geldi: {str(e)}')
+                                            logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                             pass
 
                                     # detect_Faulty_Windows için değişiklik
@@ -932,7 +977,9 @@ def main(worker, window):
                                         try:
                                             if (str(df.at[detect, 'name']) in error_thresholds):
                                                 Hata_Faultys_Window_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_Faulty_Windows[index2]))
-                                        except:
+                                        except Exception as e:
+                                            logging.error(f'Hata meydana geldi: {str(e)}')
+                                            logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                             pass  
                                     if str(df.iloc[:]['name'][detect])=='delik':
                                         detect_faulty_fabric["Flawed Hole"] += 1
@@ -989,7 +1036,9 @@ def main(worker, window):
                                         src, speed = Arduino_Tools.Feedback_src()
                                         src: int = int(int(src) / 1000)
                                         speed: int = int(speed)
-                                    except:
+                                    except Exception as e:
+                                        logging.error(f'Hata meydana geldi: {str(e)}')
+                                        logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                         ui2.statusbar.showMessage(" "*1 + "Seri Port Hatası Metre bilgileri 0 Olarak Ayarlandı", 1500)
                                         src=0
                                 try:
@@ -1006,13 +1055,17 @@ def main(worker, window):
                                         Hata_Koordinant = ", ".join(str(coord) for coord in Hata_Koordinant)
                                         try:
                                             helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
-                                        except:
+                                        except Exception as e:
+                                            logging.error(f'Hata meydana geldi: {str(e)}')
+                                            logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                             theta_1_center = max(0, cx - threshold)
                                             theta_2_center = min(model_image.shape[1], cx + threshold)
                                             y_detect_2, single_frame, faulty_meter = y_detect(cy, theta_1_center, theta_2_center, cx)
                                             faulty_meter = int(round(width_converter.convert(cx) / 10, 2))
                                             helper.append_db(df, detect, Save_image, str(src), str(x), str(y), str(xy), Dok_no, Kalite_no, Hata_Koordinant, cloth_width, faulty_meter)
-                                except:
+                                except Exception as e:
+                                    logging.error(f'Hata meydana geldi: {str(e)}')
+                                    logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                                     pass
                 ui9.text_Detect_Delik.setText(str(detect_faulty_fabric["Flawed Hole"]))
                 ui9.text_Detect_Leke.setText(str(detect_faulty_fabric["Flawed Spot"]))
@@ -1118,13 +1171,17 @@ def main(worker, window):
                 Hata_Alan_labels[indexx].setText(detect_Hata_Alan[indexxx])
                 Hata_Metre_Labels[indexx].setText(detect_Hata_Metre[indexxx])
                 Hata_Sinif_labels[indexx].setText(detect_Hata_Sinif[indexxx])
-            except:
+            except Exception as e:
+                logging.error(f'Hata meydana geldi: {str(e)}')
+                logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                 pass
         for index in range(len(detect_Faulty_Windows)):
             indexx = index % 4
             try:
                 Hata_Faultys_Window_labels[indexx].setPixmap(QtGui.QPixmap.fromImage(detect_Faulty_Windows[index]))
-            except:
+            except Exception as e:
+                logging.error(f'Hata meydana geldi: {str(e)}')
+                logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                 pass    
     ## Çıkış Buttonu
 
@@ -1204,7 +1261,9 @@ def main(worker, window):
                         mkdir(day_db_is_here+"/"+now+"/"+"Cam"+"/"+"images"+"/"+"ss")
                         mkdir(day_db_is_here+"/"+now+"/"+"Cam"+"/"+"videos")
                         break
-                    except:
+                    except Exception as e:
+                        logging.error(f'Hata meydana geldi: {str(e)}')
+                        logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                         print("Klasör Zaten var")
                         ui2.statusbar.showMessage(" "*1 + " Yerel veri tabanı klasörü zaten bulunmaktadır...", 1500)
                         break
@@ -1264,7 +1323,7 @@ def main(worker, window):
            ui5.label_Kumas_Turu_2.setText("Işık Şiddeti")
 
     def arduinoAdminConnect():
-        Arduino_Tools.port_ac(Tools) 
+        Arduino_Tools.port_ac_yerel(Tools) 
         ui5.pushButton_Baglan.setDisabled(True)
         ui5.pushButton_Kapat.setDisabled(False)
 
@@ -1379,7 +1438,9 @@ def main(worker, window):
                 Hata_Alan_labels[index2].setText(detect_Hata_Alan[index3])
                 Hata_Metre_Labels[index2].setText(detect_Hata_Metre[index3])
                 Hata_Sinif_labels[index2].setText(detect_Hata_Sinif[index3])
-            except:
+            except Exception as e:
+                logging.error(f'Hata meydana geldi: {str(e)}')
+                logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
                 pass
     def mail_listwidget():
         # mail_listWidget'ı temizle
@@ -1412,7 +1473,9 @@ def main(worker, window):
             index = ui12.mail_kayitli_adresler.row(selected_item)
             ui12.mail_kayitli_adresler.takeItem(index)
             ui12.mail_gnderilen_adresler.addItem(selected_item.text())
-        except:
+        except Exception as e:
+            logging.error(f'Hata meydana geldi: {str(e)}')
+            logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
             pass
         
     def left_add():
@@ -1421,7 +1484,9 @@ def main(worker, window):
             index = ui12.mail_gnderilen_adresler.row(selected_item)
             ui12.mail_gnderilen_adresler.takeItem(index)
             ui12.mail_kayitli_adresler.addItem(selected_item.text())
-        except:
+        except Exception as e:
+            logging.error(f'Hata meydana geldi: {str(e)}')
+            logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
             pass
 
     def mail_send():
@@ -1566,6 +1631,9 @@ def main(worker, window):
     ui2.actionVeri_Taban_Penceresi.triggered.connect(Tools.QWindow_DataBase)
     ui2.actionAdmin_Paneli.triggered.connect(Tools.QWindow_Admin)
     ui2.action_k.triggered.connect(Close)
+    ui2.actionHata.triggered.connect(Tools.QWindow_Hata_Paneli)
+
+    
     DC.ui3.action_k.triggered.connect(Close)
     DC.ui3.actionKameralar.triggered.connect(Tools.QWindow_Camera)
     DC.ui3.actionAdmin_Paneli.triggered.connect(Tools.QWindow_Admin)
@@ -1611,7 +1679,9 @@ def main(worker, window):
         ui9.label_Hata_Goster_4.mousePressEvent = lambda event: show_faulty(name="Hata - 4", arr=show_images[page_num[3]])
         ui9.label_Hata_Goster_5.mousePressEvent = lambda event: show_faulty(name="Hata - 5", arr=show_images[page_num[4]])
         ui9.label_Hata_Goster_6.mousePressEvent = lambda event: show_faulty(name="Hata - 6", arr=show_images[page_num[5]])
-    except:
+    except Exception as e:
+        logging.error(f'Hata meydana geldi: {str(e)}')
+        logging.error(f'Hatanın meydana geldiği kod satırı: {traceback.format_exc()}')
         print("Maksimum alan aşı")
     ui10.Kapat_pushButton.clicked.connect(lambda: MainWindow10.close())
     ui11.close_pushButton.clicked.connect(faulty_close)
@@ -1626,8 +1696,40 @@ def main(worker, window):
     ui12.aktarkayitli_pushButton.clicked.connect(left_add)
     ui12.mailgonder_pushButton.clicked.connect(mail_send)
 
+
+def check_if_process_running(process_name):
+    """
+    Kontrol etmek istediğiniz süreç isminin ne kadar çalıştığını döndüren fonksiyon.
+    """
+    try:
+        # Tüm süreçleri gezip istenilen süreci sayar
+        count = 0
+        for proc in psutil.process_iter():
+            process = proc.as_dict(attrs=['pid', 'name'])
+            if process_name in process['name']:
+                count += 1
+        return count
+    except (psutil.NoSuchProcess, psutil.AccessDenied, psutil.ZombieProcess) as e:
+        logging.error(f"Process kontrolü sırasında hata: {e}")
+        pass
+
+    
 if __name__ == '__main__':
+    # "menderesapp" adında bir sürecin çalışıp çalışmadığını kontrol et
+    with open("./configs/name key.txt", "r") as file:
+        name = file.readline().strip()
+    process_count = check_if_process_running(name)
+    logging.info(f"'{name}' sürecinin çalışma sayısı: {process_count}")
+    if process_count > 1:
+        logging.warning(f"{name} süreci zaten çalışıyor. Uygulama sonlandırılıyor.")
+        sys.exit(1)  # Eğer 1'den fazla süreç çalışıyorsa uygulamayı sonlandır.
     app1 = QApplication(sys.argv)
     window = MainWindow()
     app1.exec_()
+
+
+
+
+
+
 

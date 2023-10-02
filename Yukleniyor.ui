@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
-    <height>600</height>
+    <width>1198</width>
+    <height>650</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -18,8 +18,8 @@
   </property>
   <property name="maximumSize">
    <size>
-    <width>800</width>
-    <height>600</height>
+    <width>1200</width>
+    <height>650</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -2180,27 +2180,11 @@ PlotWidget {
 }</string>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <widget class="QLabel" name="Logo">
-    <property name="geometry">
-     <rect>
-      <x>100</x>
-      <y>50</y>
-      <width>600</width>
-      <height>240</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">image: url(:/Logos/Icon/MainWindow/Menderes_Tekstil_Logo.png);</string>
-    </property>
-    <property name="text">
-     <string/>
-    </property>
-   </widget>
    <widget class="QProgressBar" name="progressBar">
     <property name="geometry">
      <rect>
-      <x>130</x>
-      <y>350</y>
+      <x>640</x>
+      <y>610</y>
       <width>541</width>
       <height>31</height>
      </rect>
@@ -2212,8 +2196,8 @@ PlotWidget {
    <widget class="QLabel" name="Yukleniyor_label">
     <property name="geometry">
      <rect>
-      <x>310</x>
-      <y>410</y>
+      <x>10</x>
+      <y>610</y>
       <width>181</width>
       <height>31</height>
      </rect>
@@ -2221,7 +2205,6 @@ PlotWidget {
     <property name="font">
      <font>
       <pointsize>-1</pointsize>
-      <stylestrategy>PreferDefault</stylestrategy>
      </font>
     </property>
     <property name="text">
@@ -2229,6 +2212,23 @@ PlotWidget {
     </property>
     <property name="alignment">
      <set>Qt::AlignCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="Logo">
+    <property name="geometry">
+     <rect>
+      <x>0</x>
+      <y>0</y>
+      <width>1201</width>
+      <height>600</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">image: url(:/Logos/Icon/MainWindow/Loadign-Logo.png)
+</string>
+    </property>
+    <property name="text">
+     <string/>
     </property>
    </widget>
   </widget>
