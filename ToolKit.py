@@ -154,7 +154,7 @@ class ToolKit():
         self.camera_3 = False                                               
         self.camera_4 = False                                               
         self.upload_path = './configs/13.46.55.txt'                         
-        self.Serial_port="COM4"                                             
+        self.Serial_port= Veri_Tabani_Window().get_com_port()                                           
         self.Baud_Rate="9600"                                               
         self.Windows()                                                      
         self.Trigg_Port_Button=False                                        
@@ -185,7 +185,12 @@ class ToolKit():
         self.MainWindow2.close()                                 #
         self.MainWindow2.showMaximized()                         #
     ##############################################################
-
+    
+    ############ MainWindow Hata Panali ##########################
+    def QWindow_Hata_Paneli(self):                               #
+        self.MainWindow8.close()                                 #
+        self.MainWindow8.showMaximized()                         #
+    ##############################################################
 
     ############ MainWindow VeriTabani ###########################
     def QWindow_DataBase(self):                                  #

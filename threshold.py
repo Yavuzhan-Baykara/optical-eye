@@ -19,7 +19,7 @@ class SATEN(Fabric):
         self.thresholds['delik'] = 0.60
         self.thresholds['leke'] = 0.85
         self.error_types = ['delik', 'kirik']
-        self.type_speed = 50
+        self.type_speed = 30 ## 50
 
 class PI(Fabric):
     def __init__(self):
@@ -27,7 +27,7 @@ class PI(Fabric):
         self.thresholds['delik'] = 0.60
         self.thresholds['leke'] = 0.85
         self.error_types = ['delik', 'kirik']
-        self.type_speed = 55
+        self.type_speed = 30 ## 55
         
 class IV(Fabric):
     def __init__(self):
@@ -36,7 +36,7 @@ class IV(Fabric):
         self.thresholds['leke'] = 0.85
         self.thresholds['dikis'] = 0.52
         self.error_types = ['delik', 'kirik']
-        self.type_speed = 60
+        self.type_speed = 30 ## 60
         
 class RANFORCE(Fabric):
     def __init__(self):
@@ -44,7 +44,7 @@ class RANFORCE(Fabric):
         self.thresholds['leke'] = 0.85
         self.thresholds['delik'] = 0.60
         self.error_types = ['delik', 'kirik']
-        self.type_speed = 50
+        self.type_speed = 30 ## 30
         
 class WF(Fabric):
     def __init__(self):
@@ -52,7 +52,7 @@ class WF(Fabric):
         self.thresholds['delik'] = 0.67
         self.thresholds['leke'] = 0.85
         self.error_types = ['kirik']
-        self.type_speed = 50
+        self.type_speed = 30 ## 50
         
 class IF(Fabric):
     def __init__(self):
@@ -60,7 +60,7 @@ class IF(Fabric):
         self.thresholds['delik'] = 0.69
         self.thresholds['leke'] = 0.85
         self.error_types = ['kirik']
-        self.type_speed = 50
+        self.type_speed = 30 ## 50
         
 class DC(Fabric):
     def __init__(self):
@@ -94,7 +94,7 @@ class JF(Fabric):
         self.thresholds['kirik'] = 0.5
         self.thresholds['iplik'] = 0.5
         self.error_types = ['kirik']
-        self.type_speed = 50
+        self.type_speed = 30 ## 50
         
 class FL(Fabric):
     def __init__(self):
@@ -104,7 +104,7 @@ class FL(Fabric):
         self.thresholds['kirik'] = 0.5
         self.thresholds['iplik'] = 0.5
         self.error_types = ['kirik']
-        self.type_speed = 50
+        self.type_speed = 30 ## 50
         
 class BF(Fabric):
     def __init__(self):
@@ -114,7 +114,7 @@ class BF(Fabric):
         self.thresholds['kirik'] = 0.5
         self.thresholds['iplik'] = 0.5
         self.error_types = ['kirik']
-        self.type_speed = 50
+        self.type_speed = 30 ## 50
 
 def selected_Fabric(item):
     options = {

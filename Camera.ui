@@ -2993,8 +2993,15 @@ PlotWidget {
     </property>
     <addaction name="action_k"/>
    </widget>
+   <widget class="QMenu" name="menuKameralar">
+    <property name="title">
+     <string>Hata Paneli</string>
+    </property>
+    <addaction name="actionHata"/>
+   </widget>
    <addaction name="menuDosya"/>
    <addaction name="menuCamera"/>
+   <addaction name="menuKameralar"/>
    <addaction name="menuAdmin"/>
    <addaction name="menuHakk_nda"/>
   </widget>
@@ -3025,6 +3032,11 @@ PlotWidget {
    </property>
    <property name="text">
     <string>Çıkış</string>
+   </property>
+  </action>
+  <action name="actionHata">
+   <property name="text">
+    <string>Hata Paneli</string>
    </property>
   </action>
  </widget>

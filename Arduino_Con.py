@@ -15,11 +15,12 @@ class Arduino_Toolkits():
         self.ui.setupUi(self.MainWindow)
     def FeedBack_MainWindow_Error(self):
         return self.app, self.MainWindow, self.ui
-    def port_ac(self,Tools):
+    def port_ac(self, dc):
         try:
-            port,baud=Tools.feedback_Import_Serial_Port()
+            port, baud=dc.get_com_port()
             self.port=str(port)
             self.baud=str(baud)
+            print(port)
             global sa
             sa=AThread(self.port,self.baud).start()
             if sa.ser.is_open:
@@ -32,6 +33,28 @@ class Arduino_Toolkits():
                 print(" Port açılamadı !!!")
         except serial.SerialException as e:
             print("Serial açılırken hata tespit edildi...", e)
+
+
+
+    def port_ac_yerel(self, Tools):
+        try:
+            port, baud= Tools.feedback_Import_Serial_Port()
+            self.port=str(port)
+            self.baud=str(baud)
+            print(port)
+            global sa
+            sa=AThread(self.port,self.baud).start()
+            if sa.ser.is_open:
+                print("Port açıldı...")
+                global timer1
+                timer1 = QtCore.QTimer()
+                timer1.start(100)
+                # timer1.timeout.connect(self.sensoroku)
+            else:
+                print(" Port açılamadı !!!")
+        except serial.SerialException as e:
+            print("Serial açılırken hata tespit edildi...", e)
+
     def port_kapat(self):
         try:
             if sa.ser.is_open:

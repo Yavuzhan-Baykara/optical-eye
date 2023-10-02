@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'Yükleniyor.ui'
+# Form implementation generated from reading ui file 'Yukleniyor.ui'
 #
 # Created by: PyQt5 UI code generator 5.9.2
 #
@@ -11,9 +11,9 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 class Ui_LoadingScreen(object):
     def setupUi(self, LoadingScreen):
         LoadingScreen.setObjectName("LoadingScreen")
-        LoadingScreen.resize(800, 600)
+        LoadingScreen.resize(1200, 650)
         LoadingScreen.setMinimumSize(QtCore.QSize(800, 600))
-        LoadingScreen.setMaximumSize(QtCore.QSize(800, 600))
+        LoadingScreen.setMaximumSize(QtCore.QSize(1200, 650))
         LoadingScreen.setStyleSheet("/* ---------------------------------------------------------------------------\n"
 "\n"
 "    WARNING! File created programmatically. All changes made in this file will be lost!\n"
@@ -2168,23 +2168,23 @@ class Ui_LoadingScreen(object):
 "}")
         self.centralwidget = QtWidgets.QWidget(LoadingScreen)
         self.centralwidget.setObjectName("centralwidget")
-        self.Logo = QtWidgets.QLabel(self.centralwidget)
-        self.Logo.setGeometry(QtCore.QRect(100, 50, 600, 240))
-        self.Logo.setStyleSheet("image: url(:/Logos/Icon/MainWindow/Menderes_Tekstil_Logo.png);")
-        self.Logo.setText("")
-        self.Logo.setObjectName("Logo")
         self.progressBar = QtWidgets.QProgressBar(self.centralwidget)
-        self.progressBar.setGeometry(QtCore.QRect(130, 350, 541, 31))
+        self.progressBar.setGeometry(QtCore.QRect(640, 610, 541, 31))
         self.progressBar.setProperty("value", 24)
         self.progressBar.setObjectName("progressBar")
         self.Yukleniyor_label = QtWidgets.QLabel(self.centralwidget)
-        self.Yukleniyor_label.setGeometry(QtCore.QRect(310, 410, 181, 31))
+        self.Yukleniyor_label.setGeometry(QtCore.QRect(10, 610, 181, 31))
         font = QtGui.QFont()
         font.setPointSize(-1)
-        font.setStyleStrategy(QtGui.QFont.PreferDefault)
         self.Yukleniyor_label.setFont(font)
         self.Yukleniyor_label.setAlignment(QtCore.Qt.AlignCenter)
         self.Yukleniyor_label.setObjectName("Yukleniyor_label")
+        self.Logo = QtWidgets.QLabel(self.centralwidget)
+        self.Logo.setGeometry(QtCore.QRect(0, 0, 1201, 600))
+        self.Logo.setStyleSheet("image: url(:/Logos/Icon/MainWindow/Loadign-Logo.png)\n"
+"")
+        self.Logo.setText("")
+        self.Logo.setObjectName("Logo")
         LoadingScreen.setCentralWidget(self.centralwidget)
 
         self.retranslateUi(LoadingScreen)
