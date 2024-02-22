@@ -22,6 +22,8 @@ import sys
 import psutil
 import logging
 import traceback
+import datetime
+
 
 from PyQt5.QtCore import QObject, QThread, pyqtSignal
 from PyQt5.QtWidgets import (
@@ -253,6 +255,9 @@ def main(worker, window):
             tensor_temp = tensor_temp.to(device_temp)
         class_thresholds, error_thresholds, type_speed = Veri_Tabani_Window().get_fabric_settings(selected_item)
         while 1:
+            current_time_target = datetime.datetime.now()
+            if current_time_target.hour == 0 and 0 < current_time_target.minute < 2:
+               New_Day_Folder()
             position, speed = Arduino_Tools.Feedback_src()
             position: int = int(position) / 1000
             speed: int = int(speed)
@@ -359,6 +364,7 @@ def main(worker, window):
                     for detect in range(len(df.iloc[:]['name'])):
                         Save_image="./Database"+"/"+helper.Db_path_time(choice="Now-Day")+"/"+"Cam"+"/"+"images"+"/"+df.iloc[:]['name'][detect]+"-"+helper.Db_path_time(choice="Now-Time")+"-"+".jpg"
                         Save_crop_image = "./Database"+"/"+helper.Db_path_time(choice="Now-Day")+"/"+"Cam"+"/"+"images"+"/"+"cropped"+"/"+df.iloc[:]['name'][detect]+"-"+helper.Db_path_time(choice="Now-Time")+"-"+".jpg"
+
                         x1=int(df.iloc[:]['xmin'][detect])
                         x2=int(df.iloc[:]['xmax'][detect])
                         y1=int(df.iloc[:]['ymin'][detect])

@@ -14730,3 +14730,43 @@ ERROR:root:Hatanýn meydana geldiði kod satýrý: Traceback (most recent call last)
     Hata_Faultys_Window_labels[index2].setPixmap(QtGui.QPixmap.fromImage(detect_Faulty_Windows[index2]))
 IndexError: list index out of range
 
+ERROR:root:Hata meydana geldi: [WinError 183] Halen varolan bir dosya oluþturulamaz: './Database/2.10.2023'
+ERROR:root:Hatanýn meydana geldiði kod satýrý: Traceback (most recent call last):
+  File "c:\menderes  - merserize\main.py", line 1256, in New_Day_Folder
+    New_Day_Create_Folder(now)
+  File "c:\menderes  - merserize\main.py", line 1241, in New_Day_Create_Folder
+    mkdir(day_db_is_here+"/"+name)
+FileExistsError: [WinError 183] Halen varolan bir dosya oluþturulamaz: './Database/2.10.2023'
+
+ERROR:root:Hata meydana geldi: [WinError 183] Halen varolan bir dosya oluþturulamaz: './Database/24.1.2024'
+ERROR:root:Hatanýn meydana geldiði kod satýrý: Traceback (most recent call last):
+  File "C:\menderes  - merserize\main.py", line 1262, in New_Day_Folder
+    New_Day_Create_Folder(now)
+  File "C:\menderes  - merserize\main.py", line 1247, in New_Day_Create_Folder
+    mkdir(day_db_is_here+"/"+name)
+FileExistsError: [WinError 183] Halen varolan bir dosya oluþturulamaz: './Database/24.1.2024'
+
+ERROR:root:Hata meydana geldi: [WinError 183] Halen varolan bir dosya oluþturulamaz: './Database/24.1.2024'
+ERROR:root:Hatanýn meydana geldiði kod satýrý: Traceback (most recent call last):
+  File "C:\menderes  - merserize\main.py", line 1262, in New_Day_Folder
+    New_Day_Create_Folder(now)
+  File "C:\menderes  - merserize\main.py", line 1247, in New_Day_Create_Folder
+    mkdir(day_db_is_here+"/"+name)
+FileExistsError: [WinError 183] Halen varolan bir dosya oluþturulamaz: './Database/24.1.2024'
+
+ERROR:root:Hata meydana geldi: [WinError 183] Halen varolan bir dosya oluþturulamaz: './Database/31.1.2024'
+ERROR:root:Hatanýn meydana geldiði kod satýrý: Traceback (most recent call last):
+  File "C:\menderes  - merserize\main.py", line 1262, in New_Day_Folder
+    New_Day_Create_Folder(now)
+  File "C:\menderes  - merserize\main.py", line 1247, in New_Day_Create_Folder
+    mkdir(day_db_is_here+"/"+name)
+FileExistsError: [WinError 183] Halen varolan bir dosya oluþturulamaz: './Database/31.1.2024'
+
+ERROR:root:Hata meydana geldi: [WinError 183] Halen varolan bir dosya oluþturulamaz: './Database/31.1.2024'
+ERROR:root:Hatanýn meydana geldiði kod satýrý: Traceback (most recent call last):
+  File "c:\menderes  - merserize\main.py", line 1262, in New_Day_Folder
+    New_Day_Create_Folder(now)
+  File "c:\menderes  - merserize\main.py", line 1247, in New_Day_Create_Folder
+    mkdir(day_db_is_here+"/"+name)
+FileExistsError: [WinError 183] Halen varolan bir dosya oluþturulamaz: './Database/31.1.2024'
+

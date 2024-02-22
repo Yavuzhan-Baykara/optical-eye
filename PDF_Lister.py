@@ -312,6 +312,9 @@ class Data_Pre_Process_Lister:
                         self.set_xy(WIDTH/9, HEIGHT/7)
                         self.image(f"./PDF/fig/delik_Dok_No_{group[0][0]}_Kalite_No_{group[0][1]}.png", w = 170, h = 100, type = '', link = 'C')
                         self.image(f"./PDF/fig/{hata_sinifi}_Dok_No_{group[0][0]}_Kalite_No_{group[0][1]}.png", w = 170, h = 100, type = '', link = 'C')
+                        self.image(f"./PDF/fig/kirik_Dok_No_{group[0][0]}_Kalite_No_{group[0][1]}.png", w = 170, h = 100, type = '', link = 'C')
+                        self.image(f"./PDF/fig/dikis_Dok_No_{group[0][0]}_Kalite_No_{group[0][1]}.png", w = 170, h = 100, type = '', link = 'C')
+
                         self.add_page()
                     except:
                         pass
@@ -530,7 +533,9 @@ class Data_Pre_Process_Lister:
             baslangic_id, bitis_id = curs.execute(f"SELECT MIN(Id), MAX(Id) FROM Hata_Sonuclari WHERE Tarih BETWEEN '{self.Threshold_Tarih}' AND '{self.Threshold_Tarih_Last}'").fetchone()
             datas = curs.execute(f'''SELECT Tarih, Dok_No, Kalite_No, 
                     SUM(CASE WHEN Hata_Sınıfı = 'leke' THEN 1 ELSE 0 END) AS leke, 
-                    SUM(CASE WHEN Hata_Sınıfı = 'delik' THEN 1 ELSE 0 END) AS delik
+                    SUM(CASE WHEN Hata_Sınıfı = 'delik' THEN 1 ELSE 0 END) AS delik,
+                    SUM(CASE WHEN Hata_Sınıfı = 'kirik' THEN 1 ELSE 0 END) AS kirik,
+                    SUM(CASE WHEN Hata_Sınıfı = 'dikis' THEN 1 ELSE 0 END) AS dikis
                     FROM Hata_Sonuclari
                     WHERE Id BETWEEN {baslangic_id} AND {bitis_id}
                     GROUP BY Tarih, Dok_No, Kalite_No
@@ -539,7 +544,9 @@ class Data_Pre_Process_Lister:
             baslangic_id, bitis_id = curs.execute(f"SELECT MIN(Id), MAX(Id) FROM Hata_Sonuclari WHERE Tarih=? AND Dok_No=? AND Kalite_No=?",(self.inf_pdf[0], self.inf_pdf[1], self.inf_pdf[2])).fetchone()
             datas = curs.execute(f'''SELECT Tarih, Dok_No, Kalite_No, 
                     SUM(CASE WHEN Hata_Sınıfı = 'leke' THEN 1 ELSE 0 END) AS leke, 
-                    SUM(CASE WHEN Hata_Sınıfı = 'delik' THEN 1 ELSE 0 END) AS delik
+                    SUM(CASE WHEN Hata_Sınıfı = 'delik' THEN 1 ELSE 0 END) AS delik,
+                    SUM(CASE WHEN Hata_Sınıfı = 'kirik' THEN 1 ELSE 0 END) AS kirik,
+                    SUM(CASE WHEN Hata_Sınıfı = 'dikis' THEN 1 ELSE 0 END) AS dikis
                     FROM Hata_Sonuclari
                     WHERE Id BETWEEN {baslangic_id} AND {bitis_id}
                     GROUP BY Tarih, Dok_No, Kalite_No
@@ -551,34 +558,43 @@ class Data_Pre_Process_Lister:
         pdf.cell(140)
         pdf.cell(0, 5, f'Tarih: {Res_Tarih_Splited[-1]}', ln=1)
         pdf.set_font('Arial',size=12)
-        pdf.set_xy(WIDTH/6, HEIGHT/5)
-        pdf.set_font('Arial', 'B', 12)
-        pdf.cell(30, 10, 'Tarih', 1)
-        pdf.cell(30, 10, 'Dok No', 1)
-        pdf.cell(30, 10, 'Kalite No', 1)
-        pdf.cell(30, 10, 'Delik Sayisi', 1)
-        pdf.cell(30, 10, 'Leke Sayisi', 1)
+        pdf.set_xy(WIDTH/7, HEIGHT/5)
+        pdf.set_font('Arial', 'B', 10)
+        pdf.cell(23, 10, 'Tarih', 1)
+        pdf.cell(23, 10, 'Dok No', 1)
+        pdf.cell(23, 10, 'Kalite No', 1)
+        pdf.cell(23, 10, 'Delik Sayisi', 1)
+        pdf.cell(23, 10, 'Leke Sayisi', 1)
+        pdf.cell(23, 10, 'Kirik Sayisi', 1)
+        pdf.cell(23, 10, 'Dikis Sayisi', 1)
         pdf.ln()
         # Tablo verileri
         pdf.set_font('Arial', '', 12)
         tarih_listesi = []
         delik_listesi = []
         leke_listesi = []
+        kirik_listesi = []
+        dikis_listesi = []
         for row in datas:
-            tarih, dok_no, kalite_no, delik_sayisi, leke_sayisi = row
+            tarih, dok_no, kalite_no, delik_sayisi, leke_sayisi, kirik_sayisi, dikis_sayisi = row
             if len(kalite_no) > 8:
                 quality = kalite_no[:8]
             else:
                 quality = kalite_no
-            pdf.set_x(WIDTH/6)
-            pdf.cell(30, 10, str(tarih), 1)
-            pdf.cell(30, 10, str(dok_no), 1)
-            pdf.cell(30, 10, str(quality).translate(eslesmeler), 1)
-            pdf.cell(30, 10, str(leke_sayisi), 1)
-            pdf.cell(30, 10, str(delik_sayisi), 1)
+            pdf.set_x(WIDTH/7)
+            pdf.cell(23, 10, str(tarih), 1)
+            pdf.cell(23, 10, str(dok_no), 1)
+            pdf.cell(23, 10, str(quality).translate(eslesmeler), 1)
+            pdf.cell(23, 10, str(leke_sayisi), 1)
+            pdf.cell(23, 10, str(delik_sayisi), 1)
+            pdf.cell(23, 10, str(kirik_sayisi), 1)
+            pdf.cell(23, 10, str(dikis_sayisi), 1)
+            
             tarih_listesi.append(str(tarih))
             delik_listesi.append(int(delik_sayisi))
             leke_listesi.append(int(leke_sayisi))
+            kirik_listesi.append(int(kirik_sayisi))
+            dikis_listesi.append(int(dikis_sayisi))
             pdf.ln()
         pdf.add_page()
         pdf.set_xy(WIDTH/9, HEIGHT/7)
@@ -601,9 +617,30 @@ class Data_Pre_Process_Lister:
         plt.clf()
         plt.cla()
         pdf.add_page()
+        pdf.set_xy(WIDTH/9, HEIGHT/7)
+        plt.title("Tarihe Göre Kirik Dağılım Grafiği")
+        plt.bar(tarih_listesi_bar, kirik_listesi)
+        plt.tick_params(axis='x', labelsize=8, rotation=90)
+        plt.ylabel('Kirik Sayısı')
+        plt.savefig('kiriklar.png')
+        pdf.image('kiriklar.png', w = 170, h = 100, type = '', link = 'C')
+        plt.clf()
+        plt.cla()
+        pdf.set_xy(WIDTH/9, HEIGHT/2+10)
+        plt.title("Tarihe Göre Dikis Dağılım Grafiği")
+        plt.bar(tarih_listesi_bar, kirik_listesi)
+        plt.tick_params(axis='x', labelsize=8, rotation=90)
+        plt.ylabel('Dikis Sayısı')
+        plt.savefig('dikisler.png')
+        pdf.image('dikisler.png', w = 170, h = 100, type = '', link = 'C')
+        plt.clf()
+        plt.cla()
+        pdf.add_page()
+        pdf.set_xy(WIDTH/9, HEIGHT/7)
         pdf.meter_Bar(self.Threshold_Tarih, self.Threshold_Tarih_Last, "delik")
         pdf.meter_Bar(self.Threshold_Tarih, self.Threshold_Tarih_Last, "leke")
-
+        pdf.meter_Bar(self.Threshold_Tarih, self.Threshold_Tarih_Last, "kirik")
+        pdf.meter_Bar(self.Threshold_Tarih, self.Threshold_Tarih_Last, "dikis")
         pdf.create_pdf_details()
         main_path = getcwd()
         main_path = main_path.replace('\\' , "/")
